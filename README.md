@@ -23,28 +23,6 @@ Toolchain for Arm) for **R7FA2E3073CFL**. The GPT driver
 (`ra/fsp/src/r_gpt/r_gpt.c`) is genuinely vendored — no additional Smart
 Configurator step is required to build.
 
-Ported from the FPB-RA4E2/FPB-RA6E2 deliveries of this same PES. Every
-hardware fact this port depends on was independently re-verified against
-this board's own reference project — several genuinely differ from the
-other two boards, not just names:
-- **PCLKD is 48 MHz here** (no PLL; HOCO 48 MHz feeds PCLKD directly at
-  /1), not the ~100 MHz PCLKD on FPB-RA4E2/FPB-RA6E2 (both HOCO x PLL 10.0
-  /2).
-- **GPT channel 0 is a genuine 32-bit channel** on this device
-  (`BSP_FEATURE_GPT_32BIT_CHANNEL_MASK == 0x01`), unlike FPB-RA4E2/
-  FPB-RA6E2 (both `0x00`, 16-bit only).
-- **The default VCOM-adjacent TX pin's peripheral pairing is SCI9 Simple
-  I2C mode** (2-pin pairing: P109 TXD9 + P110 RXD9), not SCI0 Simple SPI
-  mode (3-pin pairing) the way P411 was paired on the other two boards.
-- **The GPT overflow ELC event ID differs** (`0x04A` here vs `0x0C6` on
-  the other boards) — harmless, since the code references it symbolically
-  (`ELC_EVENT_GPT0_COUNTER_OVERFLOW`), not by hardcoded number.
-- **LED1 is P213** (`BSP_IO_PORT_02_PIN_13`), not P207.
-
-See `PhasePlan.md` and `docs/README.md` for the full comparison and the
-reasoning behind each adapted value (in particular, why this board's GPT
-uses an **undivided** clock while the other two need a /4 divider).
-
 ---
 
 ## Opening This Project
@@ -222,12 +200,10 @@ target GPIO directly to an RS-232 DB9 interface.
 ## Repository Layout
 
 ```
-BitBangedUART_TX_FPB_RA2E3/
+examples/e2studio/BitBangedUART_TX_FPB_RA2E3/
   .project, .cproject, .settings/        (Eclipse CDT / e2 studio project files)
   .clangd                                 (LLVM tooling config for IDE code intelligence)
   BitBangedUART_TX_FPB_RA2E3 Debug_Flat.jlink/.launch  (debug/flash configs)
-  README.md                               (this file)
-  PhasePlan.md                            (implementation checkpoint / progress log)
   configuration.xml                       (FSP Smart Configurator project — GPT + GPIO configured)
   script/fsp.lld, memory_regions.lld, bsp_linker_info.h
   ra/                                     (vendored FSP: bsp, arm/CMSIS, board, r_ioport, r_gpt)
@@ -293,78 +269,6 @@ Two configuration paths are available, selected by
 
 ## Troubleshooting
 
-### Garbled/corrupted characters at startup (banner), but clean output from `[000001] Heartbeat OK` onward
-
-**Confirmed on FPB-RA2E3 via real hardware testing — root cause found and
-fixed, not just worked around.** An earlier version of this note
-attributed this to USB VCOM host-attach timing; that theory was tested
-(a 1-second startup delay) and **did not fix it**, which led to the real
-root cause below.
-
-**Root cause:** `rs_bb_uart_tx_ring_buffer_enqueue()`'s critical section
-holds interrupts disabled for the *entire* `memcpy()` of whatever length
-is being enqueued — its duration is not a fixed handful of instructions,
-it scales with request size. The original demo banner made ~10 rapid,
-back-to-back `WriteString()` calls: the first one starts the GPT timer,
-and every call after it enqueues more data *while that timer is already
-running*. On this board's Cortex-M23 CPU (48 MHz — more than 2x slower
-than FPB-RA4E2/FPB-RA6E2's Cortex-M33 @ 100 MHz), a single `memcpy()` of
-a few dozen bytes can take long enough in real time to be comparable to
-one bit period at 115200 baud (~8.68 µs), delaying the GPT ISR enough to
-corrupt whichever bit was due during that window. Confirmed via a
-targeted experiment: a disposable "warm-up" string sent *before* the real
-banner came through perfectly clean, while the real banner (the next
-transmission, made of many rapid calls) was still corrupted — ruling out
-"first transmission ever" as the cause and pointing specifically at the
-rapid-multi-call pattern.
-
-**Fix applied in this delivery:** `demo_print_banner()` in
-`src/rs_bb_uart_tx_demo.c` now builds the entire banner into one buffer
-and sends it via a single `WriteString()` call instead of ~10 separate
-ones — eliminating the "later call lands while an earlier one is already
-transmitting" pattern that triggered this. The 1-second startup delay
-from the earlier (incorrect) theory is left in place as a harmless,
-possibly still marginally useful safety margin, but it was not the actual
-fix.
-
-**Broader implication, not just a demo bug:** this is a genuine
-characteristic of the PES core, not something specific to the demo
-application — see `src/rs_bb_uart_tx/rs_bb_uart_tx_ring_buffer.c`'s
-file-level comment and `docs/README.md` for the full write-up. A real
-application making large or frequent `Write()`/`WriteString()` calls,
-especially while a previous transmission may still be in progress on a
-slower CPU or at a high baud rate, should be aware of this.
-
-### `full=N` (non-zero) in the demo's status line
-
-`rs_bb_uart_tx_StatusGet()`'s `buffer_full_count` — shown as `full=N` in
-the demo's periodic status line — counts `Write()`/`WriteString()` calls
-that were rejected because the request didn't fit in the ring buffer's
-free space at that moment (all-or-nothing enqueue, Architecture & Design
-Section 13.3 — nothing partial is ever written). This is silent unless
-checked; the demo ignores the return value on purpose to keep the example
-simple.
-
-**Fix:** increase the buffer size in `src/rs_bb_uart_tx/rs_bb_uart_tx_cfg.h`:
-```c
-#ifndef RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES
-  #define RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES     (512U)   // was 256U
-#endif
-```
-Validated reference sizes (Architecture & Design Section 5.7): 64, 128,
-256, 512, 1024 bytes. Rebuild after changing — a `_Static_assert` in
-`rs_bb_uart_tx.c` will fail the build with a clear message rather than
-silently overrun RAM if the chosen size doesn't fit
-`RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_BYTES` (2048 bytes by default).
-
-**Note:** a bigger buffer only absorbs *bursts* (e.g. several
-back-to-back `WriteString()` calls before the timer has drained any of
-them — this is exactly what the demo's startup banner does). It does not
-fix a *sustained* rate mismatch — if data is enqueued faster, on average,
-than the configured baud rate can drain it, `full` will keep climbing
-regardless of buffer size. In that case, lower the data rate, raise the
-baud rate, or have the application check `free_bytes` (via
-`StatusGet()`) before large writes.
 
 ## Known Limitations (Phase 1, by design — see the accepted MRD)
 
@@ -375,15 +279,3 @@ baud rate, or have the application check `free_bytes` (via
   channel are fixed once `ConfigCheck()` succeeds).
 - Buffer-full policy is "return error" only — no overwrite-oldest,
   drop-newest, or blocking option in Phase 1.
-
-## Engineering Guidelines Traceability
-
-This implementation follows `Product_Enabling_Software_Engineering_Guides`:
-naming (`rs_bb_uart_tx_*` / `RS_BB_UART_TX_*`, §13), the
-public/HAL-shim/board-data-file split (§9.2), no dynamic allocation (§12
-rule 5), PES-specific status enum with documented values (§12 rule 2),
-target-specific isolation confined to `rs_bb_uart_tx_hal.c` and the board
-config data file (§9.2), full public-function documentation of inputs,
-outputs, blocking behavior, calling contexts, and error behavior (§6.3),
-and demo/reusable-code separation (§5) between `src/rs_bb_uart_tx/**`
-(reusable) and `src/rs_bb_uart_tx_demo.c` + `src/hal_entry.c` (demo-only).
