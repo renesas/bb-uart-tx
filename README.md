@@ -1,249 +1,281 @@
-# Bit-Banged UART TX
+# Bit-Banged UART TX — FPB-RA2E3 (e2 studio, FSP 6.5.0, LLVM)
 
-Software-driven, transmit-only UART implemented using a GPIO output and a
-General PWM Timer (GPT) for bit-period control.
+Software-driven, transmit-only UART implemented with one GPIO output pin and
+GPT timer-based bit-period control. Enables UART-style console/diagnostic
+output when a hardware SCI/UART channel is unavailable or reserved for
+another function.
 
-The Bit-Banged UART TX Product Enabling Software (PES) provides UART-style
-serial output when a hardware SCI/UART channel is unavailable, reserved, or
-not desired. The reusable PES implementation is maintained under `src/` and
-is shared by every example project.
+PES short name: `bb_uart_tx` — component ID `RS_BB_UART_TX` — see
+`src/rs_bb_uart_tx/` for the reusable core, `src/rs_bb_uart_tx_demo.c` +
+`src/hal_entry.c` for the reference application.
 
-## Features
+Phase 1 scope: TX-only, 8N1, LSB-first, 1200-115200 baud (configurable),
+non-blocking. No receive, no interactive CLI input. Default demo path uses
+the on-board J-Link VCOM (P109) — no external adapter needed.
 
-- Transmit-only UART
-- 8 data bits, no parity, 1 stop bit (8N1)
-- Least-significant bit first
-- Configurable baud rate
-- Non-blocking operation
-- Software-managed transmit ring buffer
-- GPT-based bit-period timing
-- No dynamic memory allocation
-- Bare-metal example projects
-- Common source shared by all supported boards and development environments
+Full requirements/architecture: see the accepted MRD/acceptance document and
+`PES_Bit-BangedUART_Acceptance_ArchDesign_v03` (Architecture & Design v0.3).
+This project is the Phase 3 "Develop & Test" deliverable for that design.
 
-## Supported Boards
+This project was built by integrating the PES source into a real
+e2 studio-generated bare-metal + GPT project (FSP 6.5.0, LLVM Embedded
+Toolchain for Arm) for **R7FA2E3073CFL**. The GPT driver
+(`ra/fsp/src/r_gpt/r_gpt.c`) is genuinely vendored — no additional Smart
+Configurator step is required to build.
 
-- FPB-RA2E3
-- FPB-RA4E2
-- FPB-RA6E2
+---
 
-Board-specific GPIO, VCOM, clock, GPT, device, and debugger configuration is
-kept with each example project and is intentionally not duplicated here.
+## Opening This Project
 
-## Supported Development Environments
+**Import into e2 studio:** File → Import → General → Existing Projects into
+Workspace → select this folder. e2 studio will recognize `.project`/
+`.cproject` and set up the FSP/RA views automatically.
 
-- Renesas e2 studio
-- Visual Studio Code
+**Build:** Project → Build Project (or the hammer icon). Default build
+configuration is Debug, LLVM Embedded Toolchain for Arm.
 
-## Repository Layout
+**Flash/Debug:** Use the included debug launch configuration
+(`BitBangedUART_TX_FPB_RA2E3 Debug_Flat.launch`) — Run → Debug Configurations
+→ select it → Debug. This targets the on-board J-Link debugger via SEGGER
+J-Link, consistent with the `.jlink` script also included in this folder.
 
-```text
-.
-|-- README.md
-|-- meson.build
-|-- meson_options.txt
-|-- metadata.r365.xml
-|-- docs/
-|-- examples/
-|   |-- e2studio/
-|   |   |-- fpb-ra2e3/
-|   |   |-- fpb-ra4e2/
-|   |   `-- fpb-ra6e2/
-|   `-- vscode/
-|       |-- fpb-ra2e3/
-|       |-- fpb-ra4e2/
-|       `-- fpb-ra6e2/
-|-- firmware/
-|-- meson/
-|-- scripts/
-|-- src/
-|-- subprojects/
-|-- tests/
-`-- toolchains/
-```
+## GPT Interrupt Setup
 
-### Directory Responsibilities
+This project's GPT driver source (`ra/fsp/src/r_gpt/r_gpt.c`) **is
+included and already configured** — no Smart Configurator step is required
+to build or flash. Three things are worth knowing if you ever reopen the
+FSP Configurator perspective in e2 studio (double-click
+`configuration.xml`), so you don't accidentally revert them:
 
-- `src/`: Generic reusable PES source. Example projects consume this common
-  implementation and must not maintain independent copies.
-- `examples/e2studio/`: Board-specific e2 studio example projects.
-- `examples/vscode/`: Board-specific Visual Studio Code example projects.
-- `meson/`: Shared Meson helper files and build infrastructure.
-- `subprojects/`: Meson subproject definitions and dependency wraps.
-- `tests/`: Host and target test sources, mocks, fixtures, and test build files.
-- `toolchains/`: Cross-compilation and host toolchain definitions.
-- `docs/`: Product, build, API, architecture, porting, and release documentation.
-- `scripts/`: Build, test, packaging, and continuous-integration utilities.
-- `firmware/`: Generated or packaged firmware artifacts when applicable.
+1. **GPT0 interrupt priority and callback** — the `g_timer0` stack's
+   Interrupts tab has the counter-overflow interrupt enabled (priority 1)
+   with its callback set to `rs_bb_uart_tx_hal_gpt_callback`. **Note the
+   valid priority range on this board is 0 (highest) to 3 (lowest) only**
+   — FPB-RA2E3 uses a Cortex-M23 core (only 2 NVIC priority bits
+   implemented), unlike FPB-RA4E2/FPB-RA6E2's Cortex-M33 (4 bits, 0-15
+   range) — do not try to set priority 6 here, the Configurator won't
+   offer it and it would be invalid if forced. If this ever shows as
+   "Disabled" or the callback reverts to `NULL`, the PES's bit timing will
+   not run — re-enable it (priority 0-3) and re-set the callback name,
+   then **Generate Project Content**.
+2. **P109 pin mode** — the Pins tab has P109 set to **GPIO Output (high)**,
+   not its default "Peripheral: SCI9 TXD9" — this PES bit-bangs the frame
+   in software and does not use the SCI9 hardware channel. If you ever need
+   SCI9 on this board for something else, remap the Bit-Banged UART TX pin
+   to a different GPIO first (see `rs_bb_uart_tx_ConfigGen()`'s `tx_pin`
+   argument in `src/rs_bb_uart_tx_demo.c`).
+3. **SCI9's Operation Mode is disabled entirely** (not just its pin
+   assignments) — `configuration.xml`'s SCI9 entry has no active mode and
+   no leftover pairing property at all (unlike SCI0 on FPB-RA4E2/
+   FPB-RA6E2, which keeps one inert `sci0.pairing.b` line — SCI9's Simple
+   I2C mode here has no separate pairing selector to preserve). This is
+   required, not optional: SCI9's default Simple I2C mode claims P109
+   (TXD9) and P110 (RXD9) as a 2-pin pairing regardless of what either
+   pin's own assignment says, and the Smart Configurator's conflict
+   checker will flag P109 as contested with the PES's GPIO reassignment
+   if this mode is re-enabled. If you ever need SCI9 for something else on
+   this board, you'll need to both re-enable its Operation Mode AND move
+   the Bit-Banged UART TX pin elsewhere (see item 2 above). P110 reverts
+   to a plain unconfigured input as a result (see `ra_gen/pin_data.c`) —
+   applied proactively here based on the confirmed fix pattern discovered
+   on FPB-RA6E2 (same underlying SCI-pairing mechanism, different channel/
+   pin numbers), not yet independently re-confirmed via a fresh RASC
+   regeneration on this specific board.
 
-## Reusable PES Source
+### GPT Clock Divider
 
-The generic implementation resides under:
+`g_timer0` uses an **undivided PCLKD** (`TIMER_SOURCE_DIV_1`) — different
+from FPB-RA4E2/FPB-RA6E2, which both need a PCLKD/4 divider. This is a
+correctness decision based on this board's actual clock tree and GPT
+capabilities, not a copy-paste of the other boards' setting:
+- This board's PCLKD is **48 MHz** (no PLL — HOCO 48 MHz feeds PCLKD
+  directly at /1), much lower than the other boards' ~100 MHz PCLKD. At 48
+  MHz undivided, even the lowest supported baud rate (1200) needs only
+  ~40,000 counts — comfortably within 16-bit range (65,535) with no
+  divider needed at all.
+- R7FA2E307's GPT channel 0 is additionally a genuine **32-bit** channel
+  (`BSP_FEATURE_GPT_32BIT_CHANNEL_MASK == 0x01`), unlike FPB-RA4E2/
+  FPB-RA6E2 (`0x00` — 16-bit only), reinforcing that overflow is not a
+  concern here even without a divider.
+- Leaving the clock undivided also gives **better** timing resolution than
+  the other two boards: ~417 counts at 115200 baud here, versus ~217
+  counts on FPB-RA4E2/FPB-RA6E2's divided clock.
 
-```text
-src/rs_bb_uart_tx/
-```
+See `rs_bb_uart_tx_hal_gpt_open()` in
+`src/rs_bb_uart_tx/rs_bb_uart_tx_hal.c` (generic, baud-rate-driven period
+calculation — unchanged across all three boards) and the comment above
+`g_timer0_extend`/`g_timer0_cfg` in `ra_gen/hal_data.c` for this board's
+specific divider choice.
 
-The source organization may include:
+### On-board J-Link VCOM Bridge May Not Support the Full Baud Range
 
-```text
-src/rs_bb_uart_tx/
-|-- rs_bb_uart_tx.c
-|-- rs_bb_uart_tx.h
-|-- rs_bb_uart_tx_types.h
-|-- rs_bb_uart_tx_cfg.h
-|-- rs_bb_uart_tx_ctrl.h
-|-- rs_bb_uart_tx_engine.c
-|-- rs_bb_uart_tx_engine.h
-|-- rs_bb_uart_tx_ring_buffer.c
-|-- rs_bb_uart_tx_ring_buffer.h
-|-- rs_bb_uart_tx_hal.c
-|-- rs_bb_uart_tx_hal.h
-`-- config/
-```
+**Confirmed by hands-on testing on FPB-RA4E2** (not yet independently
+re-verified on physical FPB-RA2E3 hardware, but flagged here proactively
+since both boards use the same on-board J-Link OB debug probe family):
+on FPB-RA4E2, the VCOM (virtual COM port) bridge does not support baud
+rates below 9600 — the PES itself is not the limiting factor there. This
+is a constraint of the debug probe's VCOM firmware, not of
+`rs_bb_uart_tx`: the GPT divider math (see above) is specifically sized
+to generate correct signal timing down to 1200 baud on the TX pin itself;
+the limitation, where it applies, is in relaying that signal through the
+on-board bridge to a USB CDC serial port your PC can open. If you test
+the low end of the baud range (1200-4800) on this board, please report
+back whether the same 9600 floor applies here too, so this note can be
+updated from "expected" to "confirmed."
 
-The `src/` directory contains reusable PES code only. IDE metadata, generated
-board projects, launch files, and demo application code belong under
-`examples/`.
+Practical impact: `rs_bb_uart_tx_ConfigCheck()` will happily accept and
+correctly configure any baud rate in the documented 1200-115200 range
+(Architecture & Design Section 5.4) — but if you're observing output via
+Tera Term through the **default on-board VCOM path**, only 9600-115200
+will actually be receivable end-to-end that way. To exercise or validate
+the low end of the range (1200-4800), use one of:
 
-## Example Projects
+- **A logic analyzer or oscilloscope directly on the TX pin.** This
+  verifies the PES's actual bit timing independent of the VCOM bridge
+  entirely, and is the only way to observe true 1200 baud signaling with
+  this board's on-board probe.
+- **An external TTL-to-USB adapter** wired to a different GPIO (see
+  "Using a Non-VCOM GPIO / External TTL-to-USB Adapter Instead" below) —
+  bypasses the on-board J-Link VCOM bridge entirely, so its own baud-rate
+  support (typically down to well below 1200 on common adapters like the
+  FTDI TTL-232RG) is what applies instead.
 
-Examples are grouped first by development environment and then by board:
+## Running the Demo
 
-```text
-examples/<development-environment>/<board>/
-```
-
-Each board example README contains the details required for that particular
-combination, including:
-
-- Prerequisites and tool versions
-- Build and debug steps
-- Target device selection
-- GPIO TX selection
-- On-board VCOM or optional external TTL-to-USB routing
-- GPT instance and interrupt configuration
-- Board clock and timer-divider configuration
-- Expected demonstration output
-- Board-specific limitations and validation notes
-
-Start with one of the following directories:
-
-```text
-examples/e2studio/
-examples/vscode/
-```
-
-## Serial Configuration
-
-The default demonstration uses the following frame format:
+Connect the board's USB debug/VCOM connector to your PC. After flashing,
+open the enumerated COM port in Tera Term (or equivalent):
 
 | Setting | Value |
 |---|---|
+| Port | COM port assigned to the on-board VCOM interface |
+| Baud rate | 115200 (default) |
 | Data bits | 8 |
 | Parity | None |
 | Stop bits | 1 |
-| Bit order | LSB first |
 | Flow control | None |
 
-The selected example defines the default baud rate, TX GPIO, timer instance,
-and observation path.
+Expected output:
 
-## Public API
-
-Include the public PES header and the configuration data selected by the
-example project:
-
-```c
-#include <rs_bb_uart_tx/rs_bb_uart_tx.h>
-
-rs_bb_uart_tx_cfg_t    config;
-rs_bb_uart_tx_status_t status;
-
-status = rs_bb_uart_tx_ConfigGen(&config, timer_config, tx_pin);
-
-if (RS_BB_UART_TX_STATUS_SUCCESS == status)
-{
-    status = rs_bb_uart_tx_ConfigCheck(&config);
-}
-
-if (RS_BB_UART_TX_STATUS_SUCCESS == status)
-{
-    status = rs_bb_uart_tx_WriteString("Bit-Banged UART Ready\\r\\n");
-}
 ```
-
-The public interface provides configuration, write, and status operations.
-Refer to the API header and API reference for the authoritative function
-signatures, parameter requirements, calling context, and return values.
-
-## Configuration
-
-The generic PES derives UART bit timing from the GPT configuration supplied by
-the selected example. Board-specific files provide the applicable timer, pin,
-clock, interrupt, and peripheral-conflict settings.
-
-Before running an example, verify that:
-
-- The selected TX pin is configured as a GPIO output and idles high.
-- No peripheral function claims the selected TX pin.
-- The GPT overflow interrupt is enabled.
-- The GPT callback is connected to the PES HAL callback.
-- The selected timer configuration covers the required baud-rate range.
-- The terminal configuration matches the example configuration.
-
-## Observing Output
-
-The preferred observation path is the on-board debug probe VCOM connection
-when that path is supported by the selected example. An external TTL-to-USB
-adapter is an optional secondary path.
-
-For an external adapter, connect the configured GPIO TX output to the adapter
-RXD input and connect board ground to adapter ground. Do not connect a target
-GPIO directly to a true RS-232-level interface.
-
-## Expected Demo Output
-
-```text
 ================================
 Renesas Bit-Banged UART Demo
 ================================
-Project      : Bare-Metal Example
-UART Mode    : Software TX Only
+
+Board        : FPB-RA2E3
+Project      : e2 studio bare-metal example
+UART Mode    : Software TX only
+Baud Rate    : 115200
 Frame Format : 8N1
+Transport    : On-board J-Link VCOM
+
 System Ready
+
 [000001] Heartbeat OK
 [000002] Heartbeat OK
+[000003] Heartbeat OK
+[000004] Heartbeat OK
+[000005] Status       : queued=0 free=256 tx=187 ok=187 full=0
+[000006] Heartbeat OK
 ...
 ```
 
-A board example may add the selected board, baud rate, and transport to the
-banner.
+## Using a Non-VCOM GPIO / External TTL-to-USB Adapter Instead
 
-## Testing
+Change the `tx_pin` argument passed to `rs_bb_uart_tx_ConfigGen()` in
+`src/rs_bb_uart_tx_demo.c` to your chosen GPIO, and wire an external
+TTL-level USB-to-UART adapter:
 
-The top-level `tests/` directory contains tests for the generic implementation.
-Tests should exercise reusable behavior independently of IDE-specific example
-projects wherever practical. Target integration tests may use board-specific
-fixtures while continuing to compile the common source from `src/`.
+| FPB-RA2E3 signal | Adapter signal | Required | Notes |
+|---|---|---|---|
+| Configured GPIO TX | RXD | Yes | Board transmit output to adapter receive input |
+| GND | GND | Yes | Common reference |
+| — | TXD | No | Not used — Phase 1 is TX-only |
+| — | VCC | Usually no | Only if the adapter needs a target reference voltage; confirm voltage compatibility first |
 
-## Known Limitations
+Use a TTL-level adapter, not a true RS-232 level adapter — never connect the
+target GPIO directly to an RS-232 DB9 interface.
 
-- TX only
-- No receive path
-- No full-duplex operation
-- No interactive command-line input
-- Write operations are not intended for interrupt-handler context
-- Runtime reconfiguration is not supported while transmission is active
-- A write that does not fit in the available ring-buffer space returns an
-  error rather than partially enqueueing data
-- Sustained input faster than the configured serial output rate can exhaust
-  available transmit-buffer capacity
+---
 
-See each example README for board-specific limitations and validation status.
+## Repository Layout
 
-## Documentation
+```
+examples/e2studio/BitBangedUART_TX_FPB_RA2E3/
+  .project, .cproject, .settings/        (Eclipse CDT / e2 studio project files)
+  .clangd                                 (LLVM tooling config for IDE code intelligence)
+  BitBangedUART_TX_FPB_RA2E3 Debug_Flat.jlink/.launch  (debug/flash configs)
+  configuration.xml                       (FSP Smart Configurator project — GPT + GPIO configured)
+  script/fsp.lld, memory_regions.lld, bsp_linker_info.h
+  ra/                                     (vendored FSP: bsp, arm/CMSIS, board, r_ioport, r_gpt)
+  ra_cfg/fsp_cfg/                         (bsp + r_ioport + r_gpt build-time config)
+  ra_gen/                                 (generated: pin/common/hal data, GPT-enabled vector
+                                            table, bare-metal main.c)
+  src/
+    hal_entry.c                           (bare-metal application entry point)
+    hal_warmstart.c                       (Renesas-provided BSP warm-start boilerplate, unmodified)
+    fault_handler.c                       (Cortex-M23 fault handler, adapted from the
+                                             FPB-RA4E2/FPB-RA6E2 Cortex-M33 version — see
+                                             its top-of-file comment)
+    rs_bb_uart_tx_demo.c                  (reference application — NOT reusable PES code)
+    rs_bb_uart_tx/                        (*** the reusable PES core ***)
+      rs_bb_uart_tx.h                     public API (6 functions — full Doxygen docs)
+      rs_bb_uart_tx.c                     core orchestration + internal lifecycle
+      rs_bb_uart_tx_types.h               public types (cfg_t, state_t, status_t enum)
+      rs_bb_uart_tx_ctrl.h                internal-only control block (singleton)
+      rs_bb_uart_tx_cfg.h                 build-time configuration macros
+      rs_bb_uart_tx_ring_buffer.h/.c      ring buffer manager
+      rs_bb_uart_tx_engine.h/.c           TX bit-level state machine
+      rs_bb_uart_tx_hal.h/.c              GPT + GPIO target-adaptation shim, ISR
+      config/
+        rs_bb_uart_tx_data_fpb_ra2e3.h/.c   board preset + ConfigGen/ConfigCheck
+```
 
-Additional documentation is maintained under `docs/`. Use the documentation
-and the selected example README for build instructions, architecture details,
-porting guidance, API behavior, acceptance criteria, and release information.
+## Public API
+
+```c
+#include <rs_bb_uart_tx/rs_bb_uart_tx.h>
+#include <rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra2e3.h>
+
+rs_bb_uart_tx_cfg_t    g_cfg;
+rs_bb_uart_tx_status_t status;
+
+status = rs_bb_uart_tx_ConfigGen(&g_cfg, &g_timer0_preset, BSP_IO_PORT_01_PIN_09);
+status = rs_bb_uart_tx_ConfigCheck(&g_cfg);   /* validates AND opens on success */
+if (RS_BB_UART_TX_STATUS_SUCCESS == status)
+{
+    (void) rs_bb_uart_tx_WriteString("Bit-Banged UART Ready\r\n");
+}
+```
+
+Six public functions total: `rs_bb_uart_tx_ConfigGetSize()`,
+`rs_bb_uart_tx_ConfigGen()`, `rs_bb_uart_tx_ConfigCheck()`,
+`rs_bb_uart_tx_Write()`, `rs_bb_uart_tx_WriteString()`,
+`rs_bb_uart_tx_StatusGet()`. Every function — public API, internal helpers,
+HAL shim, ring buffer, TX engine — carries a complete Doxygen block
+(`@brief`, `@param` for every parameter, `@return`/`@retval` for every
+outcome) in both its header declaration and its `.c` definition. This PES
+is a **singleton** — one instance per application (one GPIO pin, one GPT
+channel); there is no caller-managed control block to declare or pass
+around (see `rs_bb_uart_tx.h`'s top-of-file note for the rationale).
+
+Two configuration paths are available, selected by
+`RS_BB_UART_TX_CFG_PRESET_CONFIG_USE` in `rs_bb_uart_tx_cfg.h` (default 1):
+- **Preset (default):** binds the standalone `g_timer0_preset` instance
+  (`src/rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra2e3.c`) — has no
+  dependency on `ra_gen` matching any particular Configurator state.
+- **FSP Stack Configurator:** binds `ra_gen/hal_data.c`'s `g_timer0`
+  instead — already fully configured and wired to the same callback in
+  this project, so both paths work out of the box.
+
+## Troubleshooting
+
+
+## Known Limitations (Phase 1, by design — see the accepted MRD)
+
+- TX only. No receive, no interactive CLI, no full-duplex.
+- Not ISR-safe: `Write()`/`WriteString()` must be called from startup or
+  main-loop/task context, never from an interrupt handler.
+- No dynamic reconfiguration while transmitting (baud rate, pin, and timer
+  channel are fixed once `ConfigCheck()` succeeds).
+- Buffer-full policy is "return error" only — no overwrite-oldest,
+  drop-newest, or blocking option in Phase 1.
