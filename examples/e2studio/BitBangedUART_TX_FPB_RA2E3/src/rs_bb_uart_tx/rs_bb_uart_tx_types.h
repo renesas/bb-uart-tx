@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx_types.h
- * @brief Public type definitions and enumerations for the Bit-Banged UART TX PES.
+ * @brief Public type definitions and enumerations for the Bit-Banged UART TX.
  *
  * This header is included by rs_bb_uart_tx.h and may be included directly by
  * application code that needs to reference Bit-Banged UART TX types without
@@ -41,7 +41,7 @@
  * for host-based unit tests (RS_BB_UART_TX_TEST_HOST_BUILD). */
 #ifndef RS_BB_UART_TX_TEST_HOST_BUILD
  #include "bsp_api.h"
- #include "r_timer_api.h"      /* timer_instance_t — implemented by r_gpt for this PES */
+ #include "r_timer_api.h"      /* timer_instance_t — implemented by r_gpt for this Bit-Banged UART */
 #else
  #include "rs_bb_uart_tx_test_types.h"  /* host-build type stubs */
 #endif
@@ -74,7 +74,7 @@ typedef enum e_rs_bb_uart_tx_lifecycle_state
 /**
  * @brief Bit-Banged UART TX status/error codes.
  *
- * PES-specific status enum per Engineering Guidelines Software Development
+ * Bit-Banged UART-specific status enum per Engineering Guidelines Software Development
  * Rule 2 (fsp_err_t is not used here because most Bit-Banged UART TX
  * failures — bad baud rate, buffer full, unconfigured state — are use-case
  * level failures, not FSP HAL failures). Success is zero; all non-success

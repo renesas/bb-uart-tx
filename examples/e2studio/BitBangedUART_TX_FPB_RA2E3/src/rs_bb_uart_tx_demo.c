@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx_demo.c
- * @brief Reference application for the Bit-Banged UART TX PES — FPB-RA2E3.
+ * @brief Reference application for the Bit-Banged UART TX — FPB-RA2E3.
  *
  * Bare-metal example project (Architecture & Design Section 19). Demonstrates:
  *   - Generated configuration path (ConfigGen -> ConfigCheck).
@@ -38,8 +38,8 @@
  *
  * This file is demo/application-only code (Engineering Guidelines Section
  * 5): the demo strings, banner, and heartbeat cadence below are NOT part of
- * the reusable PES core and are expected to be replaced by customer
- * application logic. The PES core the customer actually reuses lives
+ * the reusable Bit-Banged UART core and are expected to be replaced by customer
+ * application logic. The Bit-Banged UART core the customer actually reuses lives
  * entirely under src/rs_bb_uart_tx/.
  */
 
@@ -79,27 +79,17 @@ static rs_bb_uart_tx_cfg_t g_bb_uart_tx_cfg;
 /**
  * @brief Print the demo startup banner, including the configured baud rate.
  *
- * Demo/application-only code — not part of the reusable PES core (see the
- * file-level note above). Called once from rs_bb_uart_tx_demo_run() after
- * rs_bb_uart_tx_ConfigCheck() succeeds.
+ * Demo/application-only code — not part of the reusable Bit-Banged UART
+ * core (see the file-level note above). Called once from
+ * rs_bb_uart_tx_demo_run() after rs_bb_uart_tx_ConfigCheck() succeeds.
  *
  * Built and sent as a SINGLE rs_bb_uart_tx_WriteString() call rather than
- * ~10 separate back-to-back calls (as earlier revisions of this file did)
- * — confirmed via real FPB-RA2E3 hardware testing that the original
- * multi-call version could corrupt the very start of its own output.
- * Root cause: rs_bb_uart_tx_ring_buffer_enqueue()'s critical section holds
- * interrupts disabled for the full memcpy() of whatever length is being
- * enqueued (see that function's comments) — the FIRST WriteString() call
- * in the original multi-call sequence starts the GPT timer, and every
- * call after it enqueues more data *while that timer is already running*.
- * On FPB-RA2E3's slower CPU (Cortex-M23 @ 48 MHz vs. FPB-RA4E2/FPB-RA6E2's
- * Cortex-M33 @ 100 MHz), a single memcpy() of a few dozen bytes can take
- * long enough in real time to be comparable to one bit period at 115200
- * baud (~8.68 us), delaying the GPT ISR enough to corrupt the bit(s) due
- * during that window. A single combined call still enqueues everything up
- * front (before the timer starts, when masking interrupts is harmless),
- * avoiding the pattern entirely. See PhasePlan.md and docs/README.md for
- * the full diagnosis.
+ * several separate back-to-back calls: the first WriteString() call in a
+ * multi-call sequence starts the GPT timer, so every call after it
+ * enqueues more data while that timer is already running, which is
+ * unnecessary risk for no benefit here. A single combined call enqueues
+ * everything up front, before the timer starts, when masking interrupts
+ * during the copy is harmless.
  *
  * @return None.
  */
@@ -152,7 +142,7 @@ static void demo_print_heartbeat(uint32_t count)
  * rs_bb_uart_tx_StatusGet() — printed every DEMO_STATUS_EVERY_N_HEARTBEATS
  * heartbeats instead of the plain "Heartbeat OK" line. Silently does
  * nothing if StatusGet() fails (defensive; cannot actually fail once the
- * PES is READY/TRANSMITTING, since @p state is always a valid caller-owned
+ * Bit-Banged UART is READY/TRANSMITTING, since @p state is always a valid caller-owned
  * pointer here).
  *
  * @param[in] count  Current heartbeat counter value, printed zero-padded to 6 digits.
@@ -196,7 +186,7 @@ static void demo_print_status(uint32_t count)
  * plain heartbeat line.
  *
  * If ConfigGen() or ConfigCheck() fails, halts in an infinite loop rather
- * than proceeding with an unconfigured/unopened PES — see the inline
+ * than proceeding with an unconfigured/unopened Bit-Banged UART — see the inline
  * comments at each call site for the most common failure causes.
  *
  * @return Never returns (infinite loop).
@@ -240,7 +230,7 @@ void rs_bb_uart_tx_demo_run(void)
         }
     }
 
-    /* --- PES is now READY. Single public call demonstrates the primary
+    /* --- Bit-Banged UART is now READY. Single public call demonstrates the primary
      *     use case: UART-style console output with no hardware SCI/UART
      *     channel required (Architecture & Design Section 1). --- */
     demo_print_banner();

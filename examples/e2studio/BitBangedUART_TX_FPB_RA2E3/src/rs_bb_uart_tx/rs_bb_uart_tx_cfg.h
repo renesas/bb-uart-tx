@@ -6,15 +6,15 @@
 
 /**
  * @file rs_bb_uart_tx_cfg.h
- * @brief Build-time configuration constants for the Bit-Banged UART TX PES.
+ * @brief Build-time configuration constants for the Bit-Banged UART TX.
  *
  * All constants use #ifndef guards so user project overrides take precedence.
  * Override any constant by defining it before including this header, or by
  * adding -D<CONSTANT>=<VALUE> to the compiler command line.
  *
  * Traceability: values below reflect the accepted MRD clarifications in
- * "PES Bit-Banged UART - Software driven TX Only UART Implementation
- * (Phase-1 Common AUC)" Section 6.2, and the Architecture & Design v0.3
+ * "Bit-Banged UART - Software driven TX Only UART Implementation
+ * (Phase-1 Common Bit-Banged UART)" Section 6.2, and the Architecture & Design v0.3
  * document Sections 5.3-5.11.
  */
 
@@ -64,8 +64,16 @@
 
 /**
  * Static TX ring buffer size in bytes. Supported reference sizes are 64, 128,
- * 256, 512, and 1024 (design doc Section 5.7); any positive value is
- * mechanically accepted, but only the listed sizes have been validated.
+ * 256, 512, and 1024 (design doc Section 5.7). Unlike earlier deliveries,
+ * this value MUST now be a power of two — enforced by a `_Static_assert` in
+ * rs_bb_uart_tx_ring_buffer.h — because the ring buffer's lock-free
+ * head/tail wraparound uses a bitmask (`& (SIZE - 1)`) rather than `%`. All
+ * five reference sizes already satisfy this.
+ *
+ * Note: usable capacity is (this value - 1) bytes, not the full value — one
+ * slot is reserved so head == tail remains an unambiguous "empty" signal
+ * now that there is no separate shared `count` field. See
+ * rs_bb_uart_tx_ring_buffer.h for the full rationale.
  *
  * Default is 512, not the design doc's nominal 256, because the demo
  * application's own startup banner (src/rs_bb_uart_tx_demo.c) is ~304
@@ -85,7 +93,7 @@
 
 /**
  * Phase 1 buffer-full policy is fixed to "return error" (RS_BB_UART_TX_STATUS_TX_BUFFER_FULL).
- * The PES shall not silently overwrite, silently drop, or block. Not overridable in Phase 1.
+ * The Bit-Banged UART shall not silently overwrite, silently drop, or block. Not overridable in Phase 1.
  */
 #define RS_BB_UART_TX_CFG_OVERFLOW_POLICY_RETURN_ERROR (1U)
 

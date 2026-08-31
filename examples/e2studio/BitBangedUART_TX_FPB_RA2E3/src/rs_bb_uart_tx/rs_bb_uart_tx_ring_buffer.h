@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx_ring_buffer.h
- * @brief Internal TX ring buffer manager for the Bit-Banged UART TX PES.
+ * @brief Internal TX ring buffer manager for the Bit-Banged UART TX.
  *
  * Internal header — not part of the public API. Not included by
  * rs_bb_uart_tx.h. Implements the "Ring Buffer Manager" module described in
@@ -18,10 +18,30 @@
  *     nothing is written and the caller gets a buffer-full status (Section 13.3).
  *   - Shared between bare-metal main-loop/task context (enqueue, via
  *     rs_bb_uart_tx_Write()/WriteString()) and GPT ISR context (dequeue, one
- *     byte at a time as the TX engine needs it). All head/tail/count updates
- *     that cross contexts are protected by a short critical section
- *     (Section 17.2) — see rs_bb_uart_tx_ring_buffer_enqueue() and
- *     rs_bb_uart_tx_ring_buffer_dequeue() implementations.
+ *     byte at a time as the TX engine needs it).
+ *
+ * SYNCHRONIZATION: this is a classic single-producer/single-consumer (SPSC)
+ * ring buffer — `head` is written ONLY by the producer (enqueue,
+ * main-loop/task context) and `tail` is written ONLY by the consumer
+ * (dequeue, GPT ISR context). That property means correctness does NOT
+ * require disabling interrupts at all: a naturally-aligned 32-bit store to
+ * `head` or `tail` is indivisible with respect to interrupts on this MCU
+ * family, so the other side can never observe a torn value, and each side
+ * only ever *reads* the index it does not own. Occupancy is derived on
+ * demand from `head - tail` rather than tracked in a separate shared
+ * `count` field, which removes any need for a critical section on either
+ * `enqueue()` or `dequeue()`.
+ *
+ * Because head==tail must remain an unambiguous "empty" signal with no
+ * separate `count` field, this design reserves one slot: the buffer can
+ * hold at most (RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES - 1) bytes, one fewer
+ * than the raw storage size. This is the standard, well-known trade-off
+ * for a head/tail-only circular buffer.
+ *
+ * `head`/`tail` wrap using a bitmask (`& (SIZE - 1)`), not `%`, which is
+ * why RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES must be a power of two — enforced
+ * by a `_Static_assert` below. Every currently-supported reference size
+ * (64/128/256/512/1024, see rs_bb_uart_tx_cfg.h) already satisfies this.
  */
 
 #ifndef RS_BB_UART_TX_RING_BUFFER_H
@@ -36,6 +56,19 @@ extern "C" {
 #endif
 
 /***********************************************************************************************************************
+ * Compile-time configuration checks
+ **********************************************************************************************************************/
+
+/** RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES must be a power of two — see the
+ *  file-level comment above for why (mask-based index wraparound). */
+_Static_assert(0U != (RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES),
+               "RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES must not be 0.");
+_Static_assert(0U == ((RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES) & ((RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES) - 1U)),
+               "RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES must be a power of two "
+               "(required for lock-free head/tail mask-based wraparound) - "
+               "use one of the documented reference sizes 64/128/256/512/1024.");
+
+/***********************************************************************************************************************
  * Types
  **********************************************************************************************************************/
 
@@ -45,17 +78,19 @@ extern "C" {
  * Embedded directly in rs_bb_uart_tx_ctrl_t — no dynamic allocation, no
  * pointer indirection to a separately-owned buffer.
  *
- * head/tail/count are volatile because they are written from both
- * main-loop/task context (head, via enqueue) and GPT ISR context (tail,
- * count, via dequeue); count is written from both sides under a critical
- * section.
+ * `head` is written ONLY by the producer (enqueue, main-loop/task context);
+ * `tail` is written ONLY by the consumer (dequeue, GPT ISR context). Both
+ * are `volatile` so each side always observes the other's latest published
+ * value rather than a compiler-cached stale one — this, not a critical
+ * section, is what makes the SPSC design in this file's header comment
+ * safe. Usable capacity is (RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES - 1) bytes;
+ * see the file-level comment for why one slot is reserved.
  */
 typedef struct st_rs_bb_uart_tx_ring_buffer
 {
     uint8_t           data[RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES]; ///< Byte storage
-    volatile uint32_t head;                                      ///< Next free write index
-    volatile uint32_t tail;                                      ///< Next byte to dequeue
-    volatile uint32_t count;                                     ///< Bytes currently queued
+    volatile uint32_t head;                                      ///< Next free write index (producer-owned)
+    volatile uint32_t tail;                                      ///< Next byte to dequeue (consumer-owned)
 } rs_bb_uart_tx_ring_buffer_t;
 
 /***********************************************************************************************************************
@@ -77,10 +112,10 @@ void rs_bb_uart_tx_ring_buffer_reset(rs_bb_uart_tx_ring_buffer_t * p_rb);
  *
  * Either all `length` bytes are copied into the buffer and the head index
  * advances, or (if insufficient free space exists) nothing is written and
- * `false` is returned. Uses a short critical section to update `count` and
- * `head` atomically with respect to the GPT ISR's dequeue path
- * (Section 13.3, Section 17.2).
- *
+ * `false` is returned. Lock-free (Section 13.3, Section 17.2) — the data
+ * copy touches only slots not yet visible to the consumer, and `head` is
+ * published with a single volatile store after a memory barrier; see the
+ * file-level comment for why this is safe without disabling interrupts.
  * @param[in,out] p_rb    Ring buffer.
  * @param[in]     p_data  Bytes to enqueue.
  * @param[in]     length  Number of bytes to enqueue.
@@ -100,8 +135,8 @@ bool rs_bb_uart_tx_ring_buffer_enqueue(rs_bb_uart_tx_ring_buffer_t * p_rb,
  *
  * Called exclusively from the GPT ISR (via the TX engine) when the next
  * byte is needed (TX_NEXT_BYTE -> TX_START_BIT transition, or the very
- * first byte out of TX_IDLE). Uses a short critical section to update
- * `count` and `tail` atomically with respect to the enqueue path.
+ * first byte out of TX_IDLE). Lock-free and O(1)/constant-time (no
+ * critical section, no division) — see the file-level comment.
  *
  * @param[in,out]  p_rb     Ring buffer.
  * @param[out]     p_byte   Populated with the dequeued byte on success.

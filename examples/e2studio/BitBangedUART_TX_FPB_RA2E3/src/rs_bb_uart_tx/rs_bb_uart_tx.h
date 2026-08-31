@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx.h
- * @brief Public interface for the Bit-Banged UART TX PES (rs_bb_uart_tx).
+ * @brief Public interface for the Bit-Banged UART TX (rs_bb_uart_tx).
  *
  * Software-driven, transmit-only UART implementation using a GPIO output
  * pin and GPT timer-based bit-period control. Enables UART-style console or
@@ -18,7 +18,7 @@
  * See PES_Bit-BangedUART_Acceptance_ArchDesign_v03 for the full
  * requirements and architecture.
  *
- * This PES is a **singleton**: one instance per application, corresponding
+ * This Bit-Banged UART is a **singleton**: one instance per application, corresponding
  * to one GPIO TX pin and one GPT timer channel. There is no caller-managed
  * control block — the module owns its own static instance internally (see
  * rs_bb_uart_tx_types.h for the rationale).
@@ -41,7 +41,7 @@
  * @endcode
  *
  * @note rs_bb_uart_tx_ConfigCheck() performs double duty by design
- * (Engineering Guidelines Section 7, "Single-call/simple-use PES" pattern
+ * (Engineering Guidelines Section 7, "Single-call/simple-use Bit-Banged UART" pattern
  * and Section 6.2, "initialization... may be hidden inside a higher-level
  * public function"): on success it also performs the internal
  * Open()-equivalent step (binds the configuration, opens the GPT and GPIO
@@ -133,10 +133,10 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGen(rs_bb_uart_tx_cfg_t     * p_cfg,
  *                    of the application — the singleton retains a pointer
  *                    to it, it is not copied.
  *
- * @retval RS_BB_UART_TX_STATUS_SUCCESS                 Configuration valid; PES is now READY.
+ * @retval RS_BB_UART_TX_STATUS_SUCCESS                 Configuration valid; Bit-Banged UART is now READY.
  * @retval RS_BB_UART_TX_STATUS_INVALID_POINTER          p_cfg or p_cfg->p_gpt_instance is NULL.
  * @retval RS_BB_UART_TX_STATUS_UNSUPPORTED_BAUD_RATE    baud_rate outside the supported range.
- * @retval RS_BB_UART_TX_STATUS_INVALID_STATE            PES is already READY/TRANSMITTING
+ * @retval RS_BB_UART_TX_STATUS_INVALID_STATE            Bit-Banged UART is already READY/TRANSMITTING
  *                                                        (call is not idempotent; Phase 1 does
  *                                                        not support runtime reconfiguration).
  * @retval RS_BB_UART_TX_STATUS_TIMER_ERROR              GPT HAL open/period-set failed.
@@ -151,7 +151,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigCheck(rs_bb_uart_tx_cfg_t const * p_c
  *
  * Useful for confirming control-block sizing (e.g. against
  * RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_BYTES) without requiring
- * rs_bb_uart_tx_ConfigCheck() to have been called first. Since this PES is a
+ * rs_bb_uart_tx_ConfigCheck() to have been called first. Since this Bit-Banged UART is a
  * singleton, no control-block pointer argument is needed — unlike a
  * multi-instance component, there is only ever one instance to size.
  *
@@ -183,8 +183,8 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGetSize(size_t * p_size);
  *
  * @retval RS_BB_UART_TX_STATUS_SUCCESS          All bytes accepted into the queue.
  * @retval RS_BB_UART_TX_STATUS_INVALID_POINTER  p_data is NULL (and length > 0).
- * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    PES is not READY/TRANSMITTING
- *                                               (ConfigCheck() has not succeeded yet, or PES is in ERROR).
+ * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    Bit-Banged UART is not READY/TRANSMITTING
+ *                                               (ConfigCheck() has not succeeded yet, or Bit-Banged UART is in ERROR).
  * @retval RS_BB_UART_TX_STATUS_TX_BUFFER_FULL   Insufficient free space for the whole request.
  *
  * @note Valid from startup context (after ConfigCheck() succeeds) and
@@ -205,7 +205,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_Write(uint8_t const * p_data, uint32_t leng
  *
  * @retval RS_BB_UART_TX_STATUS_SUCCESS          All characters accepted into the queue.
  * @retval RS_BB_UART_TX_STATUS_INVALID_POINTER  p_str is NULL.
- * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    PES is not READY/TRANSMITTING.
+ * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    Bit-Banged UART is not READY/TRANSMITTING.
  * @retval RS_BB_UART_TX_STATUS_TX_BUFFER_FULL   Insufficient free space for the whole string.
  *
  * @note Same calling-context restriction as rs_bb_uart_tx_Write().

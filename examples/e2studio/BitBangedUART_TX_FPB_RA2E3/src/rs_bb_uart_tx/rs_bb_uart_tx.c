@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx.c
- * @brief Core orchestration for the Bit-Banged UART TX PES: public function
+ * @brief Core orchestration for the Bit-Banged UART TX: public function
  *        implementations and the internal lifecycle state machine.
  *
  * See rs_bb_uart_tx.h for the public API contract and the singleton
@@ -31,7 +31,7 @@
 
 /***********************************************************************************************************************
  * The one and only Bit-Banged UART TX instance (see rs_bb_uart_tx.h / rs_bb_uart_tx_types.h
- * for why this PES is a singleton rather than a caller-allocated control block).
+ * for why this Bit-Banged UART is a singleton rather than a caller-allocated control block).
  **********************************************************************************************************************/
 
 rs_bb_uart_tx_ctrl_t g_bb_uart_tx_ctrl =
@@ -72,9 +72,9 @@ _Static_assert(sizeof(rs_bb_uart_tx_ctrl_t) <= RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_
  * @brief Start (or continue) asynchronous transmission.
  *
  * Called from rs_bb_uart_tx_Write()/WriteString() after a successful
- * enqueue. If the PES was READY (timer stopped, queue was empty before this
+ * enqueue. If the Bit-Banged UART was READY (timer stopped, queue was empty before this
  * enqueue), starts the GPT timer and transitions to TRANSMITTING. If the
- * PES was already TRANSMITTING, the timer is already running and this is a
+ * Bit-Banged UART was already TRANSMITTING, the timer is already running and this is a
  * no-op — the GPT ISR will naturally pick up the newly-queued bytes.
  *
  * @param[in,out] p_ctrl  Bit-Banged UART TX control block. Must be in the
@@ -181,7 +181,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_open_internal(rs_bb_uart_tx_cfg_t const * p
  * Full contract documented in rs_bb_uart_tx.h. Useful for confirming
  * control-block sizing (e.g. against RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_BYTES)
  * without requiring rs_bb_uart_tx_ConfigCheck() to have been called first.
- * Since this PES is a singleton, no control-block pointer argument is
+ * Since this Bit-Banged UART is a singleton, no control-block pointer argument is
  * needed.
  *
  * @param[out] p_size  Populated with the internal control block size in bytes.
@@ -203,7 +203,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGetSize(size_t * p_size)
  * Full contract documented in rs_bb_uart_tx.h. Non-blocking: copies bytes
  * into the TX ring buffer using an all-or-nothing policy (Architecture &
  * Design Section 13.3), then starts asynchronous transmission via
- * rs_bb_uart_tx_start_internal() if the PES was idle.
+ * rs_bb_uart_tx_start_internal() if the Bit-Banged UART was idle.
  *
  * @param[in] p_data  Bytes to enqueue. Ignored (may be NULL) when @p length is 0.
  * @param[in] length  Number of bytes to enqueue. 0 is a no-op success.
@@ -211,7 +211,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGetSize(size_t * p_size)
  * @retval RS_BB_UART_TX_STATUS_SUCCESS          All bytes accepted into the queue
  *                                               (or @p length was 0).
  * @retval RS_BB_UART_TX_STATUS_INVALID_POINTER  p_data is NULL and length > 0.
- * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    PES is not READY/TRANSMITTING.
+ * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    Bit-Banged UART is not READY/TRANSMITTING.
  * @retval RS_BB_UART_TX_STATUS_TX_BUFFER_FULL   Insufficient free space for
  *                                               the whole request.
  * @retval RS_BB_UART_TX_STATUS_TIMER_ERROR      Propagated from
@@ -265,7 +265,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_Write(uint8_t const * p_data, uint32_t leng
  *
  * @retval RS_BB_UART_TX_STATUS_SUCCESS          All characters accepted into the queue.
  * @retval RS_BB_UART_TX_STATUS_INVALID_POINTER  p_str is NULL.
- * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    PES is not READY/TRANSMITTING
+ * @retval RS_BB_UART_TX_STATUS_INVALID_STATE    Bit-Banged UART is not READY/TRANSMITTING
  *                                               (propagated from rs_bb_uart_tx_Write()).
  * @retval RS_BB_UART_TX_STATUS_TX_BUFFER_FULL   Insufficient free space for
  *                                               the whole string (propagated
