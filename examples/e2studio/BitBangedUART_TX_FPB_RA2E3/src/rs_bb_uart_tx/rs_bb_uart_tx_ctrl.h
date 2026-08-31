@@ -6,11 +6,11 @@
 
 /**
  * @file rs_bb_uart_tx_ctrl.h
- * @brief Internal control-block definition for the Bit-Banged UART TX PES.
+ * @brief Internal control-block definition for the Bit-Banged UART TX.
  *
  * Internal header — NOT included by the public rs_bb_uart_tx.h and not
  * visible to application code. See rs_bb_uart_tx_types.h for the rationale
- * (this PES is a singleton: one GPIO pin, one GPT channel, one instance).
+ * (this Bit-Banged UART is a singleton: one GPIO pin, one GPT channel, one instance).
  *
  * Included by rs_bb_uart_tx.c (which owns the single static instance) and
  * rs_bb_uart_tx_hal.h/.c (which operate on a pointer to it from ISR and

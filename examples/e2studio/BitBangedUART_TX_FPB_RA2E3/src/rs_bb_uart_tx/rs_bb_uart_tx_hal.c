@@ -174,7 +174,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_hal_gpt_stop(rs_bb_uart_tx_ctrl_t * p_ctrl)
 /**
  * @brief Close the GPT timer and release the HAL driver instance.
  *
- * Not currently called by any Phase 1 code path (this PES does not expose
+ * Not currently called by any Phase 1 code path (this Bit-Banged UART does not expose
  * a public Close()-equivalent — see Architecture & Design Section 26 Open
  * Items). Provided for completeness / for a future runtime-reconfiguration
  * feature to use.
@@ -276,7 +276,7 @@ void rs_bb_uart_tx_hal_gpio_write(rs_bb_uart_tx_ctrl_t * p_ctrl, bool level_high
  * Best-effort: leaves the pin idling high (safe/known state) rather than
  * reverting pin muxing, so a partially-transmitted line never gets left
  * low. Does not release/reconfigure the pin to its reset function — that
- * is an application-level decision outside this PES's scope. Not
+ * is an application-level decision outside this Bit-Banged UART's scope. Not
  * currently called by any Phase 1 code path (paired with
  * rs_bb_uart_tx_hal_gpt_close(), provided for completeness).
  *
@@ -291,7 +291,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_hal_gpio_close(rs_bb_uart_tx_ctrl_t * p_ctr
     /* Best-effort: leave the pin idling high (safe/known state) rather than
      * reverting pin muxing, so a partially-transmitted line never gets left
      * low. Does not release/reconfigure the pin to its reset function —
-     * that is an application-level decision outside this PES's scope.
+     * that is an application-level decision outside this Bit-Banged UART's scope.
      * See rs_bb_uart_tx_hal_gpio_write() for why the Enable/Disable pair
      * is required around every R_BSP_PinWrite() call on this MCU. */
     R_BSP_PinAccessEnable();
@@ -315,13 +315,17 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_hal_gpio_close(rs_bb_uart_tx_ctrl_t * p_ctr
  * Per Architecture & Design Section 12.3, this function:
  *   - Clears the timer interrupt condition (handled by the FSP GPT driver
  *     itself before invoking the callback).
- *   - Advances the TX state machine by one bit period
- *     (rs_bb_uart_tx_engine_tick()).
- *   - Drives the GPIO TX pin to the required level.
- *   - Dequeues the next byte from the ring buffer when required (inside
- *     rs_bb_uart_tx_engine_tick()).
+ *   - Reads the pin level already decided for this tick by the *previous*
+ *     tick's rs_bb_uart_tx_engine_advance() call
+ *     (rs_bb_uart_tx_engine_output_get() — O(1), no ring-buffer access) and
+ *     writes it to the GPIO pin immediately.
+ *   - Only then prepares the *next* tick's output and advances the TX state
+ *     machine (rs_bb_uart_tx_engine_advance()), dequeuing the next byte
+ *     from the ring buffer when required — this happens strictly after the
+ *     GPIO write above, so no tick's pin write ever waits on a ring-buffer
+ *     access.
  *   - Stops the GPT timer and transitions the lifecycle state back to READY
- *     when the ring buffer has emptied.
+ *     when the ring buffer has been freshly confirmed empty.
  *   - Returns quickly: no allocation, no blocking, no application callback.
  *
  * @param[in] p_args  GPT callback arguments (FSP `timer_callback_args_t`);
@@ -339,7 +343,8 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_hal_gpio_close(rs_bb_uart_tx_ctrl_t * p_ctr
 void rs_bb_uart_tx_hal_gpt_callback(timer_callback_args_t * p_args)
 {
     rs_bb_uart_tx_ctrl_t * p_ctrl = (rs_bb_uart_tx_ctrl_t *) p_args->p_context;
-    rs_bb_uart_tx_engine_tick_result_t tick;
+    rs_bb_uart_tx_engine_output_t         out;
+    rs_bb_uart_tx_engine_advance_result_t adv;
 
     if (RS_BB_UART_TX_LIFECYCLE_TRANSMITTING != p_ctrl->state)
     {
@@ -349,16 +354,24 @@ void rs_bb_uart_tx_hal_gpt_callback(timer_callback_args_t * p_args)
         return;
     }
 
-    tick = rs_bb_uart_tx_engine_tick(&p_ctrl->engine, &p_ctrl->ring_buffer);
+    /* O(1), no ring-buffer access on ANY tick — this is the fix. Write the
+     * pin first, using the level already decided by the previous tick's
+     * advance() call, before doing anything else. */
+    out = rs_bb_uart_tx_engine_output_get(&p_ctrl->engine);
+    rs_bb_uart_tx_hal_gpio_write(p_ctrl, out.drive_pin_high);
 
-    rs_bb_uart_tx_hal_gpio_write(p_ctrl, tick.drive_pin_high);
+    /* Back half: prepare the *next* tick's output (and do any ring-buffer
+     * access that requires — see rs_bb_uart_tx_engine.h for why this is
+     * safe here). This has a full bit period of slack before it must
+     * complete, not the write above's sub-microsecond budget. */
+    adv = rs_bb_uart_tx_engine_advance(&p_ctrl->engine, &p_ctrl->ring_buffer);
 
-    if (tick.byte_transmitted)
+    if (adv.byte_transmitted)
     {
         p_ctrl->total_bytes_transmitted++;
     }
 
-    if (tick.queue_now_empty)
+    if (adv.queue_now_empty)
     {
         /* No more work: stop the timer (Architecture & Design Section 10:
          * TRANSMITTING -> READY when the ring buffer empties) rather than

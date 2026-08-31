@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  *
  * @file rs_bb_uart_tx_data_fpb_ra2e3.c
- * @brief Pre-set HAL instance definitions for the Bit-Banged UART TX PES — FPB-RA2E3.
+ * @brief Pre-set HAL instance definitions for the Bit-Banged UART TX — FPB-RA2E3.
  *
  * See rs_bb_uart_tx_data_fpb_ra2e3.h for the hardware mapping, the GPT
  * driver source dependency note, and usage.
@@ -29,7 +29,7 @@
  * gtioca/gtiocb_polarity) is present below, not hand-guessed.
  *
  * Interrupt-only periodic timer: both GTIOC pins left unused/not output
- * (this PES drives the TX line via direct GPIO control, not GPT's own pin
+ * (this Bit-Banged UART drives the TX line via direct GPIO control, not GPT's own pin
  * hardware). period_counts here is a placeholder — rs_bb_uart_tx_hal_gpt_open()
  * overwrites it at runtime via R_GPT_PeriodSet() based on the configured
  * baud rate (Architecture & Design Section 14.2).
@@ -188,7 +188,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGen(rs_bb_uart_tx_cfg_t     * p_cfg,
     p_cfg->baud_rate    = RS_BB_UART_TX_CFG_DEFAULT_BAUD_RATE;
     p_cfg->buffer_size  = RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES;
     p_cfg->data_bits    = RS_BB_UART_TX_DATA_BITS;
-    p_cfg->parity       = 0U;                       /* None */
+    p_cfg->parity       = 0U;                       /* None — fixed in Phase 1. */
     p_cfg->stop_bits    = RS_BB_UART_TX_STOP_BITS;
     p_cfg->overflow_policy = RS_BB_UART_TX_CFG_OVERFLOW_POLICY_RETURN_ERROR;
     /* NOT RS_BB_UART_TX_CFG_GPT_IPL (6) — this is purely informational/status
@@ -202,7 +202,7 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGen(rs_bb_uart_tx_cfg_t     * p_cfg,
     p_cfg->irq_priority = (uint8_t) 1U;
 
     p_cfg->p_gpt_instance = p_gpt_instance;
-    p_cfg->p_gpio_instance = NULL; /* Reserved; direct pin control path needs no instance. */
+    p_cfg->p_gpio_instance = NULL; /* Reserved; direct pin control path (Phase 1) needs no instance. */
     p_cfg->tx_pin          = tx_pin;
 
     return RS_BB_UART_TX_STATUS_SUCCESS;
@@ -211,10 +211,10 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGen(rs_bb_uart_tx_cfg_t     * p_cfg,
 /*****************************************************************************************************************
  * @brief       Validate a Bit-Banged UART TX configuration, and on success commit/open it.
  * @param[in]   p_cfg  Configuration structure populated by rs_bb_uart_tx_ConfigGen().
- * @retval      RS_BB_UART_TX_STATUS_SUCCESS                Configuration valid; PES is now READY.
+ * @retval      RS_BB_UART_TX_STATUS_SUCCESS                Configuration valid; Bit-Banged UART is now READY.
  * @retval      RS_BB_UART_TX_STATUS_INVALID_POINTER        p_cfg or p_cfg->p_gpt_instance is NULL.
  * @retval      RS_BB_UART_TX_STATUS_UNSUPPORTED_BAUD_RATE  baud_rate outside the supported range.
- * @retval      RS_BB_UART_TX_STATUS_INVALID_STATE          PES is already READY/TRANSMITTING/ERROR.
+ * @retval      RS_BB_UART_TX_STATUS_INVALID_STATE          Bit-Banged UART is already READY/TRANSMITTING/ERROR.
  * @retval      RS_BB_UART_TX_STATUS_TIMER_ERROR            GPT HAL open/period-set failed.
  * @retval      RS_BB_UART_TX_STATUS_GPIO_ERROR              GPIO pin configuration failed.
  ****************************************************************************************************************/

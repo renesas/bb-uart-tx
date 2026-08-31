@@ -1,4 +1,4 @@
-# Bit-Banged UART TX — FPB-RA2E3 (e2 studio, FSP 6.5.0, LLVM)
+# Bit-Banged UART TX — (FSP 6.5.0, LLVM)
 
 Software-driven, transmit-only UART implemented with one GPIO output pin and
 GPT timer-based bit-period control. Enables UART-style console/diagnostic
@@ -17,9 +17,8 @@ Full requirements/architecture: see the accepted MRD/acceptance document and
 `PES_Bit-BangedUART_Acceptance_ArchDesign_v03` (Architecture & Design v0.3).
 This project is the Phase 3 "Develop & Test" deliverable for that design.
 
-This project was built by integrating the PES source into a real
-e2 studio-generated bare-metal + GPT project (FSP 6.5.0, LLVM Embedded
-Toolchain for Arm) for **R7FA2E3073CFL**. The GPT driver
+This project was built by integrating the PES source into a bare-metal + GPT project (FSP 6.5.0, LLVM Embedded
+Toolchain for Arm). The GPT driver
 (`ra/fsp/src/r_gpt/r_gpt.c`) is genuinely vendored — no additional Smart
 Configurator step is required to build.
 
@@ -266,9 +265,6 @@ Two configuration paths are available, selected by
 - **FSP Stack Configurator:** binds `ra_gen/hal_data.c`'s `g_timer0`
   instead — already fully configured and wired to the same callback in
   this project, so both paths work out of the box.
-
-## Troubleshooting
-
 
 ## Known Limitations (Phase 1, by design — see the accepted MRD)
 

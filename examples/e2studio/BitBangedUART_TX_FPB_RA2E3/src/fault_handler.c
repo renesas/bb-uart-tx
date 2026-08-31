@@ -10,9 +10,9 @@
  *
  * Overrides the weak Default_Handler alias declared in the FSP startup
  * code for the Cortex-M23 fault exception(s). Bare-metal — no RTOS
- * dependency. Not part of the Bit-Banged UART TX PES itself; this is
+ * dependency. Not part of the Bit-Banged UART TX itself; this is
  * general-purpose project debug infrastructure, provided so a fault during
- * PES bring-up (e.g. a misconfigured GPT/GPIO pointer) is easy to diagnose
+ * Bit-Banged UART bring-up (e.g. a misconfigured GPT/GPIO pointer) is easy to diagnose
  * rather than silently falling into the FSP's default infinite-loop
  * handler with no register context captured.
  *

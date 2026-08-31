@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  *
  * @file rs_bb_uart_tx_data_fpb_ra2e3.h
- * @brief Pre-set HAL instance declarations for the Bit-Banged UART TX PES — FPB-RA2E3.
+ * @brief Pre-set HAL instance declarations for the Bit-Banged UART TX — FPB-RA2E3.
  *
  * Hardware mapping (FPB-RA2E3, R7FA2E3073CFL, Architecture & Design v0.3
  * Section 15.1/7.2 — verified against a real e2 studio RASC-generated
@@ -18,7 +18,7 @@
  *            board assignment is SCI9 TXD9 (paired with P110 = SCI9
  *            RXD9, SCI9 mode "Simple I2C") — NOT SCI0 the way P411 was on
  *            FPB-RA4E2/FPB-RA6E2. Reassigned to plain GPIO output here
- *            for the same reason as the other boards: this PES bit-bangs
+ *            for the same reason as the other boards: this Bit-Banged UART bit-bangs
  *            the frame in software and does not use any hardware SCI
  *            channel.
  *   Timer  : GPT channel 0, periodic interrupt mode, **undivided PCLKD**
@@ -64,7 +64,7 @@
  * as-is.
  *
  * The gpt_extended_cfg_t fields below configure GPT for interrupt-only
- * periodic operation with both GTIOC pins left unused (this PES drives the
+ * periodic operation with both GTIOC pins left unused (this Bit-Banged UART drives the
  * TX pin as a plain GPIO output via rs_bb_uart_tx_hal_gpio_*(), not through
  * GPT's own PWM/compare-match pin hardware).
  *

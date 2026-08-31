@@ -12,7 +12,7 @@
  * hal_entry() directly, which never returns for this example. Kept
  * intentionally thin — all demo logic lives in rs_bb_uart_tx_demo.c
  * (Engineering Guidelines Section 5: demo/reference application code
- * should be clearly separated from the reusable PES core, and this file is
+ * should be clearly separated from the reusable Bit-Banged UART core, and this file is
  * simply the FSP-mandated entry point shim).
  */
 

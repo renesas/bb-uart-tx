@@ -6,7 +6,7 @@
 
 /**
  * @file rs_bb_uart_tx_hal.h
- * @brief HAL abstraction shim for the Bit-Banged UART TX PES.
+ * @brief HAL abstraction shim for the Bit-Banged UART TX.
  *
  * Internal header — not part of the public API. Declares the thin shim
  * functions that wrap FSP GPT (timer_instance_t) and direct GPIO pin
@@ -15,7 +15,7 @@
  * "target-specific implementation details should be isolated"; Architecture
  * & Design Section 8.1, "GPT Timer Adapter" / "GPIO Adapter" modules).
  *
- * This is the ONLY file in the PES that includes GPT-specific FSP headers
+ * This is the ONLY file in the Bit-Banged UART that includes GPT-specific FSP headers
  * and drives the TX pin via direct register/BSP pin control. If a future
  * board port needs a different timer peripheral (e.g. AGT instead of GPT),
  * this file (plus the board's config data file) is what changes — the core
@@ -153,13 +153,15 @@ rs_bb_uart_tx_status_t rs_bb_uart_tx_hal_gpio_close(rs_bb_uart_tx_ctrl_t * p_ctr
  * Per Architecture & Design Section 12.3, this function:
  *   - Clears the timer interrupt condition (handled by the FSP GPT driver
  *     itself before invoking the callback).
- *   - Advances the TX state machine by one bit period
- *     (rs_bb_uart_tx_engine_tick()).
- *   - Drives the GPIO TX pin to the required level.
- *   - Dequeues the next byte from the ring buffer when required (inside
- *     rs_bb_uart_tx_engine_tick()).
+ *   - Writes the GPIO pin immediately using the level already decided by
+ *     the previous tick (rs_bb_uart_tx_engine_output_get() — O(1), no
+ *     ring-buffer access), then prepares the *next* tick's output and
+ *     advances the TX state machine (rs_bb_uart_tx_engine_advance()),
+ *     dequeuing the next byte from the ring buffer when required — see
+ *     rs_bb_uart_tx_engine.h for why this ordering keeps every tick's pin
+ *     write off the ring buffer's access path.
  *   - Stops the GPT timer and transitions the lifecycle state back to READY
- *     when the ring buffer has emptied.
+ *     when the ring buffer has been freshly confirmed empty.
  *   - Returns quickly: no allocation, no blocking, no application callback.
  *
  * @param[in] p_args  GPT callback arguments (FSP timer_callback_args_t).
