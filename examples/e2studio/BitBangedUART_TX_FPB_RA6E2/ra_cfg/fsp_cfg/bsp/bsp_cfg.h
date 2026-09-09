@@ -1,0 +1,81 @@
+/* generated configuration header file - do not edit
+ *
+ * Structure verified against a real RASC-generated FPB-RA6E2 bare-metal
+ * project (e2 studio FPB-RA6E2 blinky+GPT reference (same structure confirmed in the RA6E2 upload itself); BSP_CFG_RTOS's
+ * RA_NOT_DEFINED comparison trick, kept as-is below, is RASC's genuine
+ * bare-metal template output and correctly evaluates to 0). Two values are
+ * intentionally changed from that reference's blinky-demo defaults for this
+ * PES's example project:
+ *   - BSP_CFG_STACK_MAIN_BYTES: 0x400 -> 0x800 — more headroom for
+ *     snprintf()-based status formatting in rs_bb_uart_tx_demo.c and the
+ *     PES's own call depth (Write -> ring buffer -> engine).
+ *   - BSP_CFG_HEAP_BYTES: 0 -> 0x400 — small heap margin in case the
+ *     toolchain's snprintf() implementation expects a minimally-functional
+ *     heap; the PES itself performs no dynamic allocation (Engineering
+ *     Guidelines Software Development Rule 5).
+ *   - BSP_CFG_PARAM_CHECKING_ENABLE: 0 -> 1 — enabled for this example
+ *     project so RS_BB_UART_TX_CFG_PARAM_CHECKING_ENABLE (which follows
+ *     this flag by default — see rs_bb_uart_tx_cfg.h) defaults on too.
+ */
+#ifndef BSP_CFG_H_
+#define BSP_CFG_H_
+#ifdef __cplusplus
+            extern "C" {
+            #endif
+
+            #include "bsp_clock_cfg.h"
+            #include "bsp_mcu_family_cfg.h"
+            #include "bsp_mcu_ofs_cfg.h"
+            #include "board_cfg.h"
+            #include "vector_data.h"
+            #define RA_NOT_DEFINED 0
+            #ifndef BSP_CFG_RTOS
+             #if (RA_NOT_DEFINED) != (RA_NOT_DEFINED)
+              #define BSP_CFG_RTOS (2)
+             #elif (RA_NOT_DEFINED) != (RA_NOT_DEFINED)
+              #define BSP_CFG_RTOS (1)
+             #else
+              #define BSP_CFG_RTOS (0)
+             #endif
+            #endif
+            #ifndef BSP_CFG_RTC_USED
+             #define BSP_CFG_RTC_USED (RA_NOT_DEFINED)
+            #endif
+            #undef RA_NOT_DEFINED
+            #if defined(_RA_BOOT_IMAGE)
+             #define BSP_CFG_BOOT_IMAGE (1)
+            #endif
+            #define BSP_CFG_MCU_VCC_MV (3300)
+            #define BSP_CFG_STACK_MAIN_BYTES (0x800)
+            #define BSP_CFG_HEAP_BYTES (0x400)
+            #define BSP_CFG_PARAM_CHECKING_ENABLE (1)
+            #define BSP_CFG_ASSERT (0)
+
+            #define BSP_CFG_PFS_PROTECT ((1))
+
+            #define BSP_CFG_C_RUNTIME_INIT ((1))
+            #define BSP_CFG_EARLY_INIT     ((0))
+
+            #define BSP_CFG_STARTUP_CLOCK_REG_NOT_RESET ((0))
+
+            #ifndef BSP_CLOCK_CFG_MAIN_OSC_POPULATED
+            #define BSP_CLOCK_CFG_MAIN_OSC_POPULATED (0)
+            #endif
+
+            #ifndef BSP_CLOCK_CFG_MAIN_OSC_CLOCK_SOURCE
+            #define BSP_CLOCK_CFG_MAIN_OSC_CLOCK_SOURCE (0)
+            #endif
+            #ifndef BSP_CLOCK_CFG_SUBCLOCK_DRIVE
+            #define BSP_CLOCK_CFG_SUBCLOCK_DRIVE (0)
+            #endif
+            #ifndef BSP_CLOCK_CFG_SUBCLOCK_POPULATED
+            #define BSP_CLOCK_CFG_SUBCLOCK_POPULATED (1)
+            #endif
+            #ifndef BSP_CLOCK_CFG_SUBCLOCK_STABILIZATION_MS
+            #define BSP_CLOCK_CFG_SUBCLOCK_STABILIZATION_MS 1000
+            #endif
+
+            #ifdef __cplusplus
+            }
+            #endif
+#endif /* BSP_CFG_H_ */
