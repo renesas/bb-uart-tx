@@ -19,6 +19,7 @@
             <slot name="P104.CM23" secure="false"/>
             <slot name="P108.CM23" secure="false"/>
             <slot name="P109.CM23" secure="false"/>
+            <slot name="P110.CM23" secure="false"/>
             <slot name="P111.CM23" secure="false"/>
             <slot name="P112.CM23" secure="false"/>
         </peripheral>
@@ -50,8 +51,5 @@
             <slot name="P915.CM23" secure="false"/>
         </peripheral>
         <peripheral name="GPT0.CM23" group="GPT" security=""/>
-        <peripheral name="ICU.CM23">
-            <slot name="IRQ0.CM23" secure="false"/>
-        </peripheral>
     </partition>
 </azone>

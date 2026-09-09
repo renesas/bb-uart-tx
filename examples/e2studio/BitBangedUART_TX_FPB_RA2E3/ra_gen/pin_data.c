@@ -38,8 +38,17 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] =
   { .pin = BSP_IO_PORT_01_PIN_08, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_HIGH | (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
           | (uint32_t) IOPORT_PERIPHERAL_DEBUG) },
 
-  { .pin = BSP_IO_PORT_01_PIN_09, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_HIGH
-          | (uint32_t) IOPORT_CFG_PORT_DIRECTION_OUTPUT | (uint32_t) IOPORT_CFG_PORT_OUTPUT_HIGH) },
+  /* P109 -- Bit-Banged UART TX TX pin (board VCOM TXD path).
+   * Reassigned from the board default (SCI9 TXD9 peripheral function)
+   * to a plain GPIO output, idling high, since this PES bit-bangs the
+   * UART frame in software and does not use the SCI9 hardware channel. */
+  { .pin = BSP_IO_PORT_01_PIN_09, .pin_cfg = ((uint32_t) IOPORT_CFG_PORT_DIRECTION_OUTPUT | (uint32_t) IOPORT_CFG_PORT_OUTPUT_HIGH) },
+
+  /* P110 -- was SCI9 RXD9; no longer peripheral-assigned since SCI9's
+   * Operation Mode was disabled to resolve a pin conflict with P109's
+   * GPIO-output reassignment (see README.md "GPT Interrupt Setup" /
+   * docs/README.md). Reverts to the board default: unconfigured input. */
+  { .pin = BSP_IO_PORT_01_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_PORT_DIRECTION_INPUT) },
 
   { .pin = BSP_IO_PORT_01_PIN_11, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_HIGH
           | (uint32_t) IOPORT_CFG_PORT_DIRECTION_OUTPUT | (uint32_t) IOPORT_CFG_PORT_OUTPUT_LOW) },
