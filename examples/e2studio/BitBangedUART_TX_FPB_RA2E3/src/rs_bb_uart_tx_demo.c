@@ -103,7 +103,7 @@ static void demo_print_banner(void)
                      "Renesas Bit-Banged UART Demo\r\n"
                      "================================\r\n\r\n"
                      "Board        : FPB-RA2E3\r\n"
-                     "Project      : e2 studio bare-metal example\r\n"
+                     "Project      : bare-metal example\r\n"
                      "UART Mode    : Software TX only\r\n"
                      "Baud Rate    : %lu\r\n"
                      "Frame Format : 8N1\r\n"

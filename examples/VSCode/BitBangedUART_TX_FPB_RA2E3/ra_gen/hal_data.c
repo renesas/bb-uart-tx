@@ -26,63 +26,65 @@ const gpt_extended_pwm_cfg_t g_timer0_pwm_extend =
 };
 #endif
 const gpt_extended_cfg_t g_timer0_extend =
-        { .gtioca =
-        { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
-          .gtiocb =
-          { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
-          .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
-                  (gpt_source_t) (GPT_SOURCE_NONE),
-          .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
-                  (gpt_source_t) (GPT_SOURCE_NONE),
-          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
-                  (BSP_IRQ_DISABLED),
-          .compare_match_c_ipl = (BSP_IRQ_DISABLED), .compare_match_d_ipl = (BSP_IRQ_DISABLED), .compare_match_e_ipl =
-                  (BSP_IRQ_DISABLED),
-          .compare_match_f_ipl = (BSP_IRQ_DISABLED),
+		{
+				.gtioca = { .output_enabled = false, .stop_level =
+						GPT_PIN_LEVEL_LOW }, .gtiocb =
+						{ .output_enabled = false, .stop_level =
+								GPT_PIN_LEVEL_LOW }, .start_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .stop_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .clear_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .count_up_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .count_down_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .capture_a_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .capture_b_source =
+						(gpt_source_t)(GPT_SOURCE_NONE), .capture_a_ipl =
+						(BSP_IRQ_DISABLED), .capture_b_ipl = (BSP_IRQ_DISABLED),
+				.compare_match_c_ipl = (BSP_IRQ_DISABLED),
+				.compare_match_d_ipl = (BSP_IRQ_DISABLED),
+				.compare_match_e_ipl = (BSP_IRQ_DISABLED),
+				.compare_match_f_ipl = (BSP_IRQ_DISABLED),
 #if defined(VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_A)
     .capture_a_irq         = VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_A,
 #else
-          .capture_a_irq = FSP_INVALID_VECTOR,
+				.capture_a_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_B)
     .capture_b_irq         = VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_B,
 #else
-          .capture_b_irq = FSP_INVALID_VECTOR,
+				.capture_b_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT0_COMPARE_C)
     .compare_match_c_irq   = VECTOR_NUMBER_GPT0_COMPARE_C,
 #else
-          .compare_match_c_irq = FSP_INVALID_VECTOR,
+				.compare_match_c_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT0_COMPARE_D)
     .compare_match_d_irq   = VECTOR_NUMBER_GPT0_COMPARE_D,
 #else
-          .compare_match_d_irq = FSP_INVALID_VECTOR,
+				.compare_match_d_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT0_COMPARE_E)
     .compare_match_e_irq   = VECTOR_NUMBER_GPT0_COMPARE_E,
 #else
-          .compare_match_e_irq = FSP_INVALID_VECTOR,
+				.compare_match_e_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT0_COMPARE_F)
     .compare_match_f_irq   = VECTOR_NUMBER_GPT0_COMPARE_F,
 #else
-          .compare_match_f_irq = FSP_INVALID_VECTOR,
+				.compare_match_f_irq = FSP_INVALID_VECTOR,
 #endif
-          .compare_match_value =
-          { (uint32_t) 0x0, /* CMP_A */
-            (uint32_t) 0x0, /* CMP_B */
-            (uint32_t) 0x0, /* CMP_C */
-            (uint32_t) 0x0, /* CMP_D */
-            (uint32_t) 0x0, /* CMP_E */
-            (uint32_t) 0x0, /* CMP_F */},
-          .compare_match_status = ((0U << 5U) | (0U << 4U) | (0U << 3U) | (0U << 2U) | (0U << 1U) | 0U), .capture_filter_gtioca =
-                  GPT_CAPTURE_FILTER_NONE,
-          .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
+				.compare_match_value = { (uint32_t) 0x0, /* CMP_A */
+						(uint32_t) 0x0, /* CMP_B */(uint32_t) 0x0, /* CMP_C */
+						(uint32_t) 0x0, /* CMP_D */(uint32_t) 0x0, /* CMP_E */
+						(uint32_t) 0x0, /* CMP_F */}, .compare_match_status =
+						((0U << 5U) | (0U << 4U) | (0U << 3U) | (0U << 2U)
+								| (0U << 1U) | 0U), .capture_filter_gtioca =
+						GPT_CAPTURE_FILTER_NONE, .capture_filter_gtiocb =
+						GPT_CAPTURE_FILTER_NONE,
 #if 0
     .p_pwm_cfg             = &g_timer0_pwm_extend,
 #else
-          .p_pwm_cfg = NULL,
+				.p_pwm_cfg = NULL,
 #endif
 #if 0
     .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
@@ -100,35 +102,34 @@ const gpt_extended_cfg_t g_timer0_extend =
     .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
     .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
 #else
-          .gtior_setting.gtior = 0U,
+				.gtior_setting.gtior = 0U,
 #endif
 
-          .gtioca_polarity = GPT_GTIOC_POLARITY_NORMAL,
-          .gtiocb_polarity = GPT_GTIOC_POLARITY_NORMAL, };
+				.gtioca_polarity = GPT_GTIOC_POLARITY_NORMAL, .gtiocb_polarity =
+						GPT_GTIOC_POLARITY_NORMAL, };
 
 const timer_cfg_t g_timer0_cfg =
-{ .mode = TIMER_MODE_PERIODIC,
-/* Actual period: 0.0013653333333333334 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x10000,
-  .duty_cycle_counts = 0x8000, .source_div = (timer_source_div_t) 0, .channel = 0, .p_callback =
-          rs_bb_uart_tx_hal_gpt_callback,
-  /** If NULL then do not add & */
+		{ .mode = TIMER_MODE_PERIODIC,
+				/* Actual period: 0.0013653333333333334 seconds. Actual duty: 50%. */.period_counts =
+						(uint32_t) 0x10000, .duty_cycle_counts = 0x8000,
+				.source_div = (timer_source_div_t) 0, .channel = 0,
+				.p_callback = rs_bb_uart_tx_hal_gpt_callback,
+				/** If NULL then do not add & */
 #if defined(NULL)
     .p_context           = NULL,
 #else
-  .p_context = (void*) &NULL,
+				.p_context = (void*) &NULL,
 #endif
-  .p_extend = &g_timer0_extend,
-  .cycle_end_ipl = (1),
+				.p_extend = &g_timer0_extend, .cycle_end_ipl = (1),
 #if defined(VECTOR_NUMBER_GPT0_COUNTER_OVERFLOW)
     .cycle_end_irq       = VECTOR_NUMBER_GPT0_COUNTER_OVERFLOW,
 #else
-  .cycle_end_irq = FSP_INVALID_VECTOR,
+				.cycle_end_irq = FSP_INVALID_VECTOR,
 #endif
-        };
+		};
 /* Instance structure to use this module. */
-const timer_instance_t g_timer0 =
-{ .p_ctrl = &g_timer0_ctrl, .p_cfg = &g_timer0_cfg, .p_api = &g_timer_on_gpt };
-void g_hal_init(void)
-{
-    g_common_init ();
+const timer_instance_t g_timer0 = { .p_ctrl = &g_timer0_ctrl, .p_cfg =
+		&g_timer0_cfg, .p_api = &g_timer_on_gpt };
+void g_hal_init(void) {
+	g_common_init();
 }
