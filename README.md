@@ -6,8 +6,7 @@ output when a hardware SCI/UART channel is unavailable or reserved for
 another function.
 
 Module short name: `bb_uart_tx` — component ID `RS_BB_UART_TX` — see
-`src/rs_bb_uart_tx/` for the reusable core, `src/rs_bb_uart_tx_demo.c` +
-`src/hal_entry.c` for the reference application.
+`src/rs_bb_uart_tx/` for the reusable core.
 
 Phase 1 scope: TX-only, 8N1, LSB-first, 1200-115200 baud (configurable),
 non-blocking. No receive, no interactive CLI input. Default demo path uses
