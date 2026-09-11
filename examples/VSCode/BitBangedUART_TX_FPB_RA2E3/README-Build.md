@@ -19,6 +19,6 @@ Build: ```cmake --build build/Debug```
 Example:
 
 ```set ARM_LLVM_TOOLCHAIN_PATH=C:/LLVMEmbeddedToolchainForArm-17.0.1-Windows-x86_64/bin```
-```cd "C:/Users/a5134013/e2_studio/workspace_r365/BitBangedUART_FPB_RA6E2" && code .```
+```cd "C:/Users/<user>/e2_studio/workspace_r365/BitBangedUART_FPB_RA2E3" && code .```
 
 - Click build in VS Code status bar

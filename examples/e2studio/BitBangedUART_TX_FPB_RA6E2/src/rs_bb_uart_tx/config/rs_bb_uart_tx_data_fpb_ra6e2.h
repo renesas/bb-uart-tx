@@ -61,11 +61,8 @@
  * write-protected PmnPFS register R_BSP_PinCfg() uses, not a separate
  * always-writable output-data register). This is handled generically in
  * rs_bb_uart_tx_hal.c (board-agnostic, unchanged from FPB-RA4E2) — see
- * that file's comments for the full explanation. Confirmed via hands-on
- * bring-up on FPB-RA4E2; not yet independently re-confirmed on physical
- * FPB-RA6E2 hardware, but the mechanism (`bsp_io.h`, `PWPR`/write-protect)
- * is BSP-family-level, not board-specific, so it is expected to apply
- * identically here.
+ * that file's comments for the full explanation. the mechanism (`bsp_io.h`, `PWPR`/write-protect)
+ * is BSP-family-level, so it applies identically here.
  *
  * Usage:
  *   #if RS_BB_UART_TX_CFG_PRESET_CONFIG_USE
