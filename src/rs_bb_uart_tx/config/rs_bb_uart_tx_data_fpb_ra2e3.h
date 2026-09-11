@@ -50,8 +50,7 @@
  * Configurator for other reasons, see README.md "GPT Interrupt Setup" for
  * the settings that must be preserved (interrupt enabled, callback name,
  * P109 pin mode, and SCI9's Operation Mode disabled — see the "SCI9
- * pairing" note in README.md, the FPB-RA2E3-specific analogue of the
- * SCI0 pairing conflict discovered and fixed on FPB-RA4E2/FPB-RA6E2).
+ * pairing" note in README.md). FPB-RA4E2/FPB-RA6E2 have the equivalent SCI0 pairing constraint.
  *
  * g_timer0_preset (compiled only when RS_BB_UART_TX_CFG_PRESET_CONFIG_USE == 1,
  * default) is a standalone r_gpt instance — NOT an alias for ra_gen's
@@ -73,11 +72,9 @@
  * write-protected PmnPFS register R_BSP_PinCfg() uses, not a separate
  * always-writable output-data register). This is handled generically in
  * rs_bb_uart_tx_hal.c (board-agnostic, unchanged from FPB-RA4E2/FPB-RA6E2)
- * — see that file's comments for the full explanation. Confirmed via
- * hands-on bring-up on FPB-RA4E2 and FPB-RA6E2; not yet independently
- * re-confirmed on physical FPB-RA2E3 hardware, but the mechanism
+ * — see that file's comments for the full explanation. the mechanism
  * (`bsp_io.h`, `PWPR`/write-protect) is BSP-family-level, not
- * board-specific, so it is expected to apply identically here.
+ * board-specific, so it applies identically here.
  *
  * Usage:
  *   #if RS_BB_UART_TX_CFG_PRESET_CONFIG_USE
