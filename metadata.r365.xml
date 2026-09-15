@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pesMetadata>
+  <releaseMetadata>  
+    <pesName>Bit-Banged UART TX</pesName> 
+    <version>0.1.0</version> 
+    <releaseDate>TBD</releaseDate>
+    <releaseType>Draft</releaseType>  
+    <metadataSchemaVersion>1.0</metadataSchemaVersion>
+  </releaseMetadata>
+  <discoveryMetadata>   
+    <targetProducts>     
+      <productFamily>RA</productFamily>    
+      <supportedDevices>  
+        <device>
+          <family>RA</family>
+          <series>RA2</series>
+          <group>RA2E3</group>
+        </device>   
+        <device>
+          <family>RA</family>
+          <series>RA4</series>
+          <group>RA4E2</group>
+        </device>    
+        <device>
+          <family>RA</family>
+          <series>RA6</series>
+          <group>RA6E2</group>
+        </device>   
+      </supportedDevices>
+    </targetProducts>
+    <targetMarkets>   
+      <market>Industrial Automation</market>   
+      <market>Industrial Sensors</market> 
+      <market>Factory Test and Diagnostics</market>  
+      <market>Embedded Development and Debug</market> 
+    </targetMarkets> 
+    <endApplications>
+      <application>Debug Console Output</application>     
+      <application>Diagnostic and Status Logging</application>   
+      <application>Factory Test Result Output</application>    
+      <application>Legacy Device Transmit Interface</application>    
+      <application>Low-Cost Sensor Node Serial Output</application> 
+    </endApplications> 
+    <functionalTags>
+      <tag>Bit-Banged UART</tag>
+      <tag>Software UART</tag>
+      <tag>UART TX</tag>  
+      <tag>Transmit Only</tag>
+      <tag>GPIO</tag>
+      <tag>GPT Timer</tag> 
+      <tag>8N1</tag>
+      <tag>Non-Blocking</tag>
+      <tag>Ring Buffer</tag>
+      <tag>J-Link VCOM</tag>
+      <tag>Bare-Metal</tag>
+      <tag>Console Output</tag> 
+    </functionalTags>   
+    <hardwareInterfaces>
+      <requiredPeripherals>
+        <peripheral>One GPIO output pin</peripheral>
+        <peripheral>One dedicated GPT timer channel</peripheral>
+        <peripheral>One GPT interrupt</peripheral>
+      </requiredPeripherals>
+      <outputSignals>
+        <signal>GPIO-level asynchronous UART TX, idle high, 8N1, LSB first</signal>
+      </outputSignals> 
+      <connectedDevices>
+        <device>On-board J-Link VCOM bridge for the default reference path</device>
+        <device>Optional external TTL USB-to-UART adapter for a non-VCOM GPIO path</device>
+      </connectedDevices>
+    </hardwareInterfaces>
+  </discoveryMetadata>
+  <descriptiveMetadata>   
+    <anatomicalMetadata>    
+      <identity>
+        <name>Bit-Banged UART TX</name>
+        <shortName>bb_uart_tx</shortName>
+        <category>Communication</category>
+        <pesType>Modifiable reference source code</pesType>
+        <componentId>RS_BB_UART_TX</componentId>
+      </identity>  
+      <description>
+        <summary>Software-driven, transmit-only UART reference implementation using a GPIO output and GPT timer-based bit-period control when a hardware SCI/UART channel is unavailable or reserved.</summary>
+      </description>  
+      <classification>
+        <domain>Embedded Communication</domain>
+        <technology>GPIO and timer-driven asynchronous serial transmission</technology>
+        <subCategory>Software UART TX</subCategory>
+      </classification>     
+      <supportedBoards>      
+        <board name="FPB-RA2E3" device="RA2E3" defaultVcomTxPin="P109" implementationStatus="repository example documented" validationStatus="do not infer full hardware validation from metadata"/> 
+        <board name="FPB-RA4E2" device="RA4E2" defaultVcomTxPin="P411" implementationStatus="design target" validationStatus="VCOM bridge behavior reported in repository documentation; full PES validation not claimed here"/>       
+        <board name="FPB-RA6E2" device="RA6E2" defaultVcomTxPin="P411" implementationStatus="design target" validationStatus="not claimed without board-specific evidence"/>
+      </supportedBoards>
+      <dependencies> 
+        <dependency>Renesas FSP 6.5.0 reference configuration</dependency>
+        <dependency>FSP GPT driver</dependency>
+        <dependency>FSP I/O Port support</dependency>
+        <dependency>Bare-metal runtime</dependency>
+        <dependency>LLVM Embedded Toolchain for Arm in the documented FPB-RA2E3 example</dependency>    
+      </dependencies>    
+      <hardwareRequirements>    
+        <requirement>GPIO output capable of idle-high UART signaling</requirement>
+        <requirement>GPT clock and prescaler capable of producing the selected bit period</requirement>
+        <requirement>Interrupt latency compatible with the selected baud rate</requirement>
+        <requirement>Voltage-compatible TTL-level observation path</requirement>    
+      </hardwareRequirements>
+      <artifacts>
+        <artifact>examples/VSCode/BitBangedUART_TX_FPB_RA2E3/configuration.xml</artifact>
+      </artifacts>    
+      <documentation>
+        <document>README.md</document>
+      </documentation>
+    </anatomicalMetadata>  
+    <behavioralMetadata>   
+      <capabilities> 
+        <capability>Generate UART-style transmit signaling on one GPIO output</capability>
+        <capability>Transmit bytes and null-terminated ASCII strings asynchronously</capability>
+        <capability>Use a GPT interrupt to advance one UART bit period at a time</capability>
+        <capability>Queue output in a statically allocated transmit ring buffer</capability>
+        <capability>Report deterministic status and buffer-full errors</capability>
+        <capability>Expose generated or preset configuration checks before operation</capability>
+      </capabilities>
+      <publicInterfaces>  
+        <interface name="rs_bb_uart_tx_ConfigGetSize" role="configuration" blocking="false" isrSafe="documented yes"/>
+        <interface name="rs_bb_uart_tx_ConfigGen" role="configuration" blocking="false" isrSafe="false"/>
+        <interface name="rs_bb_uart_tx_ConfigCheck" role="configuration and resource opening" blocking="false" isrSafe="false"/>
+        <interface name="rs_bb_uart_tx_Write" role="enqueue byte buffer" blocking="false" isrSafe="false"/>
+        <interface name="rs_bb_uart_tx_WriteString" role="enqueue null-terminated ASCII string" blocking="false" isrSafe="false"/>
+        <interface name="rs_bb_uart_tx_StatusGet" role="query state and counters" blocking="false" isrSafe="false"/>
+      </publicInterfaces>
+      <configuration>
+        <parameter name="txPin">GPIO TX pin; default reference mapping is board specific</parameter>
+        <parameter name="gptInstance">Dedicated GPT timer instance</parameter>
+        <parameter name="baudRate">One validated-list candidate from 1200 through 115200; actual support claims require evidence</parameter>
+        <parameter name="frameFormat">8 data bits, no parity, 1 stop bit</parameter>
+        <parameter name="bufferSize">Static compile-time or generated buffer size</parameter>
+        <parameter name="interruptPriority">Board-specific valid NVIC priority</parameter>
+        <parameter name="overflowPolicy">Return error; no silent overwrite and no blocking wait</parameter>
+        <parameter name="transportPath">On-board VCOM by default; optional external TTL adapter for non-VCOM GPIO</parameter>
+      </configuration>
+      <executionModel>
+        <initialization>Generate or select configuration, validate it, bind GPIO and GPT resources, and establish an idle-high TX output before writes are accepted.</initialization>
+        <runtimeBehavior>Application-context writes enqueue complete requests without blocking. The GPT ISR consumes queued bytes, outputs a low start bit, eight LSB-first data bits, and a high stop bit, then returns the pin to idle high when the queue empties.</runtimeBehavior>
+        <concurrency>Main-loop or task context produces ring-buffer data and the GPT ISR consumes it. Shared ring-buffer metadata requires a short deterministic critical section or validated atomic method.</concurrency>
+        <memoryModel>Static, generated, or application-provided storage only; no dynamic allocation.</memoryModel>
+      </executionModel>
+      <useCases>
+        <useCase>Startup banner and firmware information</useCase>
+        <useCase>Periodic heartbeat and status logging</useCase>
+        <useCase>Factory test and diagnostic result output</useCase>
+        <useCase>Transmit-only legacy serial signaling</useCase>
+      </useCases>
+      <limitations>
+        <limitation>Phase 1 is TX only; receive, full duplex, interactive CLI input, command parsing, flow control, DMA, and DTC are out of scope.</limitation>
+        <limitation>Write functions are not supported from ISR context.</limitation>
+        <limitation>GPIO, GPT, and baud rate are not dynamically remapped while transmission is active.</limitation>
+        <limitation>The GPIO signal is TTL logic-level UART and must not be connected directly to a true RS-232 interface.</limitation>
+        <limitation>A hardware SCI/UART function must not drive the same VCOM TX pin concurrently.</limitation>
+      </limitations>
+    </behavioralMetadata>
+    <performanceMetadata>
+      <performanceCharacteristics>
+        <operatingRange>Supported baud rates: 1200, 2400, 4800, 9600, 19200, 38400, 57600, and 115200 baud. Default demo rate: 115200 baud.</operatingRange>
+        <latency>Write-call completion indicates acceptance into the transmit queue, not completion on the TX pin.</latency>
+        <throughput>Determined by configured baud rate and 8N1 framing.</throughput>
+        <memoryUsage>Static allocation only; default transmit buffer size is 512 bytes.</memoryUsage>
+        <customMetric name="baudRateErrorRequirement">Design and validation target: measured baud-rate error within plus or minus 3 percent.</customMetric>
+        <customMetric name="bitToBitJitterGuidance">No more than plus or minus 10 percent of the ideal bit period.</customMetric>
+        <customMetric name="bufferFullBehavior">Deterministic return-error policy; no silent data loss and no blocking wait.</customMetric>
+        <customMetric name="frameFormat">10 bits per byte for 8N1</customMetric>
+      </performanceCharacteristics>
+      <resources>
+        <resource>One GPIO output</resource>
+        <resource>One dedicated GPT timer channel while active</resource>
+        <resource>One GPT interrupt vector and board-valid priority</resource>
+        <resource>Static transmit ring buffer</resource>
+        <resource>On-board J-Link VCOM bridge for default terminal demonstration, where available</resource>
+      </resources>
+	  <validation>
+		<validationCase>
+			<validatedBoard>FPB-RA2E3</validatedBoard>
+			<validatedConfiguration>
+				FSP 6.5.0, GPT-based bit-banged UART TX,
+				P109 VCOM path, 115200 baud, 8N1.
+			</validatedConfiguration>
+			<testResult>
+			</testResult>
+		</validationCase>
+	  </validation>
+    </performanceMetadata>
+  </descriptiveMetadata>
+</pesMetadata>
