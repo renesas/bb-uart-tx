@@ -207,8 +207,8 @@ System Ready
 
 ## Using a Non-VCOM GPIO / External TTL-to-USB Adapter Instead
 
-Change the `tx_pin` argument passed to `rs_bb_uart_tx_ConfigGen()` in
-`src/rs_bb_uart_tx_demo.c` to your chosen GPIO, and wire an external
+In the example projects, change the `tx_pin` argument passed to `rs_bb_uart_tx_ConfigGen()` in
+`examples/VSCode/BitBangedUART_TX_<board>/src/rs_bb_uart_tx_demo.c` to your chosen GPIO, and wire an external
 TTL-level USB-to-UART adapter:
 
 | FPB-RA2E3 signal | Adapter signal | Required | Notes |
@@ -277,17 +277,18 @@ target GPIO directly to an RS-232 DB9 interface.
 │   ├── target/                     ← On-target Unity port (SCI UART)
 │   ├── test_main.c                 ← Host-based Unity test entry point
 │   ├── test_main_firmware.c        ← On-target Unity test entry point
-│   ├── test_rs_bitbanged_uart_core.c   ← Lifecycle + circular buffer unit tests
-│   └── test_rs_bitbanged_uart_format.c ← Timestamp formatting unit tests
+│   ├── test_main_hal.c             ←
+│   ├── test_rs_bb_uart_tx_core.c   ← Lifecycle + circular buffer unit tests
+│   ├── test_rs_bb_uart_tx_engine.c ←
+│   ├── test_rs_bb_uart_tx_hal.c    ←
+│   ├── test_rs_bb_uart_tx_ring_buffer.c ←
+│   ├── test_rs_bb_uart_tx_waveform.c    ←
+│   └── test_rs_uart_tx_test_helpers.h  ← 
 │
 ├── meson/
 │   ├── llvm-clangcl-msvc.ini              ← Windows host native file (unit tests)
 │   ├── llvm-clangcl-ubuntu2404-ci.ini     ← Linux host native file (unit tests / CI)
 │   └── llvm-cortex-m33.ini                ← Cortex-M33 cross file (both boards)
-│
-├── toolchains/
-│   ├── llvm-cortex-m23.ini         ← Meson cross file for Cortex-M23 (RA0 series)
-│   └── llvm-cortex-m33.ini         ← Meson cross file for Cortex-M23/M33 (RA2/RA4/RA6 series)
 │
 ├── srec
 │   └── example project executables in S-RECORD format
