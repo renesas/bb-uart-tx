@@ -3,11 +3,11 @@
  * @brief Unity output transport for the Bit-Banged UART TX firmware test build.
  *
  * Implements unity_putc() as a tiny BLOCKING, polled 8N1 software UART on the
- * board's VCOM TXD pin (the same pin the PES bit-bangs in the application).
+ * board's VCOM TXD pin (the same pin the SBB bit-bangs in the application).
  *
  * Why not the SCI UART the RTC reference project uses?
  *   The Bit-Banged UART example projects configure only r_gpt + r_ioport: no
- *   SCI stack, no RTT.  The VCOM TXD pin is owned by the PES itself, which is
+ *   SCI stack, no RTT.  The VCOM TXD pin is owned by the SBB itself, which is
  *   exactly what is NOT running in this image — the on-target unit tests link
  *   the mock HAL (see tests/test_rs_bb_uart_tx_core.c), so the pin is free and
  *   nothing else needs to be configured in configuration.xml.

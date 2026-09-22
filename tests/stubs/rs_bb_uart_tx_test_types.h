@@ -8,10 +8,10 @@
  * Replaces bsp_api.h and r_timer_api.h when RS_BB_UART_TX_TEST_HOST_BUILD is
  * defined (see rs_bb_uart_tx_types.h).  Every type below mirrors the layout
  * and member names of the real FSP v6.x declaration (r_timer_api.h,
- * bsp_io.h, fsp_common_api.h) so the PES compiles unchanged on the host.
+ * bsp_io.h, fsp_common_api.h) so the SBB compiles unchanged on the host.
  *
  * Deliberate differences from real FSP:
- *   - timer_api_t only lists the members the PES calls (open/start/stop/
+ *   - timer_api_t only lists the members the SBB calls (open/start/stop/
  *     reset/periodSet/infoGet/close).  Fakes must use designated
  *     initialisers so the same fake source also compiles against the full
  *     FSP struct.

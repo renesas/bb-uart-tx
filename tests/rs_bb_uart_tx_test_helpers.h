@@ -8,7 +8,7 @@
  * Header-only (static inline) and free of any FSP / host-only dependency, so
  * it is used unchanged by both the host executables and the on-target image.
  *
- *   helper_singleton_reset()  — the PES is a singleton with no public Close();
+ *   helper_singleton_reset()  — the SBB is a singleton with no public Close();
  *                               tests restore its as-linked initial state.
  *   helper_decode_frames()    — 8N1 receiver model operating on a stream of
  *                               line levels sampled once per bit period.
@@ -34,7 +34,7 @@
 #define HELPER_DECODE_INCOMPLETE      (-2)   /* start bit seen but frame ran off the end */
 
 /** Restore the singleton control block to exactly its as-linked initial state
- *  (rs_bb_uart_tx.c: g_bb_uart_tx_ctrl initialiser).  The PES exposes no public
+ *  (rs_bb_uart_tx.c: g_bb_uart_tx_ctrl initialiser).  The SBB exposes no public
  *  Close(), so every test fixture starts from here. */
 static inline void helper_singleton_reset(void)
 {
@@ -58,7 +58,7 @@ static inline void helper_expected_frame(uint8_t byte, uint8_t out_levels[10])
 
 /**
  * 8N1 receiver model.  @p p_levels holds the line level (1 = high) sampled
- * once per bit period, which is exactly what the PES produces: one pin write
+ * once per bit period, which is exactly what the SBB produces: one pin write
  * per GPT tick, one tick per bit period.
  *
  * Idle-high samples are skipped; each low sample is a start bit, followed by

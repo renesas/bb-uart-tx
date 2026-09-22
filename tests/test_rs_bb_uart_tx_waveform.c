@@ -7,7 +7,7 @@
  *        real HAL ISR callback -> fake GPIO pin, decoded by a UART receiver model.
  *
  * Everything from ConfigGen()/ConfigCheck()/Write() down to the pin is the
- * real PES code.  Only the FSP boundary is faked (tests/stubs/
+ * real SBB code.  Only the FSP boundary is faked (tests/stubs/
  * rs_bb_uart_tx_fake_fsp.*): fake_timer_tick() plays the GPT interrupt, and
  * the pin write log — one entry per tick, one tick per bit period — is the TX
  * waveform sampled once per bit period.
@@ -55,7 +55,7 @@ static void configure(uint32_t baud)
     TEST_ASSERT_EQUAL(RS_BB_UART_TX_STATUS_SUCCESS, rs_bb_uart_tx_ConfigCheck(&g_cfg));
 }
 
-/** Run the fake GPT until the PES stops it; asserts it did stop (no runaway). */
+/** Run the fake GPT until the SBB stops it; asserts it did stop (no runaway). */
 static uint32_t drain(void)
 {
     uint32_t n = fake_timer_run_until_stopped(TICKS_MAX);

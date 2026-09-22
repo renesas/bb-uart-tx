@@ -517,7 +517,7 @@ TEST(BbUartIsr, FakeTimerDeliversTicksOnlyWhileRunning)
     TEST_ASSERT_EQUAL(RS_BB_UART_TX_STATUS_SUCCESS, rs_bb_uart_tx_WriteString("x"));
     TEST_ASSERT_TRUE(fake_timer_tick());
     TEST_ASSERT_EQUAL_UINT32(1U, g_fake_fsp.tick_count);
-    TEST_ASSERT_EQUAL_UINT32(1U, g_fake_fsp.pin_write_count);   /* the PES callback ran and wrote the pin */
+    TEST_ASSERT_EQUAL_UINT32(1U, g_fake_fsp.pin_write_count);   /* the SBB callback ran and wrote the pin */
 }
 
 /* ── Runner ──────────────────────────────────────────────────────────────── */

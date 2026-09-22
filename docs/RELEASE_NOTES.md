@@ -78,7 +78,7 @@ This module is delivered as reference source code. Once you incorporate and modi
 1. Diff the updated core files (`src/rs_bb_uart_tx/`) against your local copies.
 2. Apply upstream changes selectively, preserving any application-specific modifications you made in `rs_bb_uart_tx_hal.c` or elsewhere.
 3. Review the updated `rs_bb_uart_tx.h` and `rs_bb_uart_tx_types.h` for interface changes; update call sites in your application accordingly.
-4. If the FSP version changes between your baseline and the update, re-run the FSP Smart Configurator (or the CMake "Regenerate Project Content" task — see [BUILD.md](BUILD.md#-regenerating-fsp-project-content)) to regenerate `ra_gen`/`ra_cfg` content for the new FSP version.
+4. If the FSP version changes between your baseline and the update, re-run the FSP Smart Configurator (or the CMake "Regenerate Project Content" task — see [BUILD.md](BUILD.md#-regenerating-fsp-project-content) — or, for the Meson build, the `rasc_generate` run target — see [BUILD_MESON.md](BUILD_MESON.md)) to regenerate `ra_gen`/`ra_cfg` content for the new FSP version.
 5. Rebuild and re-verify baud-rate accuracy on target hardware, especially if the update touches `rs_bb_uart_tx_hal_gpt_open()`'s period-calculation logic.
 
 Releases do not need to track every minor FSP release automatically. Confirm the supported FSP version in the release notes before upgrading.

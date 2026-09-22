@@ -124,7 +124,7 @@ static timer_api_t const g_fake_timer_api =
     .close     = fake_timer_close,
 };
 
-/* Mirrors g_timer0_cfg_preset in the board data file: callback = the PES ISR
+/* Mirrors g_timer0_cfg_preset in the board data file: callback = the SBB ISR
  * callback, context = the singleton control block. */
 static timer_cfg_t const g_fake_timer_cfg =
 {

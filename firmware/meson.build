@@ -6,7 +6,7 @@
 #
 # Supports: ra2e3-fpb (Cortex-M23), ra4e2-fpb (Cortex-M33), ra6e2-fpb (Cortex-M33)
 #
-# Bare-metal (no RTOS).  Board glue that is not part of the reusable PES
+# Bare-metal (no RTOS).  Board glue that is not part of the reusable SBB
 # (hal_entry.c, hal_warmstart.c, fault_handler.c, the demo, and — for RA4E2/RA6E2 — the board
 # data file) is taken from the matching example project under
 # examples/VSCode/BitBangedUART_TX_FPB_<BOARD>/src so nothing is duplicated.
@@ -60,7 +60,7 @@ app_glue_src  = files(
 # called. Without this stub, lld reports "cannot open crt0.o".
 crt0_stub_src = files('../src/crt0_stub.c')
 
-# ── PES sources ───────────────────────────────────────────────────────────
+# ── SBB sources ───────────────────────────────────────────────────────────
 # bb_uart_core_sources (root meson.build): core + engine + ring buffer + HAL.
 
 # UT build excludes rs_bb_uart_tx_hal.c — test_rs_bb_uart_tx_core.c provides a

@@ -21,7 +21,7 @@
  *   - Every FSP-facing call is appended to one ordered event log so tests can
  *     assert sequencing (open -> infoGet -> periodSet, reset before start,
  *     pin writes inside an Enable/Disable bracket, ...).
- *   - Every pin write is also appended to a level log.  Because the PES writes
+ *   - Every pin write is also appended to a level log.  Because the SBB writes
  *     the pin exactly once per GPT tick, that log IS the TX waveform sampled
  *     once per bit period.
  *   - Return codes of every timer API are injectable for error-path tests.

@@ -97,9 +97,8 @@ meson setup build-ra4e2 --wipe --cross-file meson\llvm-cortex-m33.ini `
   -Dgen_board=ra4e2-fpb -Dboard=ra4e2_fpb -Dmcu=ra4e2 -Ddevice=RA4E2
 ```
 
-> **Use the `meson\` cross files, not `toolchains\`.** The `meson\llvm-cortex-m*.ini` files pass
-> `--sysroot` (needed for `setjmp.h`, `string.h`, ...) and the matching multilib. The generic
-> `toolchains\*.ini` files do not, and fail with `'setjmp.h' file not found`.
+> **Use the `meson\` cross files.** The `meson\llvm-cortex-m*.ini` files pass
+> `--sysroot` (needed for `setjmp.h`, `string.h`, ...) and the matching multilib.
 >
 > `meson\llvm-cortex-m23.ini` ships with placeholder ATfE paths. Copy the paths from your working
 > `llvm-cortex-m33.ini`, and set the multilib folder to the output of
@@ -135,13 +134,36 @@ USB-VCOM port, or use `tests/run_ut.robot`.
 4. flash app SREC                     # demo / production firmware
 ```
 
+## Running the application firmware
+
+Step 4 of the TDD workflow above, spelled out. The application image (the demo firmware —
+startup banner, heartbeat, periodic `StatusGet()` print over the VCOM UART) is built
+alongside the UT image by the **Firmware build (cross)** step, as
+`bit_banged_uart_tx_on_<board>_clang.srec`. `rfp_program` flashes and runs it, the same way
+`rfp_program_ut` above does for the UT image:
+
+```powershell
+meson compile -C build-ra2e3 rfp_program
+```
+
+Open a terminal at 115200 8N1 (the demo's default baud) on the board's VCOM port — see the
+repository root `README.md` ("Running the Demo") for the expected banner/heartbeat output and
+the full Tera Term settings table.
+
+Two related run targets exist in the same board's build directory:
+
+| Target | Effect |
+|---|---|
+| `rfp_reset` | Resets the target without reprogramming it — use after power-cycling, or to restart whichever image (app or UT) is already flashed |
+| `rfp_erase_halt` / `rfp_check_blank` | Bulk-erase and blank-check the device. Not part of the normal flash flow — only needed to recover from a corrupted image |
+
 ---
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---|---|
-| `'setjmp.h' file not found` in firmware build | wrong cross file: use `meson\llvm-cortex-m23.ini` / `llvm-cortex-m33.ini` (with `--sysroot`), not `toolchains\*.ini` |
+| `'setjmp.h' file not found` in firmware build | wrong cross file: use `meson\llvm-cortex-m23.ini` / `llvm-cortex-m33.ini` (with `--sysroot`) |
 | `RASC expected output(s) missing` | RASC ran but wrote a different file set; the message lists what is missing — compare with `firmware\generated\meson.build` |
 | `bsp_api.h: No such file` on host | `host_test_cargs` in `tests/meson.build` lost `-DRS_BB_UART_TX_TEST_HOST_BUILD=1` |
 | `r_gpt.h: No such file` on host | `-DRS_BB_UART_TX_CFG_PRESET_CONFIG_USE=0` missing from `host_test_cargs` |
@@ -149,5 +171,6 @@ USB-VCOM port, or use `tests/run_ut.robot`.
 | `multiple definition of R_BSP_PinWrite` on target | `tests/stubs` leaked onto the firmware include path / fake FSP linked into the UT image |
 | `__declspec(noreturn)` errors in Unity (clang-cl) | ensure `/clang:-D_Noreturn=` is in `c_args` of `meson/llvm-clangcl-msvc.ini` |
 | Garbled Unity output on target | terminal must be 9600 8N1 (not 115200) |
+| `ninja: unknown target 'rfp_program'` (or `rfp_program_ut`) | `rfp-cli.exe` wasn't on `PATH` when `meson setup` ran — `firmware/meson.build` skips defining every `rfp_*` target rather than failing the build; fix `PATH` (see `scripts/env.ps1`) and re-run `meson setup` |
 | Hard fault while running on-target tests | main stack too small: raise `BSP_CFG_STACK_MAIN_BYTES` (RASC default is ~1 KB); the tests keep large buffers static to stay within it |
 | A test group never runs on target | add it to **both** `test_main.c`/`test_main_hal.c` and `test_main_firmware.c` (host-only groups excluded) |
