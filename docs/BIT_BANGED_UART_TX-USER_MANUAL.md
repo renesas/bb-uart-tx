@@ -1,4 +1,4 @@
-# Bit-Banged UART TX – User Manual
+# Bit-Banged UART TX  –  User Manual
 
 **Short ID:** `rs_bb_uart_tx`
 **Component ID:** `RS_BB_UART_TX`
@@ -6,6 +6,7 @@
 **FSP Baseline:** FSP v6.5.0, LLVM Embedded Toolchain for Arm (ATfE)
 **Reference Targets:** FPB-RA2E3, FPB-RA4E2, FPB-RA6E2
 **Build Environment:** Visual Studio Code + CMake (Ninja)
+**Also Buildable With:** Meson — host unit tests, cross-built firmware, and on-target Unity tests for all three boards; see [BUILD_MESON.md](BUILD_MESON.md)
 **License:** BSD-3-Clause
 
 ---
@@ -32,6 +33,15 @@ into companion guides — see the [Documentation Map](#documentation-map) below.
 > difference (CMake + Ninja + VS Code vs. e2studio's Eclipse-based project
 > model), not a functional one.
 
+> **Building headlessly, or running the unit tests?** A third, independent
+> delivery exists alongside the two example-project sets above: a **Meson**
+> build rooted at the repository's top-level `meson.build`. It covers
+> host-based unit tests (no hardware required), a cross-built firmware image
+> for all three boards, and an on-target Unity test image — useful for CI or
+> command-line-only workflows. It shares the same `src/rs_bb_uart_tx/` core
+> described in this manual; only the build tooling and project files differ.
+> See [BUILD_MESON.md](BUILD_MESON.md).
+
 ## Documentation Map
 
 | Document | What it covers | Read this when you are... |
@@ -39,6 +49,7 @@ into companion guides — see the [Documentation Map](#documentation-map) below.
 | **BIT_BANGED_UART_TX-USER_MANUAL.md** *(this file)* | Use case, core capabilities, design pattern, reusability model | Evaluating the module for the first time |
 | [EXAMPLES_GUIDE.md](EXAMPLES_GUIDE.md) | Opening/building the example projects in VS Code, expected Tera Term output per board | Running the reference demo for the first time |
 | [BUILD.md](BUILD.md) | Command-line CMake/Ninja build, VS Code tool setup, flashing/debugging, troubleshooting | Building, testing, or flashing from the command line |
+| [BUILD_MESON.md](BUILD_MESON.md) | Meson build: host unit tests (no hardware), cross-built firmware, on-target Unity tests, for all three boards | Running the unit tests, or building/testing headlessly or in CI |
 | [CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md) | Reference board assumptions, required FSP settings, adapting to a new board, dependencies | Porting to your own board or peripherals |
 | [FUNCTIONS_GUIDE.md](FUNCTIONS_GUIDE.md) | Every function — public **and** internal/private, each clearly tagged — naming conventions, calling-context rules | Writing code against, or debugging inside, `rs_bb_uart_tx` |
 | [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md) | Initialization order, calling-context rules, buffer-sizing considerations | Wiring the Bit-Banged UART into your application |
@@ -130,7 +141,7 @@ The following table identifies which files are reusable core code and which belo
 | **Core** | `src/rs_bb_uart_tx/` (`rs_bb_uart_tx.c/.h`, `_types.h`, `_ctrl.h`, `_cfg.h`, `_ring_buffer.c/.h`, `_engine.c/.h`, `_hal.c/.h`) | Copy into your project; hardware-agnostic orchestration, TX bit-engine, and ring buffer; only `_hal.c/.h` touches FSP GPT/GPIO types directly |
 | **Preset Config** | `src/rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_<board>.c/.h` | Board GPT preset instance + the `ConfigGen()`/`ConfigCheck()` bridge function definitions. Reference only — do not edit; for a different board, add a new preset file or use the FSP Stack Configurator path (see [CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md)) |
 | **Reference App** | `src/rs_bb_uart_tx_demo.c`, `src/hal_entry.c`, `src/hal_warmstart.c`, `src/fault_handler.c` | Adapt or replace entirely for your application |
-| **FSP Generated / Vendored** | `ra/`, `ra_gen/` directories | GPT (`r_gpt`) and IOPORT (`r_ioport`) driver source is genuinely vendored in this delivery — no additional FSP Smart Configurator step is required to build. Do not edit manually; regenerate via the FSP Smart Configurator (or the CMake pre-configure RASC step — see [BUILD.md](BUILD.md)) if you change `configuration.xml` |
+| **FSP Generated / Vendored** | `ra/`, `ra_gen/` directories | GPT (`r_gpt`) and IOPORT (`r_ioport`) driver source is genuinely vendored in this delivery — no additional FSP Smart Configurator step is required to build. Do not edit manually; regenerate via the FSP Smart Configurator, the CMake pre-configure RASC step (see [BUILD.md](BUILD.md)), or the Meson build's `rasc_generate` run target (see [BUILD_MESON.md](BUILD_MESON.md)) if you change `configuration.xml` |
 
 **Key separation:** the demo's startup banner, heartbeat cadence, and status-print formatting in `rs_bb_uart_tx_demo.c` are entirely reference-application code — not part of the reusable module. The module core (`src/rs_bb_uart_tx/`) has no knowledge of what an application writes to it.
 
@@ -150,6 +161,7 @@ The following table identifies which files are reusable core code and which belo
 
 - **Running the demo for the first time?** → [EXAMPLES_GUIDE.md](EXAMPLES_GUIDE.md)
 - **Building from the command line?** → [BUILD.md](BUILD.md)
+- **Building headlessly, or running the unit tests?** → [BUILD_MESON.md](BUILD_MESON.md)
 - **Wiring the Bit-Banged UART into your application?** → [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md)
 - **Reusing this for a different output or use case?** → [REUSABILITY_GUIDE.md](REUSABILITY_GUIDE.md)
 - **Porting to your own board?** → [CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md)

@@ -149,7 +149,7 @@ To bypass the on-board VCOM bridge entirely (see [BEHAVIOR_AND_PERFORMANCE.md](B
 |---|---|---|
 | Renesas FSP | v6.5.0 | Provides `r_gpt`, `r_ioport` types, BSP, startup |
 | LLVM Embedded Toolchain for Arm (ATfE) | Bundled with e2studio's FSP v6.5.0 toolchain bundle | `clang`/`clang++` targeting `arm-none-eabi`, referenced by `cmake/llvm.cmake` |
-| RASC (standalone) | v6.5.0-compatible | Required for headless project-content regeneration from the CMake configure step — see [BUILD.md](BUILD.md) |
+| RASC (standalone) | v6.5.0-compatible | Required for headless project-content regeneration — from the CMake configure step (see [BUILD.md](BUILD.md)) or the Meson build's `rasc_generate` target (see [BUILD_MESON.md](BUILD_MESON.md)) |
 | SEGGER J-Link (on-board) | — | Debug/flash on all three FPB boards |
 
 ### Driver Dependency Details

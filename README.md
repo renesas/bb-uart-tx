@@ -92,7 +92,7 @@ FSP Configurator perspective in e2 studio (double-click
    in software and does not use the SCI9 hardware channel. If you ever need
    SCI9 on this board for something else, remap the Bit-Banged UART TX pin
    to a different GPIO first (see `rs_bb_uart_tx_ConfigGen()`'s `tx_pin`
-   argument in `src/rs_bb_uart_tx_demo.c`).
+   argument in `examples/VSCode/BitBangedUART_TX_FPB_<board>/src/rs_bb_uart_tx_demo.c`).
 3. **SCI9's Operation Mode is disabled entirely** (not just its pin
    assignments) — `configuration.xml`'s SCI9 entry has no active mode and
    no leftover pairing property at all (unlike SCI0 on FPB-RA4E2/
@@ -207,8 +207,8 @@ System Ready
 
 ## Using a Non-VCOM GPIO / External TTL-to-USB Adapter Instead
 
-Change the `tx_pin` argument passed to `rs_bb_uart_tx_ConfigGen()` in
-`src/rs_bb_uart_tx_demo.c` to your chosen GPIO, and wire an external
+In the example projects, change the `tx_pin` argument passed to `rs_bb_uart_tx_ConfigGen()` in
+`examples/VSCode/BitBangedUART_TX_<board>/src/rs_bb_uart_tx_demo.c` to your chosen GPIO, and wire an external
 TTL-level USB-to-UART adapter:
 
 | FPB-RA2E3 signal | Adapter signal | Required | Notes |
@@ -227,7 +227,11 @@ target GPIO directly to an RS-232 DB9 interface.
 
 ```text
 .
-├── README.md                     ← This file: high-level overview, quick start, documentation map
+├── README.md                          ← This file: high-level overview, quick start, documentation map
+├── meson.build                        ← Root Meson project; ties together src/, tests/, firmware/
+├── meson_options.txt                  ← Meson build options (gen_board, board, mcu, ra_core, device, unity_tx_pin, ...)
+├── metadata.r365.xml                  ← Software Building Block (SBB) release metadata (name, version, supported devices)
+├── .gitignore
 │
 ├── docs/
 │   ├── BIT_BANGED_UART_TX-USER_MANUAL.md   ← Start here: use case, core capabilities, documentation map
@@ -237,59 +241,94 @@ target GPIO directly to an RS-232 DB9 interface.
 │   ├── FILE_GUIDE.md                     ← Core vs. demo vs. FSP-generated files; what is safe to modify
 │   ├── ARCHITECTURE.md                   ← Lifecycle state machine, state gating, event/telemetry flow
 │   ├── BEHAVIOR_AND_PERFORMANCE.md       ← Demonstrated behavior, timing, RAM budget, clock accuracy
-│   ├── EXAMPLES_GUIDE.md                 ← Importing/building the e2studio example, expected VCOM output
+│   ├── EXAMPLES_GUIDE.md                 ← Importing/building the e2studio/VS Code examples, expected VCOM output
 │   ├── REUSABILITY_GUIDE.md              ← Adapting the core logic to other event sources and workflows
 │   ├── RELEASE_NOTES.md                  ← Version history, adopting a newer release
-│   └── BUILD.md                          ← Command-line build/test instructions (Meson + LLVM/Clang)
+│   ├── BUILD.md                          ← CMake + Ninja + LLVM (ATfE) build of the e2studio / VS Code example projects
+│   └── BUILD_MESON.md                    ← Meson build/test instructions: host unit tests, firmware, on-target Unity tests
 │
 ├── examples/
-│   └── e2studio/
+│   ├── e2studio/
 │   │   ├── BitBangedUART_TX_FPB_RA2E3/    ← e²studio project for FPB-RA2E3
 │   │   ├── BitBangedUART_TX_FPB_RA4E2/    ← e²studio project for FPB-RA4E2
 │   │   └── BitBangedUART_TX_FPB_RA6E2/    ← e²studio project for FPB-RA6E2
 │   │
-│   └── VSCode 
-│       ├── BitBangedUART_TX_FPB_RA2E3/    ← VSCode project for FPB-RA2E3
-│       ├── BitBangedUART_TX_FPB_RA4E2/    ← VSCode project for FPB-RA4E2
-│       └── BitBangedUART_TX_FPB_RA6E2/    ← VSCode project for FPB-RA6E2
+│   └── VSCode/
+│       ├── BitBangedUART_TX_FPB_RA2E3/    ← VS Code / CMake project for FPB-RA2E3
+│       ├── BitBangedUART_TX_FPB_RA4E2/    ← VS Code / CMake project for FPB-RA4E2
+│       └── BitBangedUART_TX_FPB_RA6E2/    ← VS Code / CMake project for FPB-RA6E2
 │
-├── firmware/
-│   ├── meson.build                ← Meson firmware build (per-board ELF targets)
-│   └── generated/                 ← RASC custom_target outputs (populated by rasc_generate)
+├── firmware/                          ← Meson cross build: application + on-target Unity test ELF, per board
+│   ├── meson.build                    ← Per-board .elf/.srec targets; rfp-cli flash/erase/blank-check run_targets
+│   ├── generated/
+│   │   └── meson.build                ← Runs RASC headless on configuration.xml; copies ra_gen/ra_cfg + linker scripts
+│   ├── ra2e3-fpb/
+│   │   ├── configuration.xml          ← FSP Smart Configurator project (r_gpt + r_ioport) for FPB-RA2E3
+│   │   └── README.md
+│   ├── ra4e2-fpb/
+│   │   ├── configuration.xml          ← ...for FPB-RA4E2
+│   │   └── README.md
+│   └── ra6e2-fpb/
+│       ├── configuration.xml          ← ...for FPB-RA6E2
+│       └── README.md
 │
 ├── src/
-│   ├── rs_bb_uart_tx/              ← core source and per-board preset configuration
+│   ├── crt0_stub.c                    ← Weak _start stub (satisfies picolibc's crt0.o reference; Reset_Handler is the real entry point)
+│   └── rs_bb_uart_tx/                 ← core source and per-board preset configuration
 │       ├── rs_bb_uart_tx.c / .h
 │       ├── rs_bb_uart_tx_cfg.h
 │       ├── rs_bb_uart_tx_ctrl.h
 │       ├── rs_bb_uart_tx_engine.c / .h
 │       ├── rs_bb_uart_tx_hal.c / .h
-│       ├── rs_bb_uart_tx_ring_buffer.c / .h 
+│       ├── rs_bb_uart_tx_ring_buffer.c / .h
 │       ├── rs_bb_uart_tx_types.h
 │       └── config/
-│           ├── rs_bb_uart_tx_fpb_<board>.c / .h
-│           
+│           └── rs_bb_uart_tx_data_fpb_<board>.c / .h
 │
-├── tests/
-│   ├── meson.build                 ← Test build configuration (host vs. target tests)
-│   ├── run_ut.robot                ← Run on-target Unity firmware tests
-│   ├── stubs/                      ← Host-build FSP/FreeRTOS type stubs
-│   ├── target/                     ← On-target Unity port (SCI UART)
-│   ├── test_main.c                 ← Host-based Unity test entry point
-│   ├── test_main_firmware.c        ← On-target Unity test entry point
-│   ├── test_rs_bitbanged_uart_core.c   ← Lifecycle + circular buffer unit tests
-│   └── test_rs_bitbanged_uart_format.c ← Timestamp formatting unit tests
+├── tests/                              ← Unity tests: 94 host + on-target (mock HAL), 44 host-only (real HAL / waveform)
+│   ├── meson.build                     ← Two host executables (unittest_on_pc, unittest_hal_on_pc); skipped on cross builds
+│   ├── run_ut.robot                    ← Robot Framework: flash the on-target Unity image, capture output over VCOM
+│   ├── rs_bb_uart_tx_test_helpers.h    ← Shared helpers: singleton reset, UART waveform decoder, engine driver
+│   ├── Bit_Banged_UART_TX_Jitter_Specification.txt          ← Analogue bit-timing/jitter requirements (needs a logic analyzer, not covered by these tests)
+│   ├── Bit-Banged UART TX Timing and Jitter Verification.pdf ← Measured jitter report against the spec above
+│   │
+│   ├── test_main.c                         ← Host Unity entry point → unittest_on_pc (mock HAL; same groups also run on target)
+│   ├── test_rs_bb_uart_tx_ring_buffer.c    ← BbUartRingBuffer
+│   ├── test_rs_bb_uart_tx_engine.c         ← BbUartEngine + BbUartEngineFrame
+│   ├── test_rs_bb_uart_tx_core.c           ← BbUartConfig + BbUartLifecycle + BbUartWrite (mock HAL is defined in this file)
+│   │
+│   ├── test_main_hal.c                     ← Host-only Unity entry point → unittest_hal_on_pc (real hal.c + fake FSP)
+│   ├── test_rs_bb_uart_tx_hal.c            ← BbUartHal + BbUartIsr
+│   ├── test_rs_bb_uart_tx_waveform.c       ← BbUartWaveform (end-to-end: public API → decoded pin waveform)
+│   │
+│   ├── test_main_firmware.c                ← On-target Unity entry point (replaces ra_gen/main.c in the UT firmware image)
+│   │
+│   ├── stubs/                          ← Host-build FSP type stubs + fake FSP timer/GPIO layer (host only)
+│   │   ├── rs_bb_uart_tx_test_types.h  ← Stand-ins for bsp_api.h / r_timer_api.h (RS_BB_UART_TX_TEST_HOST_BUILD)
+│   │   ├── r_ioport.h                  ← Stand-in for FSP r_ioport.h (IOPORT_CFG_* flags)
+│   │   ├── rs_bb_uart_tx_fake_fsp.h    ← Fake GPT timer + R_BSP_Pin* API, with an ordered event/level log
+│   │   └── rs_bb_uart_tx_fake_fsp.c
+│   │
+│   └── target/                         ← On-target Unity output transport (polled software UART, 9600 8N1, SysTick-timed)
+│       ├── unity_config.h              ← Routes UNITY_OUTPUT_CHAR() to unity_putc()
+│       ├── unity_port_polled_gpio.c    ← Bit-bangs Unity's own output on the VCOM TXD pin (free while the mock HAL is linked)
+│       └── syscalls_min.c              ← Minimal _write()/... so printf() also reaches unity_putc()
 │
-├── meson/
-│   ├── llvm-clangcl-msvc.ini              ← Windows host native file (unit tests)
-│   ├── llvm-clangcl-ubuntu2404-ci.ini     ← Linux host native file (unit tests / CI)
-│   └── llvm-cortex-m33.ini                ← Cortex-M33 cross file (both boards)
+├── meson/                              ← Meson machine files
+│   ├── llvm-clangcl-msvc.ini            ← Windows host native file (unit tests, clang-cl)
+│   ├── llvm-clangcl-ubuntu2404-ci.ini   ← Linux host native file (unit tests / CI, clang)
+│   ├── llvm-cortex-m23.ini              ← Cortex-M23 cross file (FPB-RA2E3; ATfE, with --sysroot)
+│   └── llvm-cortex-m33.ini              ← Cortex-M33 cross file (FPB-RA4E2 / FPB-RA6E2; ATfE, with --sysroot)
 │
-├── toolchains/
-│   ├── llvm-cortex-m23.ini         ← Meson cross file for Cortex-M23 (RA0 series)
-│   └── llvm-cortex-m33.ini         ← Meson cross file for Cortex-M23/M33 (RA2/RA4/RA6 series)
+├── subprojects/                        ← Meson subprojects (fetched by `meson subprojects download`)
+│   ├── unity.wrap                      ← Unity test framework (v2.6.0)
+│   ├── fsp.wrap                        ← Renesas FSP v6.5.0 (BSP, r_ioport, r_gpt) — pinned, not vendored in-tree
+│   ├── cmsis.wrap                      ← Arm CMSIS_6 v6.1.0 (CMSIS-Core headers) — pinned, not vendored in-tree
+│   └── packagefiles/
+│       ├── fsp/meson.build             ← Adds a meson.build to the fetched FSP tree
+│       └── cmsis/meson.build           ← Adds a meson.build to the fetched CMSIS_6 tree
 │
-├── srec
+├── srec/
 │   └── example project executables in S-RECORD format
 │
 └── scripts/
