@@ -1,4 +1,4 @@
-# Bit-Banged UART TX – User Manual
+# Bit-Banged UART TX  –  User Manual
 
 **Short ID:** `rs_bb_uart_tx`
 **Component ID:** `RS_BB_UART_TX`

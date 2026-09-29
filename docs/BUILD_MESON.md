@@ -1,4 +1,4 @@
-# Build & Test Instructions — Bit-Banged UART TX (Meson + LLVM/Clang)
+# Build & Test Instructions - Bit-Banged UART TX (Meson + LLVM/Clang)
 
 > Part of the [`rs_bb_uart_tx` documentation set](BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map).
 > The CMake/VS Code build of the example projects is documented in [BUILD.md](BUILD.md);
