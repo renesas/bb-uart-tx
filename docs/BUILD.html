@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BUILD</title>
+  <style>
+
+html {
+color: #1a1a1a;
+color: light-dark(#1a1a1a, #fdfdfd);
+background-color: #fdfdfd;
+background-color: light-dark(#fdfdfd, #1a1a1a);
+color-scheme: light dark;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+color-scheme: light only;
+}
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a, a:visited {
+color: inherit;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid;
+border-color: #e6e6e6;
+border-color: light-dark(#e6e6e6, #4c4c4c);
+color: #606060;
+color: light-dark(#606060, #b6b6b6);
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid currentColor;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid currentColor;
+border-bottom: 1px solid currentColor;
+}
+th {
+border-top: 1px solid currentColor;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<h1 id="build-instructions-cmake-ninja-llvm-atfe">Build Instructions —
+CMake + Ninja + LLVM (ATfE)</h1>
+<blockquote>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+documentation set</a>. Note: for opening/building/debugging through the
+<strong>VS Code UI</strong>, see <a href="EXAMPLES_GUIDE.md">EXAMPLES_GUIDE.md</a> instead — this document
+is the command-line path plus the tooling details behind it.</p>
+</blockquote>
+<p>Supports: - ✅ Embedded firmware for <strong>FPB-RA2E3</strong>
+(Cortex-M23, R7FA2E3073CFL) - ✅ Embedded firmware for
+<strong>FPB-RA4E2</strong> (Cortex-M33, R7FA4E2B9) - ✅ Embedded
+firmware for <strong>FPB-RA6E2</strong> (Cortex-M33, R7FA6E2BB) - ✅
+Debug and Release build configurations (CMake presets) - ✅ Flash/debug
+via <strong>VS Code + Renesas hardware debug extension</strong> (SEGGER
+J-Link)</p>
+<p>Each board is an <strong>independent, self-contained CMake
+project</strong>, living under
+<code>examples/VSCode/BitBangedUART_TX_FPB_&lt;board&gt;/</code> — there
+is no shared top-level build across boards in this delivery. The
+instructions below apply identically to all three; substitute the
+board’s folder name.</p>
+<blockquote>
+<p><strong>No e2studio-style “Import” step.</strong> These are plain VS
+Code / CMake projects — you open a board’s project by opening its
+<code>.code-workspace</code> file or folder directly (see <a href="EXAMPLES_GUIDE.md#2-opening-and-building-in-vs-code">EXAMPLES_GUIDE.md</a>),
+not by importing it into an IDE.</p>
+</blockquote>
+<hr />
+<h2 id="project-structure-per-board">📁 Project Structure (per
+board)</h2>
+<pre><code>examples/VSCode/BitBangedUART_TX_FPB_&lt;board&gt;/
+│   CMakeLists.txt              ← top-level project definition
+│   CMakePresets.json           ← Debug / Release configure+build presets (Ninja)
+│   CMakeProject.json           ← device/core/toolchain metadata (Renesas VS Code extensions)
+│   Config.cmake                ← user hook: RASC_EXE_PATH resolution
+│   configuration.xml           ← FSP Smart Configurator project (GPT + GPIO configured)
+│   ra_cfg.txt                  ← human-readable FSP config dump (FPB-RA2E3 only)
+│
+├── .vscode/
+│       cmake-kits.json         ← &quot;ARM LLVM - Ninja&quot; / &quot;ARM LLVM - MinGW Makefiles&quot; kits
+│       tasks.json              ← FSP Smart Configurator / Regenerate / Configure / Build tasks
+│       launch.json             ← Renesas GDB Debugging (SEGGER J-Link) launch config
+│       c_cpp_properties.json   ← IntelliSense include paths
+│       settings.json
+│
+├── cmake/
+│       GeneratedCfg.cmake      ← RASC-generated compiler flags (do not hand-edit)
+│       GeneratedSrc.cmake      ← RASC-generated source globs: ra_gen/*, src/*, ra/* (do not hand-edit)
+│       llvm.cmake              ← ATfE toolchain file (resolves ARM_TOOLCHAIN_PATH)
+│       prebuild.cmake          ← backing script for &quot;Regenerate Project Content&quot;
+│
+├── ra/                         ← vendored FSP: bsp, arm/CMSIS, board, r_ioport, r_gpt (r_gpt.c genuinely vendored)
+├── ra_cfg/                     ← FSP/BSP/driver build-time configuration headers
+├── ra_gen/                     ← FSP Smart Configurator-generated pin/common/HAL data, vector table, main.c
+├── script/                     ← fsp.lld, memory_regions.lld, bsp_linker_info.h (linker inputs)
+│
+└── src/
+    │   hal_entry.c              ← application entry point
+    │   hal_warmstart.c          ← BSP warm-start boilerplate
+    │   fault_handler.c          ← Cortex-M23 or Cortex-M33 fault handler (board-specific — see FILE_GUIDE.md)
+    │   rs_bb_uart_tx_demo.c     ← reference application (NOT reusable core)
+    └── rs_bb_uart_tx/            ← *** the reusable core ***
+        │   rs_bb_uart_tx.h / .c
+        │   rs_bb_uart_tx_types.h
+        │   rs_bb_uart_tx_ctrl.h
+        │   rs_bb_uart_tx_cfg.h
+        │   rs_bb_uart_tx_ring_buffer.h / .c
+        │   rs_bb_uart_tx_engine.h / .c
+        │   rs_bb_uart_tx_hal.h / .c
+        └── config/
+                rs_bb_uart_tx_data_fpb_&lt;board&gt;.h / .c</code></pre>
+<hr />
+<h2 id="tools-to-install">🛠️ Tools to Install</h2>
+<p><strong>1. LLVM Embedded Toolchain for Arm (ATfE)</strong> Provides
+<code>clang</code>/<code>clang++</code> targeting
+<code>arm-none-eabi</code> with the correct bare-metal sysroot. The
+e2studio FSP v6.5.0 bundle includes ATfE — install e2studio even if you
+plan to build entirely from the command line / VS Code, as this is the
+toolchain source these projects are configured against. Download:
+https://www.renesas.com/en/software-tool/e2studio</p>
+<p>Set the environment variable used by
+<code>.vscode/cmake-kits.json</code> and
+<code>cmake/llvm.cmake</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows (PowerShell)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">ARM_LLVM_TOOLCHAIN_PATH</span> <span class="op">=</span> <span class="st">&quot;C:\Users\&lt;username&gt;\AppData\Local\Programs\Renesas\RA\e2studio_v*_fsp_v6.5.0\toolchains\llvm_arm\ATfE-*\bin&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux/macOS</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ARM_LLVM_TOOLCHAIN_PATH</span><span class="op">=</span>/path/to/ATfE/bin</span></code></pre></div>
+<p><code>cmake/llvm.cmake</code> also accepts
+<code>ARM_TOOLCHAIN_PATH</code> (as a CMake cache variable via
+<code>-D</code>, or as an environment variable) if you prefer to set it
+per-invocation instead of globally.</p>
+<p><strong>2. CMake (≥ 3.16.4, CMakePresets require ≥ 3.23) and
+Ninja</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pip install cmake ninja</span></code></pre></div>
+<p>or install via your platform’s package manager. Verify:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>version</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ninja <span class="op">--</span>version</span></code></pre></div>
+<p><strong>3. RASC (standalone)</strong> <em>(only required if you will
+modify <code>configuration.xml</code> and rebuild — the delivered
+projects already have <code>ra_gen</code>/<code>ra_cfg</code> content
+checked in)</em> The standalone RASC installer provides a
+headless-capable <code>rasc</code> executable. <code>Config.cmake</code>
+defaults <code>RASC_EXE_PATH</code> to <code>echo</code> (a harmless
+no-op) unless you set it, so a first build with an unmodified
+<code>configuration.xml</code> does not require RASC to be installed at
+all. Download: https://github.com/renesas/fsp/releases (look for the FSP
+v6.5.0-compatible RASC installer)</p>
+<p>Set <code>RASC_EXE_PATH</code> if you need real regeneration:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">RASC_EXE_PATH</span> <span class="op">=</span> <span class="st">&quot;C:\Renesas\RA\sc_v*_fsp_v6.5.0\eclipse\rasc.exe&quot;</span></span></code></pre></div>
+<p>or pass it on the CMake configure command line:
+<code>-DRASC_EXE_PATH=/path/to/rasc</code>.</p>
+<p><strong>4. VS Code + extensions</strong> - <strong>CMake
+Tools</strong> (Microsoft) — kit selection, configure/build presets,
+status-bar build - <strong>Renesas RA extensions</strong> — provides the
+<code>renesas-hardware</code> debug type used by
+<code>.vscode/launch.json</code> - <strong>clangd</strong> (optional,
+recommended) — <code>.vscode/settings.json</code> and the project’s
+<code>.clangd</code> file are already configured for it
+(<code>--query-driver=${env:ARM_LLVM_TOOLCHAIN_PATH}*</code>)</p>
+<p><strong>5. SEGGER J-Link software</strong> <em>(flashing/debugging
+only)</em> The on-board J-Link OB debug probe on all three FPB boards is
+supported directly by the Renesas hardware debug extension; no separate
+J-Link software install is required beyond USB drivers on most
+platforms.</p>
+<hr />
+<h2 id="building-from-the-command-line">⚙️ Building from the Command
+Line</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> examples/VSCode/BitBangedUART_TX_FPB_RA4E2   <span class="co"># or _RA2E3 / _RA6E2</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure (Debug)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--preset</span> Debug</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Build</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> <span class="at">--preset</span> Debug</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Or, equivalently, without presets:</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-DARM_TOOLCHAIN_PATH</span><span class="op">=</span><span class="st">&quot;/path/to/ATfE/bin&quot;</span> <span class="at">-DCMAKE_TOOLCHAIN_FILE</span><span class="op">=</span>cmake/llvm.cmake <span class="at">-G</span> Ninja <span class="at">-B</span> build/Debug</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build/Debug</span></code></pre></div>
+<p>For a Release build, substitute <code>Release</code> for
+<code>Debug</code> in the preset name (<code>CMakePresets.json</code>
+defines both).</p>
+<p><strong>What happens during configure:</strong>
+<code>CMakeLists.txt</code> includes <code>Config.cmake</code> (resolves
+<code>RASC_EXE_PATH</code>), then <code>cmake/GeneratedCfg.cmake</code>
+and <code>cmake/GeneratedSrc.cmake</code> (RASC-generated compiler flags
+and <code>file(GLOB_RECURSE ...)</code> source lists covering
+<code>ra_gen/</code>, <code>src/</code>, and <code>ra/</code>). If
+<code>RASC_EXE_PATH</code> resolves to a real <code>rasc</code>
+executable (not the <code>Config.cmake</code> default of
+<code>echo</code>), a pre-build <code>execute_process()</code> step
+invokes it with
+<code>--generate --devicefamily ra --compiler LLVMARM ... configuration.xml</code>
+to regenerate FSP content before the glob runs. Because
+<code>src/rs_bb_uart_tx/</code> is picked up by the recursive glob
+automatically, <strong>no CMakeLists.txt edit is needed when you add
+files under <code>src/</code>.</strong></p>
+<p><strong>What happens at flash time:</strong> flashing is performed
+through VS Code’s Renesas hardware debug extension
+(<code>.vscode/launch.json</code>, <code>renesas-hardware</code> debug
+type), not through a separate command-line flash step in this delivery —
+see <a href="EXAMPLES_GUIDE.md#3-flashing-and-debugging">EXAMPLES_GUIDE.md</a>.</p>
+<hr />
+<h2 id="regenerating-fsp-project-content">🔧 Regenerating FSP Project
+Content</h2>
+<p>If you edit <code>configuration.xml</code> (e.g. via the FSP Smart
+Configurator, opened through the <strong>“FSP Smart
+Configurator”</strong> VS Code task), regenerate before rebuilding:</p>
+<ul>
+<li><strong>Automatic:</strong> the next <code>cmake --build</code> (or
+<strong>Configure Project</strong> task) re-runs the RASC pre-build step
+automatically if <code>configuration.xml</code>’s modification time has
+changed and <code>RASC_EXE_PATH</code> is set to a real executable.</li>
+<li><strong>Manual:</strong> run the <strong>“Regenerate Project
+Content”</strong> VS Code task
+(<code>Terminal → Run Task → Regenerate Project Content</code>), which
+runs <code>cmake -P cmake/prebuild.cmake</code> directly.</li>
+</ul>
+<p>See <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a>
+for the exact GPT/GPIO/SCI settings that must be preserved per board
+before you click <strong>Generate Project Content</strong> in the Smart
+Configurator GUI.</p>
+<hr />
+<h2 id="troubleshooting">🔧 Troubleshooting</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Toolchain path not defined</code> at configure time</td>
+<td>Set <code>ARM_LLVM_TOOLCHAIN_PATH</code> (or
+<code>ARM_TOOLCHAIN_PATH</code>) before invoking <code>cmake</code> —
+see <a href="#-tools-to-install">Tools to Install</a></td>
+</tr>
+<tr>
+<td><code>Toolchain path does not exists: ...</code></td>
+<td>The path in
+<code>ARM_TOOLCHAIN_PATH</code>/<code>ARM_LLVM_TOOLCHAIN_PATH</code>
+does not point at a real directory containing
+<code>clang</code>/<code>clang++</code> — verify the ATfE install
+location</td>
+</tr>
+<tr>
+<td><code>Please specify the CMAKE_BUILD_TYPE with -DCMAKE_BUILD_TYPE=</code></td>
+<td>You configured with a single-config generator (e.g. Ninja without a
+preset) and did not supply <code>CMAKE_BUILD_TYPE</code> or
+<code>BUILD_TYPE</code> — use a preset
+(<code>cmake --preset Debug</code>) or add
+<code>-DCMAKE_BUILD_TYPE=Debug</code></td>
+</tr>
+<tr>
+<td><code>RASC Execution is failed: &lt;code&gt;</code></td>
+<td><code>RASC_EXE_PATH</code> points at a real executable, but it
+failed — check <code>rasc_conf_cmd_err.txt</code> in the build directory
+for the RASC error output; often a <code>configuration.xml</code>
+FSP-version mismatch</td>
+</tr>
+<tr>
+<td>Build succeeds but GPT ISR never fires /
+<code>rs_bb_uart_tx_hal_gpt_open()</code> returns
+<code>TIMER_ERROR</code></td>
+<td>GPT0’s counter-overflow interrupt was disabled or its callback
+reverted to <code>NULL</code> in <code>configuration.xml</code> — see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a></td>
+</tr>
+<tr>
+<td>No output on the VCOM terminal at all</td>
+<td>Confirm the terminal is on the correct COM port, at 115200 8N1;
+confirm the TX pin is actually configured as GPIO output and not still
+claimed by SCI9 (FPB-RA2E3) / SCI0 (FPB-RA4E2/FPB-RA6E2) — see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a></td>
+</tr>
+<tr>
+<td>No output below 9600 baud on the VCOM terminal, but the TX pin
+signal (scope/logic analyzer) looks correct</td>
+<td>On-board J-Link VCOM bridge firmware does not reliably relay baud
+rates below 9600 — see <a href="BEHAVIOR_AND_PERFORMANCE.md#7-on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.md</a></td>
+</tr>
+<tr>
+<td><code>StatusGet()</code>’s <code>full</code> counter is non-zero
+every boot</td>
+<td>Ring buffer is undersized for your traffic burst — see <a href="BEHAVIOR_AND_PERFORMANCE.md#5-ram-consumption">BEHAVIOR_AND_PERFORMANCE.md</a>
+and increase <code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code></td>
+</tr>
+<tr>
+<td>Clean rebuild needed</td>
+<td>Delete the <code>build/Debug</code> or <code>build/Release</code>
+directory and re-run <code>cmake --preset &lt;name&gt;</code></td>
+</tr>
+<tr>
+<td>clangd shows spurious errors in VS Code but the CMake build
+succeeds</td>
+<td>Confirm <code>ARM_LLVM_TOOLCHAIN_PATH</code> is set in the same
+shell VS Code was launched from — <code>.clangd</code>’s
+<code>--query-driver</code> argument depends on it being resolvable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="summary">✅ Summary</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Build</th>
+<th>Toolchain file</th>
+<th>Preset</th>
+<th>Device</th>
+<th><code>launch.json</code> device</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FPB-RA2E3 firmware</td>
+<td><code>cmake/llvm.cmake</code></td>
+<td><code>Debug</code> / <code>Release</code></td>
+<td>R7FA2E3073CFL (Cortex-M23)</td>
+<td><code>R7FA2E307</code></td>
+</tr>
+<tr>
+<td>FPB-RA4E2 firmware</td>
+<td><code>cmake/llvm.cmake</code></td>
+<td><code>Debug</code> / <code>Release</code></td>
+<td>R7FA4E2B9 (Cortex-M33)</td>
+<td><code>R7FA4E2B9</code></td>
+</tr>
+<tr>
+<td>FPB-RA6E2 firmware</td>
+<td><code>cmake/llvm.cmake</code></td>
+<td><code>Debug</code> / <code>Release</code></td>
+<td>R7FA6E2BB (Cortex-M33, TrustZone)</td>
+<td><code>R7FA6E2BB</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+Manual</a>.</em></p>
+</body>
+</html>
