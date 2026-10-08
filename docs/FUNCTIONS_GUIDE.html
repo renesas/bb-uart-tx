@@ -247,9 +247,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <h1 id="functions-guide-public-and-internal-functions">Functions Guide —
 Public and Internal Functions</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>. For call sequences and how these functions fit
-together in an application, see <a href="INTEGRATION_GUIDE.md">INTEGRATION_GUIDE.md</a>.</p>
+together in an application, see <a href="INTEGRATION_GUIDE.html">INTEGRATION_GUIDE.html</a>.</p>
 </blockquote>
 <p>This guide documents every function in <code>rs_bb_uart_tx</code> —
 both the <strong>public</strong> functions an application calls
@@ -305,24 +305,24 @@ functions.</p>
 <hr />
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-start-here-the-minimal-call-sequence">Start Here: The
+<li><a href="#start-here-the-minimal-call-sequence">Start Here: The
 Minimal Call Sequence</a></li>
-<li><a href="#2-configuration-bridge">Configuration Bridge</a></li>
-<li><a href="#3-operational-functions">Operational Functions</a></li>
-<li><a href="#4-query-functions">Query Functions</a></li>
-<li><a href="#5-complete-public-function-reference-table">Complete
+<li><a href="#configuration-bridge">Configuration Bridge</a></li>
+<li><a href="#operational-functions">Operational Functions</a></li>
+<li><a href="#query-functions">Query Functions</a></li>
+<li><a href="#complete-public-function-reference-table">Complete
 Public Function Reference Table</a></li>
-<li><a href="#6-internal-functions--rs_bb_uart_txc">Internal Functions —
+<li><a href="#internal-functions-rs_bb_uart_tx.c">Internal Functions —
 <code>rs_bb_uart_tx.c</code></a></li>
-<li><a href="#7-internal-functions--rs_bb_uart_tx_ring_bufferc--h">Internal
+<li><a href="#internal-functions-rs_bb_uart_tx_ring_buffer.c-.h">Internal
 Functions — <code>rs_bb_uart_tx_ring_buffer.c</code> /
 <code>.h</code></a></li>
-<li><a href="#8-internal-functions--rs_bb_uart_tx_enginec--h">Internal
+<li><a href="#internal-functions-rs_bb_uart_tx_engine.c-.h">Internal
 Functions — <code>rs_bb_uart_tx_engine.c</code> /
 <code>.h</code></a></li>
-<li><a href="#9-internal-functions--rs_bb_uart_tx_halc--h">Internal
+<li><a href="#internal-functions-rs_bb_uart_tx_hal.c-.h">Internal
 Functions — <code>rs_bb_uart_tx_hal.c</code> / <code>.h</code></a></li>
-<li><a href="#10-complete-internal-function-reference-table">Complete
+<li><a href="#complete-internal-function-reference-table">Complete
 Internal Function Reference Table</a></li>
 </ol>
 <hr />
@@ -342,7 +342,7 @@ Call Sequence</h2>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span> rs_bb_uart_tx_WriteString<span class="op">(</span><span class="st">&quot;Bit-Banged UART Ready</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">);</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>There is no separate <code>Open()</code>/<code>Start()</code> call —
-see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>
+see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.html</a>
 for why <code>ConfigCheck()</code> performs double duty.</p>
 <hr />
 <h2 id="configuration-bridge">2. Configuration Bridge</h2>
@@ -403,7 +403,7 @@ ISR-safe.</em></p>
 <p>Validates that the baud rate is within the supported range, the GPT
 instance pointer is present, and the buffer-size field matches the
 compiled buffer size. On success, <strong>also</strong> commits the
-configuration and opens the GPT and GPIO HAL resources (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>).</p>
+configuration and opens the GPT and GPIO HAL resources (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.html</a>).</p>
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -763,7 +763,7 @@ Functions — <code>rs_bb_uart_tx_ring_buffer.c</code> /
 </tr>
 <tr>
 <td><code>rs_bb_uart_tx_ring_buffer_enqueue(p_rb, p_data, length)</code></td>
-<td>All-or-nothing enqueue; lock-free (no critical section — see <a href="ARCHITECTURE.md#5-ring-buffer-concurrency-model">ARCHITECTURE.md</a>)</td>
+<td>All-or-nothing enqueue; lock-free (no critical section — see <a href="ARCHITECTURE.html#ring-buffer-concurrency-model">ARCHITECTURE.html</a>)</td>
 <td>Main-loop/task context only — matches <code>Write()</code>’s
 restriction</td>
 </tr>
@@ -828,7 +828,7 @@ GPIO write</td>
 </tr>
 </tbody>
 </table>
-<p>See <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>
+<p>See <a href="ARCHITECTURE.html#tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.html</a>
 for the full pipeline design and the bit-level state machine these two
 functions implement.</p>
 <hr />
@@ -857,7 +857,7 @@ drives the TX pin via direct register/BSP pin control. Seven 🔒
 <td>Opens the GPT instance, queries its actual applied clock frequency
 via <code>infoGet()</code>, computes and applies the bit-period count
 for the configured baud rate via <code>periodSet()</code>
-(round-to-nearest — see <a href="BEHAVIOR_AND_PERFORMANCE.md">BEHAVIOR_AND_PERFORMANCE.md</a>).
+(round-to-nearest — see <a href="BEHAVIOR_AND_PERFORMANCE.html">BEHAVIOR_AND_PERFORMANCE.html</a>).
 Does <strong>not</strong> start the timer.</td>
 </tr>
 <tr>
@@ -939,7 +939,7 @@ INTERNAL</h3>
 <td>Registered as the GPT instance’s <code>p_callback</code>.
 <code>p_args-&gt;p_context</code> is the owning
 <code>rs_bb_uart_tx_ctrl_t *</code>. Implements the two-half tick
-sequence described in <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>.
+sequence described in <a href="ARCHITECTURE.html#tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.html</a>.
 Defensively returns immediately without touching engine/ring-buffer
 state if the lifecycle state is not TRANSMITTING (guards against a
 spurious/late interrupt).</td>
@@ -1088,7 +1088,7 @@ Internal Function Reference Table</h2>
 </tbody>
 </table>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

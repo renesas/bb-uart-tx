@@ -253,7 +253,7 @@ v6.5.0, LLVM Embedded Toolchain for Arm (ATfE) <strong>Reference
 Targets:</strong> FPB-RA2E3, FPB-RA4E2, FPB-RA6E2 <strong>Build
 Environment:</strong> Visual Studio Code + CMake (Ninja) <strong>Also
 Buildable With:</strong> Meson — host unit tests, cross-built firmware,
-and on-target Unity tests for all three boards; see <a href="BUILD_MESON.md">BUILD_MESON.md</a> <strong>License:</strong>
+and on-target Unity tests for all three boards; see <a href="BUILD_MESON.html">BUILD_MESON.html</a> <strong>License:</strong>
 BSD-3-Clause</p>
 <hr />
 <h2 id="about-this-manual">About This Manual</h2>
@@ -290,7 +290,7 @@ hardware required), a cross-built firmware image for all three boards,
 and an on-target Unity test image — useful for CI or command-line-only
 workflows. It shares the same <code>src/rs_bb_uart_tx/</code> core
 described in this manual; only the build tooling and project files
-differ. See <a href="BUILD_MESON.md">BUILD_MESON.md</a>.</p>
+differ. See <a href="BUILD_MESON.html">BUILD_MESON.html</a>.</p>
 </blockquote>
 <h2 id="documentation-map">Documentation Map</h2>
 <table>
@@ -308,74 +308,74 @@ differ. See <a href="BUILD_MESON.md">BUILD_MESON.md</a>.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>BIT_BANGED_UART_TX-USER_MANUAL.md</strong> <em>(this
+<td><strong>BIT_BANGED_UART_TX-USER_MANUAL.html</strong> <em>(this
 file)</em></td>
 <td>Use case, core capabilities, design pattern, reusability model</td>
 <td>Evaluating the module for the first time</td>
 </tr>
 <tr>
-<td><a href="EXAMPLES_GUIDE.md">EXAMPLES_GUIDE.md</a></td>
+<td><a href="EXAMPLES_GUIDE.html">EXAMPLES_GUIDE.html</a></td>
 <td>Opening/building the example projects in VS Code, expected Tera Term
 output per board</td>
 <td>Running the reference demo for the first time</td>
 </tr>
 <tr>
-<td><a href="BUILD.md">BUILD.md</a></td>
+<td><a href="BUILD.html">BUILD.html</a></td>
 <td>Command-line CMake/Ninja build, VS Code tool setup,
 flashing/debugging, troubleshooting</td>
 <td>Building, testing, or flashing from the command line</td>
 </tr>
 <tr>
-<td><a href="BUILD_MESON.md">BUILD_MESON.md</a></td>
+<td><a href="BUILD_MESON.html">BUILD_MESON.html</a></td>
 <td>Meson build: host unit tests (no hardware), cross-built firmware,
 on-target Unity tests, for all three boards</td>
 <td>Running the unit tests, or building/testing headlessly or in CI</td>
 </tr>
 <tr>
-<td><a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a></td>
+<td><a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a></td>
 <td>Reference board assumptions, required FSP settings, adapting to a
 new board, dependencies</td>
 <td>Porting to your own board or peripherals</td>
 </tr>
 <tr>
-<td><a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a></td>
+<td><a href="FUNCTIONS_GUIDE.html">FUNCTIONS_GUIDE.html</a></td>
 <td>Every function — public <strong>and</strong> internal/private, each
 clearly tagged — naming conventions, calling-context rules</td>
 <td>Writing code against, or debugging inside,
 <code>rs_bb_uart_tx</code></td>
 </tr>
 <tr>
-<td><a href="INTEGRATION_GUIDE.md">INTEGRATION_GUIDE.md</a></td>
+<td><a href="INTEGRATION_GUIDE.html">INTEGRATION_GUIDE.html</a></td>
 <td>Initialization order, calling-context rules, buffer-sizing
 considerations</td>
 <td>Wiring the Bit-Banged UART into your application</td>
 </tr>
 <tr>
-<td><a href="FILE_GUIDE.md">FILE_GUIDE.md</a></td>
+<td><a href="FILE_GUIDE.html">FILE_GUIDE.html</a></td>
 <td>Core vs. demo vs. FSP-generated files, naming conventions, what is
 safe to modify</td>
 <td>Deciding what to copy, keep, or replace</td>
 </tr>
 <tr>
-<td><a href="ARCHITECTURE.md">ARCHITECTURE.md</a></td>
+<td><a href="ARCHITECTURE.html">ARCHITECTURE.html</a></td>
 <td>Lifecycle state machine, function state gating, TX bit-engine
 pipeline, event flow</td>
 <td>Understanding internal design or debugging state/timing issues</td>
 </tr>
 <tr>
-<td><a href="BEHAVIOR_AND_PERFORMANCE.md">BEHAVIOR_AND_PERFORMANCE.md</a></td>
+<td><a href="BEHAVIOR_AND_PERFORMANCE.html">BEHAVIOR_AND_PERFORMANCE.html</a></td>
 <td>Demonstrated behavior, ISR timing, RAM budget, baud-rate
 accuracy</td>
 <td>Validating the module meets your timing/memory budget</td>
 </tr>
 <tr>
-<td><a href="REUSABILITY_GUIDE.md">REUSABILITY_GUIDE.md</a></td>
+<td><a href="REUSABILITY_GUIDE.html">REUSABILITY_GUIDE.html</a></td>
 <td>Adapting the core logic for other outputs and use cases beyond the
 reference demo</td>
 <td>Reusing the module for a different use case</td>
 </tr>
 <tr>
-<td><a href="RELEASE_NOTES.md">RELEASE_NOTES.md</a></td>
+<td><a href="RELEASE_NOTES.html">RELEASE_NOTES.html</a></td>
 <td>What changes between releases, per-board differences, merge
 guidance</td>
 <td>Adopting a newer release of this module</td>
@@ -385,17 +385,17 @@ guidance</td>
 <hr />
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-what-use-case-does-this-module-demonstrate">What Use
+<li><a href="#what-use-case-does-this-module-demonstrate">What Use
 Case Does This Module Demonstrate?</a></li>
-<li><a href="#2-what-does-the-core-code-do">What Does the Core Code
+<li><a href="#what-does-the-core-code-do">What Does the Core Code
 Do?</a>
 <ul>
-<li><a href="#21-design-pattern-single-call-simple-use">2.1 Design
+<li><a href="#design-pattern-single-call-simple-use">2.1 Design
 Pattern: Single-Call, Simple-Use</a></li>
 </ul></li>
-<li><a href="#3-core-code-vs-reference-application-code">Core Code
+<li><a href="#core-code-vs.-reference-application-code">Core Code
 vs. Reference Application Code</a></li>
-<li><a href="#4-where-to-go-next">Where to Go Next</a></li>
+<li><a href="#where-to-go-next">Where to Go Next</a></li>
 </ol>
 <hr />
 <h2 id="what-use-case-does-this-module-demonstrate">1. What Use Case
@@ -475,7 +475,7 @@ assumption), and computes the bit-period count for the configured baud
 rate using round-to-nearest integer arithmetic:
 <code>period_counts = round(clock_frequency / baud_rate) - 1</code>.
 This makes the calculation itself driver- and board-agnostic; only the
-board’s GPT clock-divider choice (see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a>) differs per
+board’s GPT clock-divider choice (see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a>) differs per
 target.</p>
 <p><strong>Non-Blocking Enqueue via Ring Buffer</strong>
 <code>rs_bb_uart_tx_Write()</code>/<code>rs_bb_uart_tx_WriteString()</code>
@@ -484,7 +484,7 @@ buffer using an <strong>all-or-nothing</strong> policy: either the
 entire request fits, or nothing is written and
 <code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code> is returned. Both calls
 return immediately once the data is queued — they do not wait for
-transmission to complete. See <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>
+transmission to complete. See <a href="ARCHITECTURE.html#tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.html</a>
 for why the ring buffer needs no critical section.</p>
 <p><strong>GPT-ISR-Driven Bit Engine</strong> A GPT compare/overflow
 interrupt fires once per bit period. On every tick, the interrupt
@@ -493,7 +493,7 @@ callback writes the GPIO pin to the level already decided by the
 then prepares the <em>next</em> tick’s output and advances the internal
 TX state machine — dequeuing the next byte only when needed. This
 pipelined design keeps every tick’s GPIO write off the ring buffer’s
-access path. See <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> for the
+access path. See <a href="ARCHITECTURE.html">ARCHITECTURE.html</a> for the
 full state machine and pipeline rationale.</p>
 <p><strong>Fixed 8N1 Frame, LSB-First</strong> Every byte is framed as:
 1 start bit (low) → 8 data bits (LSB first) → 1 stop bit (high), idling
@@ -514,7 +514,7 @@ GPT instance (default,
 <code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE = 1</code>) or an FSP Stack
 Configurator-generated instance
 (<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE = 0</code>). Both paths are
-fully wired in every board project in this delivery — see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a>.</p>
+fully wired in every board project in this delivery — see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a>.</p>
 <hr />
 <h2 id="design-pattern-single-call-simple-use">2.1 Design Pattern:
 Single-Call, Simple-Use</h2>
@@ -552,7 +552,7 @@ vs. Reference Application Code</h2>
 <p>The following table identifies which files are reusable core code and
 which belong only to the reference/demo application layer, at a glance.
 The full file-by-file breakdown — including which files are safe to
-modify — is in <a href="FILE_GUIDE.md">FILE_GUIDE.md</a>.</p>
+modify — is in <a href="FILE_GUIDE.html">FILE_GUIDE.html</a>.</p>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -583,7 +583,7 @@ GPT/GPIO types directly</td>
 <td>Board GPT preset instance + the
 <code>ConfigGen()</code>/<code>ConfigCheck()</code> bridge function
 definitions. Reference only — do not edit; for a different board, add a
-new preset file or use the FSP Stack Configurator path (see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a>)</td>
+new preset file or use the FSP Stack Configurator path (see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a>)</td>
 </tr>
 <tr>
 <td><strong>Reference App</strong></td>
@@ -598,8 +598,8 @@ new preset file or use the FSP Stack Configurator path (see <a href="CONFIGURATI
 source is genuinely vendored in this delivery — no additional FSP Smart
 Configurator step is required to build. Do not edit manually; regenerate
 via the FSP Smart Configurator, the CMake pre-configure RASC step (see
-<a href="BUILD.md">BUILD.md</a>), or the Meson build’s
-<code>rasc_generate</code> run target (see <a href="BUILD_MESON.md">BUILD_MESON.md</a>) if you change
+<a href="BUILD.html">BUILD.html</a>), or the Meson build’s
+<code>rasc_generate</code> run target (see <a href="BUILD_MESON.html">BUILD_MESON.html</a>) if you change
 <code>configuration.xml</code></td>
 </tr>
 </tbody>
@@ -619,7 +619,7 @@ full-duplex.</li>
 <li><strong>Not ISR-safe for
 <code>Write()</code>/<code>WriteString()</code>.</strong> These must be
 called from startup or main-loop/task context, never from an interrupt
-handler (Phase 1 restriction — see <a href="INTEGRATION_GUIDE.md">INTEGRATION_GUIDE.md</a>).</li>
+handler (Phase 1 restriction — see <a href="INTEGRATION_GUIDE.html">INTEGRATION_GUIDE.html</a>).</li>
 <li><strong>No dynamic reconfiguration while transmitting.</strong> Baud
 rate, TX pin, and GPT channel are fixed once <code>ConfigCheck()</code>
 succeeds; <code>ConfigCheck()</code> is not idempotent.</li>
@@ -631,20 +631,20 @@ stop-bit counts in Phase 1.</li>
 <hr />
 <h2 id="where-to-go-next">4. Where to Go Next</h2>
 <ul>
-<li><strong>Running the demo for the first time?</strong> → <a href="EXAMPLES_GUIDE.md">EXAMPLES_GUIDE.md</a></li>
-<li><strong>Building from the command line?</strong> → <a href="BUILD.md">BUILD.md</a></li>
+<li><strong>Running the demo for the first time?</strong> → <a href="EXAMPLES_GUIDE.html">EXAMPLES_GUIDE.html</a></li>
+<li><strong>Building from the command line?</strong> → <a href="BUILD.html">BUILD.html</a></li>
 <li><strong>Building headlessly, or running the unit tests?</strong> →
-<a href="BUILD_MESON.md">BUILD_MESON.md</a></li>
+<a href="BUILD_MESON.html">BUILD_MESON.html</a></li>
 <li><strong>Wiring the Bit-Banged UART into your application?</strong> →
-<a href="INTEGRATION_GUIDE.md">INTEGRATION_GUIDE.md</a></li>
+<a href="INTEGRATION_GUIDE.html">INTEGRATION_GUIDE.html</a></li>
 <li><strong>Reusing this for a different output or use case?</strong> →
-<a href="REUSABILITY_GUIDE.md">REUSABILITY_GUIDE.md</a></li>
-<li><strong>Porting to your own board?</strong> → <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a></li>
-<li><strong>Deciding what to copy vs. replace?</strong> → <a href="FILE_GUIDE.md">FILE_GUIDE.md</a></li>
-<li><strong>Writing code against the module?</strong> → <a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a></li>
-<li><strong>Understanding internal design?</strong> → <a href="ARCHITECTURE.md">ARCHITECTURE.md</a></li>
-<li><strong>Checking timing/RAM budget?</strong> → <a href="BEHAVIOR_AND_PERFORMANCE.md">BEHAVIOR_AND_PERFORMANCE.md</a></li>
-<li><strong>Upgrading from an older release?</strong> → <a href="RELEASE_NOTES.md">RELEASE_NOTES.md</a></li>
+<a href="REUSABILITY_GUIDE.html">REUSABILITY_GUIDE.html</a></li>
+<li><strong>Porting to your own board?</strong> → <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a></li>
+<li><strong>Deciding what to copy vs. replace?</strong> → <a href="FILE_GUIDE.html">FILE_GUIDE.html</a></li>
+<li><strong>Writing code against the module?</strong> → <a href="FUNCTIONS_GUIDE.html">FUNCTIONS_GUIDE.html</a></li>
+<li><strong>Understanding internal design?</strong> → <a href="ARCHITECTURE.html">ARCHITECTURE.html</a></li>
+<li><strong>Checking timing/RAM budget?</strong> → <a href="BEHAVIOR_AND_PERFORMANCE.html">BEHAVIOR_AND_PERFORMANCE.html</a></li>
+<li><strong>Upgrading from an older release?</strong> → <a href="RELEASE_NOTES.html">RELEASE_NOTES.html</a></li>
 </ul>
 <hr />
 <p><em>End of User Manual — <code>rs_bb_uart_tx</code> v0.1.0</em></p>

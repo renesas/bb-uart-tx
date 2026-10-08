@@ -181,23 +181,23 @@ vertical-align: middle;
 <body>
 <h1 id="configuration-guide">Configuration Guide</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-configuration-overview">Configuration Overview</a></li>
-<li><a href="#2-configuration-assumptions-per-reference-board">Configuration
+<li><a href="#configuration-overview">Configuration Overview</a></li>
+<li><a href="#configuration-assumptions-per-reference-board">Configuration
 Assumptions Per Reference Board</a></li>
-<li><a href="#3-required-non-default-fsp-settings">Required Non-Default
+<li><a href="#required-non-default-fsp-settings">Required Non-Default
 FSP Settings</a></li>
-<li><a href="#4-gpt-clock-divider--why-it-differs-per-board">GPT Clock
+<li><a href="#gpt-clock-divider-why-it-differs-per-board">GPT Clock
 Divider — Why It Differs Per Board</a></li>
-<li><a href="#5-adapting-to-your-board">Adapting to Your Board</a></li>
-<li><a href="#6-using-an-external-ttl-to-usb-adapter">Using an External
+<li><a href="#adapting-to-your-board">Adapting to Your Board</a></li>
+<li><a href="#using-an-external-ttl-to-usb-adapter">Using an External
 TTL-to-USB Adapter</a></li>
-<li><a href="#7-key-adaptation-points">Key Adaptation Points</a></li>
-<li><a href="#8-dependencies">Dependencies</a></li>
+<li><a href="#key-adaptation-points">Key Adaptation Points</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
 </ol>
 <hr />
 <h2 id="configuration-overview">1. Configuration Overview</h2>
@@ -297,7 +297,7 @@ requirements for your application.</p>
 </tr>
 <tr>
 <td>GPT bit-period interrupt priority</td>
-<td>1 (hardcoded — see <a href="#3-required-non-default-fsp-settings">Section 3</a>)</td>
+<td>1 (hardcoded — see <a href="#required-non-default-fsp-settings">Section 3</a>)</td>
 <td><code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6)</td>
 <td><code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6)</td>
 </tr>
@@ -479,7 +479,7 @@ frequency and whether its GPT channels are 16-bit or 32-bit
 (<code>BSP_FEATURE_GPT_32BIT_CHANNEL_MASK</code> in that MCU’s
 <code>bsp_feature.h</code>).</li>
 <li>Choose a divider that keeps <code>period_counts</code> within the
-channel’s counter width across the full 1200–115200 baud range — see <a href="#4-gpt-clock-divider--why-it-differs-per-board">Section 4</a> for
+channel’s counter width across the full 1200–115200 baud range — see <a href="#gpt-clock-divider-why-it-differs-per-board">Section 4</a> for
 the worked reasoning.</li>
 <li>Choose a valid GPT interrupt priority for that core — check the NVIC
 priority-bit count for the target Cortex-M core (2 bits = 0–3 on ARMv8-M
@@ -497,7 +497,7 @@ with your chosen pin, not just its own pin assignment.</li>
 <hr />
 <h2 id="using-an-external-ttl-to-usb-adapter">6. Using an External
 TTL-to-USB Adapter</h2>
-<p>To bypass the on-board VCOM bridge entirely (see <a href="BEHAVIOR_AND_PERFORMANCE.md#7-on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.md</a>),
+<p>To bypass the on-board VCOM bridge entirely (see <a href="BEHAVIOR_AND_PERFORMANCE.html#on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.html</a>),
 change the <code>tx_pin</code> argument passed to
 <code>rs_bb_uart_tx_ConfigGen()</code> in
 <code>rs_bb_uart_tx_demo.c</code> to your chosen GPIO, and wire an
@@ -598,7 +598,7 @@ peripheral pairing first</td>
 <td><code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code> in
 <code>rs_bb_uart_tx_cfg.h</code></td>
 <td>Must remain a power of two (64/128/256/512/1024 documented
-references); default 512 — see <a href="BEHAVIOR_AND_PERFORMANCE.md#5-ram-consumption">BEHAVIOR_AND_PERFORMANCE.md</a>
+references); default 512 — see <a href="BEHAVIOR_AND_PERFORMANCE.html#ram-consumption">BEHAVIOR_AND_PERFORMANCE.html</a>
 for why</td>
 </tr>
 <tr>
@@ -633,7 +633,7 @@ Configurator</td>
 <td>Fault handler</td>
 <td><code>src/fault_handler.c</code></td>
 <td>Replace with your production fault handling; remember the Cortex-M23
-vs. Cortex-M33 register-set difference if copying across boards — see <a href="FILE_GUIDE.md">FILE_GUIDE.md</a></td>
+vs. Cortex-M33 register-set difference if copying across boards — see <a href="FILE_GUIDE.html">FILE_GUIDE.html</a></td>
 </tr>
 </tbody>
 </table>
@@ -703,8 +703,8 @@ startup</td>
 <td>RASC (standalone)</td>
 <td>v6.5.0-compatible</td>
 <td>Required for headless project-content regeneration — from the CMake
-configure step (see <a href="BUILD.md">BUILD.md</a>) or the Meson
-build’s <code>rasc_generate</code> target (see <a href="BUILD_MESON.md">BUILD_MESON.md</a>)</td>
+configure step (see <a href="BUILD.html">BUILD.html</a>) or the Meson
+build’s <code>rasc_generate</code> target (see <a href="BUILD_MESON.html">BUILD_MESON.html</a>)</td>
 </tr>
 <tr>
 <td>SEGGER J-Link (on-board)</td>
@@ -726,7 +726,7 @@ module.</strong> It does not open, own, or depend on a UART/SCI HAL
 instance at all — the whole point of the module is to synthesize
 UART-style output without one.</p>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

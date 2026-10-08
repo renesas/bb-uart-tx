@@ -246,24 +246,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <body>
 <h1 id="integration-guide">Integration Guide</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>. This guide covers <strong>how to wire the module
 into your application</strong> — initialization order and
 calling-context rules. For <strong>adapting the core logic to a
-different output or use case</strong>, see <a href="REUSABILITY_GUIDE.md">REUSABILITY_GUIDE.md</a>. For the functions
-referenced below, see <a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a>.</p>
+different output or use case</strong>, see <a href="REUSABILITY_GUIDE.html">REUSABILITY_GUIDE.html</a>. For the functions
+referenced below, see <a href="FUNCTIONS_GUIDE.html">FUNCTIONS_GUIDE.html</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-minimal-integration">Minimal Integration</a></li>
-<li><a href="#2-calling-context-rules">Calling-Context Rules</a></li>
-<li><a href="#3-sizing-the-ring-buffer-for-your-traffic-pattern">Sizing
+<li><a href="#minimal-integration">Minimal Integration</a></li>
+<li><a href="#calling-context-rules">Calling-Context Rules</a></li>
+<li><a href="#sizing-the-ring-buffer-for-your-traffic-pattern">Sizing
 the Ring Buffer for Your Traffic Pattern</a></li>
-<li><a href="#4-handling-rs_bb_uart_tx_status_tx_buffer_full">Handling
+<li><a href="#handling-rs_bb_uart_tx_status_tx_buffer_full">Handling
 <code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code></a></li>
-<li><a href="#5-bare-metal-main-loop-integration-pattern-reference">Bare-Metal
+<li><a href="#bare-metal-main-loop-integration-pattern-reference">Bare-Metal
 Main-Loop Integration Pattern (Reference)</a></li>
-<li><a href="#6-single-instance-constraint">Single-Instance
+<li><a href="#single-instance-constraint">Single-Instance
 Constraint</a></li>
 </ol>
 <hr />
@@ -295,8 +295,8 @@ Constraint</a></li>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>There are no separate
 <code>Open()</code>/<code>Start()</code>/<code>Stop()</code>/<code>Close()</code>
-public calls — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>
-for why, and <a href="ARCHITECTURE.md#1-lifecycle-state-machine">ARCHITECTURE.md</a> for
+public calls — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.html</a>
+for why, and <a href="ARCHITECTURE.html#lifecycle-state-machine">ARCHITECTURE.html</a> for
 the internal state machine this sequence drives.</p>
 <hr />
 <h2 id="calling-context-rules">2. Calling-Context Rules</h2>
@@ -350,7 +350,7 @@ this way from within the GPT ISR itself</td>
 <p><strong>Why <code>Write()</code>/<code>WriteString()</code> are not
 ISR-safe in Phase 1:</strong> the ring buffer’s enqueue side
 (<code>head</code>) is the producer side by design, and the producer is
-expected to be main-loop/task context — see <a href="ARCHITECTURE.md#5-ring-buffer-concurrency-model">ARCHITECTURE.md</a>.
+expected to be main-loop/task context — see <a href="ARCHITECTURE.html#ring-buffer-concurrency-model">ARCHITECTURE.html</a>.
 The GPT ISR is the sole <em>consumer</em>. If you need to trigger output
 from an interrupt, have the ISR set a flag or push into your own small
 application-level structure, and drain that from your main loop by
@@ -362,7 +362,7 @@ Ring Buffer for Your Traffic Pattern</h2>
 be a power of two) determines how much data can be queued before a
 <code>Write()</code>/<code>WriteString()</code> call returns
 <code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code>. Usable capacity is one
-byte less than the configured size (see <a href="ARCHITECTURE.md#5-ring-buffer-concurrency-model">ARCHITECTURE.md</a>
+byte less than the configured size (see <a href="ARCHITECTURE.html#ring-buffer-concurrency-model">ARCHITECTURE.html</a>
 for why).</p>
 <p>Sizing guidance:</p>
 <ul>
@@ -370,7 +370,7 @@ for why).</p>
 <code>Write()</code>/<code>WriteString()</code> call</strong>, plus
 enough headroom for whatever else might already be queued and draining.
 The reference demo’s ~300-byte startup banner, sent as one call, is why
-the default is 512 rather than the design doc’s nominal 256 — see <a href="BEHAVIOR_AND_PERFORMANCE.md#5-ram-consumption">BEHAVIOR_AND_PERFORMANCE.md</a>.</li>
+the default is 512 rather than the design doc’s nominal 256 — see <a href="BEHAVIOR_AND_PERFORMANCE.html#ram-consumption">BEHAVIOR_AND_PERFORMANCE.html</a>.</li>
 <li><strong>Drain rate is fixed by baud rate</strong>, not by buffer
 size: at 115200 baud, roughly one byte transmits every ~87 µs (10 bit
 periods per byte, 8N1). A full 512-byte buffer drains in a little under
@@ -397,10 +397,10 @@ line is acceptable — <code>rs_bb_uart_tx_StatusGet()</code>’s
 free without extra bookkeeping.</li>
 <li><strong>Reduce message size or frequency</strong> if buffer-full
 events are frequent — this usually indicates the buffer is undersized
-for your traffic pattern relative to the configured baud rate (see <a href="#3-sizing-the-ring-buffer-for-your-traffic-pattern">Section
+for your traffic pattern relative to the configured baud rate (see <a href="#sizing-the-ring-buffer-for-your-traffic-pattern">Section
 3</a>).</li>
 </ul>
-<p>There is no blocking-write option in Phase 1 — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#known-limitations-phase-1-by-design">BIT_BANGED_UART_TX-USER_MANUAL.md</a>.</p>
+<p>There is no blocking-write option in Phase 1 — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#known-limitations-phase-1-by-design">BIT_BANGED_UART_TX-USER_MANUAL.html</a>.</p>
 <hr />
 <h2 id="bare-metal-main-loop-integration-pattern-reference">5.
 Bare-Metal Main-Loop Integration Pattern (Reference)</h2>
@@ -446,10 +446,10 @@ in Phase 1.</p>
 outputs, you would need to duplicate and rename the entire
 <code>src/rs_bb_uart_tx/</code> module (a distinct short name, distinct
 prefix, distinct static control block) — this is an architectural change
-beyond Phase 1’s scope, not a supported configuration option. See <a href="REUSABILITY_GUIDE.md">REUSABILITY_GUIDE.md</a> for what does and
+beyond Phase 1’s scope, not a supported configuration option. See <a href="REUSABILITY_GUIDE.html">REUSABILITY_GUIDE.html</a> for what does and
 does not adapt easily.</p>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
-Manual</a>. For adapting the core logic to a different use case, see <a href="REUSABILITY_GUIDE.md">REUSABILITY_GUIDE.md</a>.</em></p>
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
+Manual</a>. For adapting the core logic to a different use case, see <a href="REUSABILITY_GUIDE.html">REUSABILITY_GUIDE.html</a>.</em></p>
 </body>
 </html>

@@ -247,9 +247,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <h1 id="build-instructions-cmake-ninja-llvm-atfe">Build Instructions —
 CMake + Ninja + LLVM (ATfE)</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>. Note: for opening/building/debugging through the
-<strong>VS Code UI</strong>, see <a href="EXAMPLES_GUIDE.md">EXAMPLES_GUIDE.md</a> instead — this document
+<strong>VS Code UI</strong>, see <a href="EXAMPLES_GUIDE.html">EXAMPLES_GUIDE.html</a> instead — this document
 is the command-line path plus the tooling details behind it.</p>
 </blockquote>
 <p>Supports: - ✅ Embedded firmware for <strong>FPB-RA2E3</strong>
@@ -268,7 +268,7 @@ board’s folder name.</p>
 <blockquote>
 <p><strong>No e2studio-style “Import” step.</strong> These are plain VS
 Code / CMake projects — you open a board’s project by opening its
-<code>.code-workspace</code> file or folder directly (see <a href="EXAMPLES_GUIDE.md#2-opening-and-building-in-vs-code">EXAMPLES_GUIDE.md</a>),
+<code>.code-workspace</code> file or folder directly (see <a href="EXAMPLES_GUIDE.html#opening-and-building-in-vs-code">EXAMPLES_GUIDE.html</a>),
 not by importing it into an IDE.</p>
 </blockquote>
 <hr />
@@ -303,7 +303,7 @@ board)</h2>
 └── src/
     │   hal_entry.c              ← application entry point
     │   hal_warmstart.c          ← BSP warm-start boilerplate
-    │   fault_handler.c          ← Cortex-M23 or Cortex-M33 fault handler (board-specific — see FILE_GUIDE.md)
+    │   fault_handler.c          ← Cortex-M23 or Cortex-M33 fault handler (board-specific — see FILE_GUIDE.html)
     │   rs_bb_uart_tx_demo.c     ← reference application (NOT reusable core)
     └── rs_bb_uart_tx/            ← *** the reusable core ***
         │   rs_bb_uart_tx.h / .c
@@ -404,7 +404,7 @@ files under <code>src/</code>.</strong></p>
 through VS Code’s Renesas hardware debug extension
 (<code>.vscode/launch.json</code>, <code>renesas-hardware</code> debug
 type), not through a separate command-line flash step in this delivery —
-see <a href="EXAMPLES_GUIDE.md#3-flashing-and-debugging">EXAMPLES_GUIDE.md</a>.</p>
+see <a href="EXAMPLES_GUIDE.html#flashing-and-debugging">EXAMPLES_GUIDE.html</a>.</p>
 <hr />
 <h2 id="regenerating-fsp-project-content">🔧 Regenerating FSP Project
 Content</h2>
@@ -421,7 +421,7 @@ Content”</strong> VS Code task
 (<code>Terminal → Run Task → Regenerate Project Content</code>), which
 runs <code>cmake -P cmake/prebuild.cmake</code> directly.</li>
 </ul>
-<p>See <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a>
+<p>See <a href="CONFIGURATION_GUIDE.html#required-non-default-fsp-settings">CONFIGURATION_GUIDE.html</a>
 for the exact GPT/GPIO/SCI settings that must be preserved per board
 before you click <strong>Generate Project Content</strong> in the Smart
 Configurator GUI.</p>
@@ -443,7 +443,7 @@ Configurator GUI.</p>
 <td><code>Toolchain path not defined</code> at configure time</td>
 <td>Set <code>ARM_LLVM_TOOLCHAIN_PATH</code> (or
 <code>ARM_TOOLCHAIN_PATH</code>) before invoking <code>cmake</code> —
-see <a href="#-tools-to-install">Tools to Install</a></td>
+see <a href="#tools-to-install">Tools to Install</a></td>
 </tr>
 <tr>
 <td><code>Toolchain path does not exists: ...</code></td>
@@ -473,24 +473,24 @@ FSP-version mismatch</td>
 <code>rs_bb_uart_tx_hal_gpt_open()</code> returns
 <code>TIMER_ERROR</code></td>
 <td>GPT0’s counter-overflow interrupt was disabled or its callback
-reverted to <code>NULL</code> in <code>configuration.xml</code> — see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a></td>
+reverted to <code>NULL</code> in <code>configuration.xml</code> — see <a href="CONFIGURATION_GUIDE.html#required-non-default-fsp-settings">CONFIGURATION_GUIDE.html</a></td>
 </tr>
 <tr>
 <td>No output on the VCOM terminal at all</td>
 <td>Confirm the terminal is on the correct COM port, at 115200 8N1;
 confirm the TX pin is actually configured as GPIO output and not still
-claimed by SCI9 (FPB-RA2E3) / SCI0 (FPB-RA4E2/FPB-RA6E2) — see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a></td>
+claimed by SCI9 (FPB-RA2E3) / SCI0 (FPB-RA4E2/FPB-RA6E2) — see <a href="CONFIGURATION_GUIDE.html#required-non-default-fsp-settings">CONFIGURATION_GUIDE.html</a></td>
 </tr>
 <tr>
 <td>No output below 9600 baud on the VCOM terminal, but the TX pin
 signal (scope/logic analyzer) looks correct</td>
 <td>On-board J-Link VCOM bridge firmware does not reliably relay baud
-rates below 9600 — see <a href="BEHAVIOR_AND_PERFORMANCE.md#7-on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.md</a></td>
+rates below 9600 — see <a href="BEHAVIOR_AND_PERFORMANCE.html#on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.html</a></td>
 </tr>
 <tr>
 <td><code>StatusGet()</code>’s <code>full</code> counter is non-zero
 every boot</td>
-<td>Ring buffer is undersized for your traffic burst — see <a href="BEHAVIOR_AND_PERFORMANCE.md#5-ram-consumption">BEHAVIOR_AND_PERFORMANCE.md</a>
+<td>Ring buffer is undersized for your traffic burst — see <a href="BEHAVIOR_AND_PERFORMANCE.html#ram-consumption">BEHAVIOR_AND_PERFORMANCE.html</a>
 and increase <code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code></td>
 </tr>
 <tr>
@@ -551,7 +551,7 @@ shell VS Code was launched from — <code>.clangd</code>’s
 </tbody>
 </table>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>
