@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BUILD_MESON</title>
+  <style>
+
+html {
+color: #1a1a1a;
+color: light-dark(#1a1a1a, #fdfdfd);
+background-color: #fdfdfd;
+background-color: light-dark(#fdfdfd, #1a1a1a);
+color-scheme: light dark;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+color-scheme: light only;
+}
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a, a:visited {
+color: inherit;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid;
+border-color: #e6e6e6;
+border-color: light-dark(#e6e6e6, #4c4c4c);
+color: #606060;
+color: light-dark(#606060, #b6b6b6);
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid currentColor;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid currentColor;
+border-bottom: 1px solid currentColor;
+}
+th {
+border-top: 1px solid currentColor;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<h1 id="build-test-instructions---bit-banged-uart-tx-meson-llvmclang">Build
+&amp; Test Instructions - Bit-Banged UART TX (Meson + LLVM/Clang)</h1>
+<blockquote>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+documentation set</a>. The CMake/VS Code build of the example projects
+is documented in <a href="BUILD.md">BUILD.md</a>; this document covers
+the <strong>Meson</strong> flow: host unit tests, firmware, and
+on-target unit tests.</p>
+</blockquote>
+<ul>
+<li>✅ Host-based <strong>unit tests</strong> (Windows + Linux, no
+hardware)</li>
+<li>✅ Cross-built application firmware for FPB-RA2E3 / RA4E2 /
+RA6E2</li>
+<li>✅ On-target Unity test firmware for the same boards</li>
+</ul>
+<hr />
+<h2 id="host-unit-tests">Host unit tests</h2>
+<p>No hardware, no FSP, no RASC. Needs only Meson, Ninja, a C compiler
+(clang/clang-cl), and the Unity subproject
+(<code>subprojects/unity.wrap</code>, fetched by Meson).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>meson setup build-clangcl <span class="op">--</span>wipe <span class="op">--</span>native-file <span class="op">.</span>\meson\llvm-clangcl-msvc<span class="op">.</span><span class="fu">ini</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>meson compile <span class="op">-</span>C build-clangcl</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>meson test <span class="op">-</span>C build-clangcl <span class="op">-</span>v</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">meson</span> setup build-clang <span class="at">--wipe</span> <span class="at">--native-file</span> ./meson/llvm-clangcl-ubuntu2404-ci.ini</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">meson</span> compile <span class="at">-C</span> build-clang</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">meson</span> test <span class="at">-C</span> build-clang <span class="at">-v</span></span></code></pre></div>
+<p><code>RS_BB_UART_TX_TEST_HOST_BUILD=1</code> and
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE=0</code> are set in
+<code>tests/meson.build</code> (<code>host_test_cargs</code>),
+<strong>not</strong> in the native files, so every native toolchain file
+builds the tests identically.</p>
+<h3 id="two-host-executables">Two host executables</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Executable</th>
+<th>Links</th>
+<th>Runs on target?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unittest_on_pc</code></td>
+<td>pure logic + core + board data file, <strong>mock HAL</strong>
+defined in <code>test_rs_bb_uart_tx_core.c</code></td>
+<td>✅ yes</td>
+</tr>
+<tr>
+<td><code>unittest_hal_on_pc</code></td>
+<td>the same, plus the <strong>real
+<code>rs_bb_uart_tx_hal.c</code></strong> against a fake FSP timer/pin
+layer (<code>tests/stubs/rs_bb_uart_tx_fake_fsp.*</code>)</td>
+<td>❌ host only</td>
+</tr>
+</tbody>
+</table>
+<p>The split exists because the real
+<code>R_BSP_PinAccessEnable/PinWrite/...</code> are
+<code>__STATIC_INLINE</code> in the BSP and cannot be replaced on
+target, while the GPT ISR callback (which glues the engine to the pin)
+lives in <code>hal.c</code> and must be tested.</p>
+<h3 id="test-groups">Test groups</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Group</th>
+<th>Tests</th>
+<th>Executable</th>
+<th>What is covered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BbUartRingBuffer</code></td>
+<td>18</td>
+<td><code>unittest_on_pc</code></td>
+<td>reserved slot / capacity, FIFO, all-or-nothing, wrap-around,
+accounting</td>
+</tr>
+<tr>
+<td><code>BbUartEngine</code></td>
+<td>16</td>
+<td><code>unittest_on_pc</code></td>
+<td>per-state FSM transitions, pipeline register, the NEXT_BYTE race
+window, no ring access in START/DATA</td>
+</tr>
+<tr>
+<td><code>BbUartEngineFrame</code></td>
+<td>11</td>
+<td><code>unittest_on_pc</code></td>
+<td>8N1 frame structure, LSB-first, exact 10-tick spacing, stop bit,
+launch latency, all 256 byte values</td>
+</tr>
+<tr>
+<td><code>BbUartConfig</code></td>
+<td>22</td>
+<td><code>unittest_on_pc</code></td>
+<td><code>ConfigGen</code> / <code>ConfigCheck</code> /
+<code>ConfigGetSize</code>, baud bounds, open order, error
+propagation</td>
+</tr>
+<tr>
+<td><code>BbUartLifecycle</code></td>
+<td>12</td>
+<td><code>unittest_on_pc</code></td>
+<td>UNCONFIGURED → READY → TRANSMITTING, ERROR handling,
+<code>StatusGet</code></td>
+</tr>
+<tr>
+<td><code>BbUartWrite</code></td>
+<td>15</td>
+<td><code>unittest_on_pc</code></td>
+<td><code>Write</code>/<code>WriteString</code>, buffer-full policy,
+diagnostics counters</td>
+</tr>
+<tr>
+<td><code>BbUartHal</code></td>
+<td>20</td>
+<td><code>unittest_hal_on_pc</code></td>
+<td>GPT open/start/stop/close, period formula, baud accuracy ≤ 1 %, PFS
+access bracketing</td>
+</tr>
+<tr>
+<td><code>BbUartIsr</code></td>
+<td>9</td>
+<td><code>unittest_hal_on_pc</code></td>
+<td>callback state gating, pin-write-before-advance, byte accounting,
+timer stop</td>
+</tr>
+<tr>
+<td><code>BbUartWaveform</code></td>
+<td>15</td>
+<td><code>unittest_hal_on_pc</code></td>
+<td>public API → decoded pin waveform, burst duration = 10·N + 2 ticks,
+no gaps</td>
+</tr>
+</tbody>
+</table>
+<p>Expected output:</p>
+<pre><code>Unity test run 1 of 2   -&gt;   94 Tests 0 Failures 0 Ignored   OK
+Unity test run 2 of 2   -&gt;   44 Tests 0 Failures 0 Ignored   OK</code></pre>
+<h3 id="relation-to-the-jitter-specification">Relation to the jitter
+specification</h3>
+<p><code>tests/Bit_Banged_UART_TX_Jitter_Specification.txt</code> is an
+<strong>analogue</strong> requirement (edge timing in nanoseconds,
+measured with a logic analyser — see the FPB-RA2E3 verification PDF). It
+cannot be replayed on a host. The host tests prove the deterministic
+<em>logical</em> contract it depends on: every frame is exactly 10 bit
+periods start-to-start, the stop bit is a full bit period, the only
+extra latency is one idle bit period before the first start bit, and the
+timer period matches the baud rate to within 1 %.</p>
+<hr />
+<h2 id="firmware-build-cross">Firmware build (cross)</h2>
+<p>Requires RASC (standalone), the ATfE LLVM toolchain, and the
+<code>fsp.wrap</code> / <code>cmsis.wrap</code> files (git-ignored; keep
+them local as with the other PES projects). One-time:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">.</span> <span class="op">.</span>\scripts\env<span class="op">.</span><span class="fu">ps1</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>meson subprojects download</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># FPB-RA2E3 (Cortex-M23)  — edit meson\llvm-cortex-m23.ini first (ATfE paths + multilib, see below)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>meson setup build-ra2e3 <span class="op">--</span>wipe <span class="op">--</span>cross-file meson\llvm-cortex-m23<span class="op">.</span><span class="fu">ini</span> `</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">-</span>Dgen_board<span class="op">=</span>ra2e3-fpb <span class="op">-</span>Dboard<span class="op">=</span>ra2e3_fpb <span class="op">-</span>Dmcu<span class="op">=</span>ra2e3 <span class="op">-</span>Ddevice<span class="op">=</span>RA2E3</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>meson compile <span class="op">-</span>C build-ra2e3</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># FPB-RA4E2 / FPB-RA6E2 (Cortex-M33)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>meson setup build-ra4e2 <span class="op">--</span>wipe <span class="op">--</span>cross-file meson\llvm-cortex-m33<span class="op">.</span><span class="fu">ini</span> `</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">-</span>Dgen_board<span class="op">=</span>ra4e2-fpb <span class="op">-</span>Dboard<span class="op">=</span>ra4e2_fpb <span class="op">-</span>Dmcu<span class="op">=</span>ra4e2 <span class="op">-</span>Ddevice<span class="op">=</span>RA4E2</span></code></pre></div>
+<blockquote>
+<p><strong>Use the <code>meson\</code> cross files.</strong> The
+<code>meson\llvm-cortex-m*.ini</code> files pass <code>--sysroot</code>
+(needed for <code>setjmp.h</code>, <code>string.h</code>, …) and the
+matching multilib.</p>
+<p><code>meson\llvm-cortex-m23.ini</code> ships with placeholder ATfE
+paths. Copy the paths from your working
+<code>llvm-cortex-m33.ini</code>, and set the multilib folder to the
+output of
+<code>clang --target=arm-none-eabi -mcpu=cortex-m23 -mthumb -mfloat-abi=soft -Os -print-multi-directory</code>.</p>
+</blockquote>
+<p>Outputs per board:
+<code>bit_banged_uart_tx_on_&lt;board&gt;_clang.srec</code>
+(application) and
+<code>bit_banged_uart_tx_unittest_on_&lt;board&gt;_clang.srec</code>
+(Unity test firmware).</p>
+<p>Board glue (<code>hal_entry.c</code>, <code>fault_handler.c</code>,
+demo, and the RA4E2/RA6E2 board data file) is taken from
+<code>examples/VSCode/BitBangedUART_TX_FPB_&lt;BOARD&gt;/src</code>, so
+nothing is duplicated.</p>
+<h2 id="on-target-unit-tests">On-target unit tests</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>meson compile <span class="op">-</span>C build-ra2e3 rfp_program_ut</span></code></pre></div>
+<p>The UT image runs <code>BbUartRingBuffer</code>,
+<code>BbUartEngine</code>, <code>BbUartEngineFrame</code>,
+<code>BbUartConfig</code>, <code>BbUartLifecycle</code>, and
+<code>BbUartWrite</code> (mock HAL) on the real Cortex-M core with the
+real compiler flags.</p>
+<p><strong>Output transport.</strong> The example projects configure
+only <code>r_gpt</code> + <code>r_ioport</code> (no SCI, no RTT), and
+the VCOM TXD pin belongs to the PES itself. The UT image mocks the HAL,
+so that pin is free; Unity output is sent by a small polled software
+UART (<code>tests/target/unity_port_polled_gpio.c</code>) at
+<strong>9600 baud, 8N1</strong> on the board’s VCOM TXD pin
+(<code>-Dunity_tx_pin=</code> overrides the per-board default). Open a
+terminal at 9600 8N1 on the USB-VCOM port, or use
+<code>tests/run_ut.robot</code>.</p>
+<h3 id="tdd-workflow">TDD workflow</h3>
+<pre><code>1. meson test -C build-clangcl        # host tests: fast, no hardware
+2. flash unittest SREC -&gt; read VCOM   # on-target logic tests, real compiler/core
+3. logic-analyser jitter check        # the analogue timing spec (see tests/*Jitter*)
+4. flash app SREC                     # demo / production firmware</code></pre>
+<h2 id="running-the-application-firmware">Running the application
+firmware</h2>
+<p>Step 4 of the TDD workflow above, spelled out. The application image
+(the demo firmware — startup banner, heartbeat, periodic
+<code>StatusGet()</code> print over the VCOM UART) is built alongside
+the UT image by the <strong>Firmware build (cross)</strong> step, as
+<code>bit_banged_uart_tx_on_&lt;board&gt;_clang.srec</code>.
+<code>rfp_program</code> flashes and runs it, the same way
+<code>rfp_program_ut</code> above does for the UT image:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>meson compile <span class="op">-</span>C build-ra2e3 rfp_program</span></code></pre></div>
+<p>Open a terminal at 115200 8N1 (the demo’s default baud) on the
+board’s VCOM port — see the repository root <code>README.md</code>
+(“Running the Demo”) for the expected banner/heartbeat output and the
+full Tera Term settings table.</p>
+<p>Two related run targets exist in the same board’s build
+directory:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Target</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rfp_reset</code></td>
+<td>Resets the target without reprogramming it — use after
+power-cycling, or to restart whichever image (app or UT) is already
+flashed</td>
+</tr>
+<tr>
+<td><code>rfp_erase_halt</code> / <code>rfp_check_blank</code></td>
+<td>Bulk-erase and blank-check the device. Not part of the normal flash
+flow — only needed to recover from a corrupted image</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&#39;setjmp.h&#39; file not found</code> in firmware build</td>
+<td>wrong cross file: use <code>meson\llvm-cortex-m23.ini</code> /
+<code>llvm-cortex-m33.ini</code> (with <code>--sysroot</code>)</td>
+</tr>
+<tr>
+<td><code>RASC expected output(s) missing</code></td>
+<td>RASC ran but wrote a different file set; the message lists what is
+missing — compare with <code>firmware\generated\meson.build</code></td>
+</tr>
+<tr>
+<td><code>bsp_api.h: No such file</code> on host</td>
+<td><code>host_test_cargs</code> in <code>tests/meson.build</code> lost
+<code>-DRS_BB_UART_TX_TEST_HOST_BUILD=1</code></td>
+</tr>
+<tr>
+<td><code>r_gpt.h: No such file</code> on host</td>
+<td><code>-DRS_BB_UART_TX_CFG_PRESET_CONFIG_USE=0</code> missing from
+<code>host_test_cargs</code></td>
+</tr>
+<tr>
+<td><code>undefined reference to rs_bb_uart_tx_hal_*</code> in
+<code>unittest_on_pc</code></td>
+<td><code>rs_bb_uart_tx_hal.c</code> must be excluded there; the mock in
+<code>test_rs_bb_uart_tx_core.c</code> provides the symbols</td>
+</tr>
+<tr>
+<td><code>multiple definition of R_BSP_PinWrite</code> on target</td>
+<td><code>tests/stubs</code> leaked onto the firmware include path /
+fake FSP linked into the UT image</td>
+</tr>
+<tr>
+<td><code>__declspec(noreturn)</code> errors in Unity (clang-cl)</td>
+<td>ensure <code>/clang:-D_Noreturn=</code> is in <code>c_args</code> of
+<code>meson/llvm-clangcl-msvc.ini</code></td>
+</tr>
+<tr>
+<td>Garbled Unity output on target</td>
+<td>terminal must be 9600 8N1 (not 115200)</td>
+</tr>
+<tr>
+<td><code>ninja: unknown target &#39;rfp_program&#39;</code> (or
+<code>rfp_program_ut</code>)</td>
+<td><code>rfp-cli.exe</code> wasn’t on <code>PATH</code> when
+<code>meson setup</code> ran — <code>firmware/meson.build</code> skips
+defining every <code>rfp_*</code> target rather than failing the build;
+fix <code>PATH</code> (see <code>scripts/env.ps1</code>) and re-run
+<code>meson setup</code></td>
+</tr>
+<tr>
+<td>Hard fault while running on-target tests</td>
+<td>main stack too small: raise <code>BSP_CFG_STACK_MAIN_BYTES</code>
+(RASC default is ~1 KB); the tests keep large buffers static to stay
+within it</td>
+</tr>
+<tr>
+<td>A test group never runs on target</td>
+<td>add it to <strong>both</strong>
+<code>test_main.c</code>/<code>test_main_hal.c</code> and
+<code>test_main_firmware.c</code> (host-only groups excluded)</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

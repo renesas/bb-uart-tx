@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CONFIGURATION_GUIDE</title>
+  <style>
+
+html {
+color: #1a1a1a;
+color: light-dark(#1a1a1a, #fdfdfd);
+background-color: #fdfdfd;
+background-color: light-dark(#fdfdfd, #1a1a1a);
+color-scheme: light dark;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+color-scheme: light only;
+}
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a, a:visited {
+color: inherit;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid;
+border-color: #e6e6e6;
+border-color: light-dark(#e6e6e6, #4c4c4c);
+color: #606060;
+color: light-dark(#606060, #b6b6b6);
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid currentColor;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid currentColor;
+border-bottom: 1px solid currentColor;
+}
+th {
+border-top: 1px solid currentColor;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<h1 id="configuration-guide">Configuration Guide</h1>
+<blockquote>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+documentation set</a>.</p>
+</blockquote>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-configuration-overview">Configuration Overview</a></li>
+<li><a href="#2-configuration-assumptions-per-reference-board">Configuration
+Assumptions Per Reference Board</a></li>
+<li><a href="#3-required-non-default-fsp-settings">Required Non-Default
+FSP Settings</a></li>
+<li><a href="#4-gpt-clock-divider--why-it-differs-per-board">GPT Clock
+Divider — Why It Differs Per Board</a></li>
+<li><a href="#5-adapting-to-your-board">Adapting to Your Board</a></li>
+<li><a href="#6-using-an-external-ttl-to-usb-adapter">Using an External
+TTL-to-USB Adapter</a></li>
+<li><a href="#7-key-adaptation-points">Key Adaptation Points</a></li>
+<li><a href="#8-dependencies">Dependencies</a></li>
+</ol>
+<hr />
+<h2 id="configuration-overview">1. Configuration Overview</h2>
+<p><code>rs_bb_uart_tx</code> relies on a combination of:</p>
+<ul>
+<li>A GPT HAL instance (<code>timer_instance_t</code>), either a
+standalone preset or FSP Stack Configurator-generated</li>
+<li>Build-time configuration constants in
+<code>rs_bb_uart_tx_cfg.h</code></li>
+<li>A runtime configuration structure (<code>rs_bb_uart_tx_cfg_t</code>)
+bound via <code>rs_bb_uart_tx_ConfigGen()</code></li>
+</ul>
+<p>The reference implementation targets <strong>FPB-RA2E3</strong>,
+<strong>FPB-RA4E2</strong>, and <strong>FPB-RA6E2</strong> — all three
+via VS Code / CMake example projects in this delivery.</p>
+<hr />
+<h2 id="configuration-assumptions-per-reference-board">2. Configuration
+Assumptions Per Reference Board</h2>
+<p>These are reference assumptions for the demo hardware, not
+requirements for your application.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Resource</th>
+<th>FPB-RA2E3</th>
+<th>FPB-RA4E2</th>
+<th>FPB-RA6E2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCU</td>
+<td>R7FA2E3073CFL (Cortex-M23, ARMv8-M Baseline)</td>
+<td>R7FA4E2B9 (Cortex-M33, ARMv8-M Mainline)</td>
+<td>R7FA6E2BB (Cortex-M33, ARMv8-M Mainline, TrustZone)</td>
+</tr>
+<tr>
+<td>Package</td>
+<td>48-pin LQFP</td>
+<td>64-pin QFN</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROM / RAM (device)</td>
+<td>64 KB / 16 KB</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>TX GPIO pin</td>
+<td>P109 (<code>BSP_IO_PORT_01_PIN_09</code>)</td>
+<td>P411 (<code>BSP_IO_PORT_04_PIN_11</code>)</td>
+<td>P411 (<code>BSP_IO_PORT_04_PIN_11</code>)</td>
+</tr>
+<tr>
+<td>Default board VCOM RX pin (unused by this module)</td>
+<td>P110</td>
+<td>P410</td>
+<td>P410</td>
+</tr>
+<tr>
+<td>Default competing peripheral on the TX pin</td>
+<td>SCI9 TXD9 (paired with P110 as SCI9 RXD9, Simple I2C mode)</td>
+<td>SCI0 TXD0</td>
+<td>SCI0 TXD0</td>
+</tr>
+<tr>
+<td>GPT channel</td>
+<td>GPT0, periodic interrupt mode</td>
+<td>GPT0, periodic interrupt mode</td>
+<td>GPT0, periodic interrupt mode</td>
+</tr>
+<tr>
+<td>GPT clock divider</td>
+<td><code>TIMER_SOURCE_DIV_1</code> (undivided)</td>
+<td><code>TIMER_SOURCE_DIV_4</code></td>
+<td><code>TIMER_SOURCE_DIV_4</code></td>
+</tr>
+<tr>
+<td>GPT channel width</td>
+<td>32-bit
+(<code>BSP_FEATURE_GPT_32BIT_CHANNEL_MASK == 0x01</code>)</td>
+<td>16-bit only</td>
+<td>16-bit only</td>
+</tr>
+<tr>
+<td>PCLKD (effective, after divider)</td>
+<td>48 MHz (undivided)</td>
+<td>~25 MHz (100 MHz ÷ 4)</td>
+<td>~25 MHz (100 MHz ÷ 4)</td>
+</tr>
+<tr>
+<td>GPT bit-period interrupt priority</td>
+<td>1 (hardcoded — see <a href="#3-required-non-default-fsp-settings">Section 3</a>)</td>
+<td><code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6)</td>
+<td><code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6)</td>
+</tr>
+<tr>
+<td>NVIC priority bits implemented</td>
+<td>2 (valid range 0–3)</td>
+<td>4 (valid range 0–15)</td>
+<td>4 (valid range 0–15)</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>On-board J-Link VCOM USB</td>
+<td>On-board J-Link VCOM USB</td>
+<td>On-board J-Link VCOM USB</td>
+</tr>
+<tr>
+<td>Fault handler register set</td>
+<td><code>SHCSR</code> only (no
+<code>CFSR</code>/<code>HFSR</code>/<code>MMFAR</code>/<code>BFAR</code>)</td>
+<td>Full:
+<code>CFSR</code>/<code>HFSR</code>/<code>MMFAR</code>/<code>BFAR</code></td>
+<td>Full:
+<code>CFSR</code>/<code>HFSR</code>/<code>MMFAR</code>/<code>BFAR</code></td>
+</tr>
+</tbody>
+</table>
+<p>FPB-RA2E3’s default VCOM transmit/receive pin assignment (P109/P110)
+reflects the physical J-Link OB VCOM routing on that specific board,
+defined by board-level connectivity — not by an SCI alternate-function
+naming convention the way P411/P410
+(<code>TXD0</code>/<code>RXD0</code>) are on the other two boards.</p>
+<hr />
+<h2 id="required-non-default-fsp-settings">3. Required Non-Default FSP
+Settings</h2>
+<p>These are the settings that must be preserved (or reproduced, if
+porting via the FSP Stack Configurator path) for the module to operate.
+If you ever reopen the FSP Smart Configurator perspective for one of
+these projects, verify these before clicking <strong>Generate Project
+Content</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Board</th>
+<th>Setting</th>
+<th>Required Value</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All</td>
+<td>GPT0 counter-overflow interrupt</td>
+<td>Enabled</td>
+<td>If disabled, or the callback reverts to <code>NULL</code>, the bit
+engine will not run</td>
+</tr>
+<tr>
+<td>All</td>
+<td>GPT0 callback</td>
+<td><code>rs_bb_uart_tx_hal_gpt_callback</code></td>
+<td>The ISR the entire TX bit engine depends on</td>
+</tr>
+<tr>
+<td>FPB-RA2E3</td>
+<td>GPT0 counter-overflow interrupt priority</td>
+<td><strong>0–3 only</strong></td>
+<td>Cortex-M23 (ARMv8-M Baseline) implements only 2 NVIC priority bits.
+The board config source hardcodes <code>cycle_end_ipl = 1U</code>,
+<strong>not</strong> <code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6)
+— using the default here would be an invalid priority value on this
+board</td>
+</tr>
+<tr>
+<td>FPB-RA4E2 / FPB-RA6E2</td>
+<td>GPT0 counter-overflow interrupt priority</td>
+<td>0–15, default <code>RS_BB_UART_TX_CFG_GPT_IPL</code> (6)</td>
+<td>Cortex-M33 implements the full 4 NVIC priority bits</td>
+</tr>
+<tr>
+<td>FPB-RA2E3</td>
+<td>P109 pin mode</td>
+<td>GPIO Output (high)</td>
+<td>Default board assignment is “Peripheral: SCI9 TXD9” — this module
+bit-bangs the frame in software and does not use the SCI9 hardware
+channel</td>
+</tr>
+<tr>
+<td>FPB-RA2E3</td>
+<td>SCI9 Operation Mode</td>
+<td><strong>Disabled entirely</strong> (no active mode, no leftover
+pairing property)</td>
+<td>SCI9’s default Simple I2C mode claims P109 (TXD9) <em>and</em> P110
+(RXD9) as a 2-pin pairing regardless of either pin’s own individual
+assignment. The Smart Configurator’s conflict checker will flag P109 as
+contested with this module’s GPIO reassignment if SCI9’s mode is
+re-enabled. P110 reverts to a plain unconfigured input as a result</td>
+</tr>
+<tr>
+<td>FPB-RA4E2 / FPB-RA6E2</td>
+<td>P411 pin mode</td>
+<td>GPIO Output (high)</td>
+<td>Default board assignment is “Peripheral: SCI0 TXD0”</td>
+</tr>
+<tr>
+<td>FPB-RA4E2 / FPB-RA6E2</td>
+<td>SCI0 pairing property</td>
+<td>Inert/disabled pairing line preserved
+(<code>sci0.pairing.b</code>)</td>
+<td>Same underlying SCI-pairing mechanism as FPB-RA2E3’s SCI9 note
+above, different channel</td>
+</tr>
+</tbody>
+</table>
+<p>If any of these settings show as reverted, re-apply them and re-run
+<strong>Generate Project Content</strong> before rebuilding.</p>
+<hr />
+<h2 id="gpt-clock-divider-why-it-differs-per-board">4. GPT Clock Divider
+— Why It Differs Per Board</h2>
+<p>FPB-RA2E3 uses an <strong>undivided</strong> PCLKD
+(<code>TIMER_SOURCE_DIV_1</code>); FPB-RA4E2 and FPB-RA6E2 both need a
+<strong>PCLKD/4</strong> divider (<code>TIMER_SOURCE_DIV_4</code>). This
+is a genuine per-board engineering decision, not a copy-paste
+inconsistency:</p>
+<ul>
+<li><strong>FPB-RA2E3’s clock tree has no PLL</strong> — HOCO (48 MHz)
+feeds PCLKD directly at ÷1, giving PCLKD = 48 MHz. At 48 MHz undivided,
+even the lowest supported baud rate (1200) needs only ~40,000 counts —
+comfortably within 16-bit range (65,535) with no divider needed at
+all.</li>
+<li><strong>FPB-RA2E3’s GPT channel 0 is additionally a genuine 32-bit
+channel</strong>
+(<code>BSP_FEATURE_GPT_32BIT_CHANNEL_MASK == 0x01</code>), unlike
+FPB-RA4E2/FPB-RA6E2 (<code>0x00</code> — every GPT channel is 16-bit
+only), reinforcing that overflow is not a concern on FPB-RA2E3 even
+without a divider.</li>
+<li><strong>FPB-RA4E2/FPB-RA6E2’s PCLKD runs at roughly 100 MHz
+undivided.</strong> At 1200 baud, an undivided ~100 MHz clock would need
+~83,333 counts — this overflows their 16-bit-only GPT counters. The
+PCLKD/4 divider brings the effective rate down to ~25 MHz, keeping
+period_counts within 16-bit range across the full 1200–115200 baud
+range.</li>
+<li><strong>Leaving FPB-RA2E3’s clock undivided also gives better timing
+resolution</strong> than the other two boards: ~417 counts at 115200
+baud vs. ~217 counts on the PCLKD/4-divided boards.</li>
+</ul>
+<p>FPB-RA6E2’s clock tree (HOCO 20 MHz × PLL 10.0 = 200 MHz system
+clock, PCLKD ÷2 ≈ 100 MHz) produces effectively the same PCLKD as
+FPB-RA4E2, so the same ÷4 divider value applies unchanged on both
+boards.</p>
+<hr />
+<h2 id="adapting-to-your-board">5. Adapting to Your Board</h2>
+<p>Two configuration paths are available, selected by
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code> in
+<code>rs_bb_uart_tx_cfg.h</code> (default <code>1</code>):</p>
+<ul>
+<li><strong>Preset path (default):</strong> bind the board’s standalone
+<code>g_timer0_preset</code> instance
+(<code>src/rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_&lt;board&gt;.c</code>)
+— has no dependency on <code>ra_gen</code> matching any particular Smart
+Configurator state.</li>
+<li><strong>FSP Stack Configurator path:</strong> configure a GPT timer
+stack (<code>g_timer0</code>) via the FSP Smart Configurator and set
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE = 0</code>. Both paths call
+the same
+<code>rs_bb_uart_tx_ConfigGen()</code>/<code>ConfigCheck()</code> bridge
+functions — only the <code>timer_instance_t const *</code> argument
+changes.</li>
+</ul>
+<p>To port to a board not already delivered here:</p>
+<ol type="1">
+<li>Determine the board’s actual PCLKD (or equivalent GPT clock source)
+frequency and whether its GPT channels are 16-bit or 32-bit
+(<code>BSP_FEATURE_GPT_32BIT_CHANNEL_MASK</code> in that MCU’s
+<code>bsp_feature.h</code>).</li>
+<li>Choose a divider that keeps <code>period_counts</code> within the
+channel’s counter width across the full 1200–115200 baud range — see <a href="#4-gpt-clock-divider--why-it-differs-per-board">Section 4</a> for
+the worked reasoning.</li>
+<li>Choose a valid GPT interrupt priority for that core — check the NVIC
+priority-bit count for the target Cortex-M core (2 bits = 0–3 on ARMv8-M
+Baseline cores like Cortex-M23; typically 4 bits = 0–15 on ARMv8-M
+Mainline cores like Cortex-M33).</li>
+<li>Add a new <code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code>
+pair following the pattern of the three delivered board files, or
+configure a GPT stack via the FSP Stack Configurator and use the
+Configurator path instead.</li>
+<li>Confirm the chosen TX pin is not claimed by a default peripheral
+pairing (as SCI9/SCI0 claim P109/P411 by default on the reference
+boards) — disable that peripheral’s Operation Mode entirely if it pairs
+with your chosen pin, not just its own pin assignment.</li>
+</ol>
+<hr />
+<h2 id="using-an-external-ttl-to-usb-adapter">6. Using an External
+TTL-to-USB Adapter</h2>
+<p>To bypass the on-board VCOM bridge entirely (see <a href="BEHAVIOR_AND_PERFORMANCE.md#7-on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.md</a>),
+change the <code>tx_pin</code> argument passed to
+<code>rs_bb_uart_tx_ConfigGen()</code> in
+<code>rs_bb_uart_tx_demo.c</code> to your chosen GPIO, and wire an
+external TTL-level USB-to-UART adapter:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Board signal</th>
+<th>Adapter signal</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configured GPIO TX</td>
+<td>RXD</td>
+<td>Yes</td>
+<td>Board transmit output → adapter receive input</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>GND</td>
+<td>Yes</td>
+<td>Common reference</td>
+</tr>
+<tr>
+<td>—</td>
+<td>TXD</td>
+<td>No</td>
+<td>Not used — Phase 1 is TX-only</td>
+</tr>
+<tr>
+<td>—</td>
+<td>VCC</td>
+<td>Usually no</td>
+<td>Only if the adapter needs a target reference voltage; confirm
+voltage compatibility first</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Use a TTL-level adapter, not a true RS-232 level
+adapter</strong> — never connect the target GPIO directly to an RS-232
+DB9 interface.</p>
+<hr />
+<h2 id="key-adaptation-points">7. Key Adaptation Points</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Item</th>
+<th>Location</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TX pin</td>
+<td><code>tx_pin</code> argument to
+<code>rs_bb_uart_tx_ConfigGen()</code></td>
+<td>Change to any available GPIO; confirm it isn’t claimed by a default
+peripheral pairing first</td>
+</tr>
+<tr>
+<td>GPT instance</td>
+<td><code>p_gpt_instance</code> argument to
+<code>rs_bb_uart_tx_ConfigGen()</code></td>
+<td>Preset (<code>g_timer0_preset</code>) or FSP Stack Configurator
+(<code>g_timer0</code>); switch via
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code></td>
+</tr>
+<tr>
+<td>Baud rate</td>
+<td><code>rs_bb_uart_tx_cfg_t.baud_rate</code>, set after
+<code>ConfigGen()</code> and before <code>ConfigCheck()</code></td>
+<td>Any value in
+<code>[RS_BB_UART_TX_CFG_MIN_BAUD_RATE, RS_BB_UART_TX_CFG_MAX_BAUD_RATE]</code>
+(default 1200–115200)</td>
+</tr>
+<tr>
+<td>Default baud rate</td>
+<td><code>RS_BB_UART_TX_CFG_DEFAULT_BAUD_RATE</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td>Default 115200</td>
+</tr>
+<tr>
+<td>Ring buffer size</td>
+<td><code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td>Must remain a power of two (64/128/256/512/1024 documented
+references); default 512 — see <a href="BEHAVIOR_AND_PERFORMANCE.md#5-ram-consumption">BEHAVIOR_AND_PERFORMANCE.md</a>
+for why</td>
+</tr>
+<tr>
+<td>GPT bit-period interrupt priority</td>
+<td><code>RS_BB_UART_TX_CFG_GPT_IPL</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td>Default 6; <strong>not applicable on FPB-RA2E3</strong>, whose board
+config file hardcodes 1 instead (Cortex-M23 priority range is 0–3)</td>
+</tr>
+<tr>
+<td>Control-block RAM budget guard</td>
+<td><code>RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_BYTES</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td>Default 2048 bytes; build fails via <code>_Static_assert</code> if
+exceeded</td>
+</tr>
+<tr>
+<td>Parameter checking</td>
+<td><code>RS_BB_UART_TX_CFG_PARAM_CHECKING_ENABLE</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td>Mirrors <code>BSP_CFG_PARAM_CHECKING_ENABLE</code> when defined;
+defaults to enabled (1) otherwise</td>
+</tr>
+<tr>
+<td>Configuration path</td>
+<td><code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code> in
+<code>rs_bb_uart_tx_cfg.h</code></td>
+<td><code>1</code> = preset (default), <code>0</code> = FSP Stack
+Configurator</td>
+</tr>
+<tr>
+<td>Fault handler</td>
+<td><code>src/fault_handler.c</code></td>
+<td>Replace with your production fault handling; remember the Cortex-M23
+vs. Cortex-M33 register-set difference if copying across boards — see <a href="FILE_GUIDE.md">FILE_GUIDE.md</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="dependencies">8. Dependencies</h2>
+<h3 id="hardware-dependencies">Hardware Dependencies</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Usage</th>
+<th>Owned By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT channel 0 (<code>r_gpt</code>)</td>
+<td>Bit-period interrupt generation</td>
+<td>This module</td>
+</tr>
+<tr>
+<td>TX GPIO pin (P109 on FPB-RA2E3; P411 on FPB-RA4E2/FPB-RA6E2)</td>
+<td>Software-driven UART TX output, direct BSP pin control</td>
+<td>This module</td>
+</tr>
+<tr>
+<td>On-board J-Link VCOM (USB)</td>
+<td>Default demonstration transport (TTL-to-USB conversion)</td>
+<td>Board hardware</td>
+</tr>
+</tbody>
+</table>
+<h3 id="software-dependencies">Software Dependencies</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Renesas FSP</td>
+<td>v6.5.0</td>
+<td>Provides <code>r_gpt</code>, <code>r_ioport</code> types, BSP,
+startup</td>
+</tr>
+<tr>
+<td>LLVM Embedded Toolchain for Arm (ATfE)</td>
+<td>Bundled with e2studio’s FSP v6.5.0 toolchain bundle</td>
+<td><code>clang</code>/<code>clang++</code> targeting
+<code>arm-none-eabi</code>, referenced by
+<code>cmake/llvm.cmake</code></td>
+</tr>
+<tr>
+<td>RASC (standalone)</td>
+<td>v6.5.0-compatible</td>
+<td>Required for headless project-content regeneration — from the CMake
+configure step (see <a href="BUILD.md">BUILD.md</a>) or the Meson
+build’s <code>rasc_generate</code> target (see <a href="BUILD_MESON.md">BUILD_MESON.md</a>)</td>
+</tr>
+<tr>
+<td>SEGGER J-Link (on-board)</td>
+<td>—</td>
+<td>Debug/flash on all three FPB boards</td>
+</tr>
+</tbody>
+</table>
+<h3 id="driver-dependency-details">Driver Dependency Details</h3>
+<p>This module references the GPT HAL driver exclusively through the FSP
+abstract interface type <code>timer_instance_t *</code>. This means the
+GPT-facing core source (<code>rs_bb_uart_tx_hal.c</code>) is written
+once and used unchanged on all three boards — board-specific differences
+are confined entirely to each board’s
+<code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code> preset file (or
+<code>configuration.xml</code>, on the FSP Stack Configurator path).</p>
+<p>This module has <strong>no dependency on any other <code>rs_</code>
+module.</strong> It does not open, own, or depend on a UART/SCI HAL
+instance at all — the whole point of the module is to synthesize
+UART-style output without one.</p>
+<hr />
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+Manual</a>.</em></p>
+</body>
+</html>

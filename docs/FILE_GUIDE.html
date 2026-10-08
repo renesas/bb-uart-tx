@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>FILE_GUIDE</title>
+  <style>
+
+html {
+color: #1a1a1a;
+color: light-dark(#1a1a1a, #fdfdfd);
+background-color: #fdfdfd;
+background-color: light-dark(#fdfdfd, #1a1a1a);
+color-scheme: light dark;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+color-scheme: light only;
+}
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a, a:visited {
+color: inherit;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid;
+border-color: #e6e6e6;
+border-color: light-dark(#e6e6e6, #4c4c4c);
+color: #606060;
+color: light-dark(#606060, #b6b6b6);
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid currentColor;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid currentColor;
+border-bottom: 1px solid currentColor;
+}
+th {
+border-top: 1px solid currentColor;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<h1 id="file-guide-naming-conventions-and-what-is-safe-to-modify">File
+Guide — Naming Conventions and What Is Safe to Modify</h1>
+<blockquote>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+documentation set</a>.</p>
+</blockquote>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-core-code-vs-reference-application-code">Core Code
+vs. Reference Application Code</a></li>
+<li><a href="#2-naming-conventions-used-in-this-module">Naming
+Conventions Used in This Module</a></li>
+<li><a href="#3-core-files--copy-and-keep-modify-with-care">Core Files —
+Copy and Keep; Modify with Care</a></li>
+<li><a href="#4-preset-configuration-files--reference-only-do-not-edit">Preset
+Configuration Files — Reference Only; Do Not Edit</a></li>
+<li><a href="#5-reference-application--adapt-freely">Reference
+Application — Adapt Freely</a></li>
+<li><a href="#6-fsp-generated--vendored-files--do-not-edit-manually">FSP-Generated
+/ Vendored Files — Do Not Edit Manually</a></li>
+<li><a href="#7-vs-code--cmake-project-files">VS Code / CMake Project
+Files</a></li>
+</ol>
+<hr />
+<h2 id="core-code-vs.-reference-application-code">1. Core Code
+vs. Reference Application Code</h2>
+<p>The following table identifies which files are reusable core code and
+which belong only to the reference/demo application layer. The
+configuration path column refers to the two options explained fully in
+<a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>:
+the <strong>Preset path</strong> (default, uses a standalone pre-built
+GPT instance) and the <strong>FSP Stack Configurator path</strong> (for
+custom boards or modified GPT settings).</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Files</th>
+<th>Purpose</th>
+<th>Reuse Expectation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx.c</code></td>
+<td>Public function implementations; internal lifecycle state machine
+(<code>rs_bb_uart_tx_open_internal()</code>,
+<code>rs_bb_uart_tx_start_internal()</code>); owns the single static
+control block <code>g_bb_uart_tx_ctrl</code></td>
+<td>Copy into your project; core orchestration logic</td>
+</tr>
+<tr>
+<td><strong>Core</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx.h</code></td>
+<td>Public interface header — all six public function prototypes, module
+version macros</td>
+<td>Include directly; do not modify</td>
+</tr>
+<tr>
+<td><strong>Core</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_types.h</code></td>
+<td>Public type definitions: <code>rs_bb_uart_tx_cfg_t</code>,
+<code>rs_bb_uart_tx_state_t</code>, <code>rs_bb_uart_tx_status_t</code>,
+lifecycle state enum</td>
+<td>Include directly; do not modify</td>
+</tr>
+<tr>
+<td><strong>Core (internal)</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_ctrl.h</code></td>
+<td>Internal-only control-block definition
+(<code>rs_bb_uart_tx_ctrl_t</code>) and the
+<code>rs_bb_uart_tx_open_internal()</code> declaration; not included by
+the public header, not visible to application code</td>
+<td>Copy into your project alongside the rest of core; not an
+application-facing header</td>
+</tr>
+<tr>
+<td><strong>Core</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_cfg.h</code></td>
+<td>Build-time configuration constants with <code>#ifndef</code>
+guards</td>
+<td>Override individual constants as needed for your project (or via
+<code>-D</code> on the compiler command line)</td>
+</tr>
+<tr>
+<td><strong>Core (internal)</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_ring_buffer.c/.h</code></td>
+<td>SPSC ring buffer manager — all-or-nothing enqueue, ISR-context
+dequeue, lock-free head/tail</td>
+<td>Copy into your project; hardware-agnostic</td>
+</tr>
+<tr>
+<td><strong>Core (internal)</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_engine.c/.h</code></td>
+<td>TX bit-level state machine (start/data/stop bit sequencing); calls
+back into the HAL shim only — never touches FSP types directly, so it is
+unit-testable on the host</td>
+<td>Copy into your project; hardware-agnostic</td>
+</tr>
+<tr>
+<td><strong>Core (internal)</strong></td>
+<td><code>src/rs_bb_uart_tx/rs_bb_uart_tx_hal.c/.h</code></td>
+<td>GPT timer adapter + GPIO adapter + the GPT ISR-context callback. The
+<strong>only</strong> file that includes GPT-specific FSP headers and
+drives the TX pin via direct BSP pin control</td>
+<td>Copy into your project; this is the file to change if porting to a
+different timer peripheral (e.g. AGT instead of GPT)</td>
+</tr>
+<tr>
+<td><strong>Preset Config</strong></td>
+<td><code>src/rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code></td>
+<td>Pre-built, standalone GPT instance definition per board
+(<code>g_timer0_preset</code>). Also hosts the
+<code>rs_bb_uart_tx_ConfigGen()</code> and
+<code>rs_bb_uart_tx_ConfigCheck()</code> bridge function
+<strong>definitions</strong> — declared in the public
+<code>rs_bb_uart_tx.h</code> but defined here, unconditionally, so both
+configuration paths can call them</td>
+<td>Reference only — do not edit; for a new board, add a new
+<code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code> following this
+pattern</td>
+</tr>
+<tr>
+<td><strong>Reference App</strong></td>
+<td><code>src/rs_bb_uart_tx_demo.c</code></td>
+<td>Full demonstration: generated-configuration setup, startup banner,
+bare-metal main-loop heartbeat, periodic <code>StatusGet()</code>
+printout. One copy per board project, differing only in the board name
+string, included config header, and TX pin argument</td>
+<td>Adapt or replace entirely for your application</td>
+</tr>
+<tr>
+<td><strong>Reference App</strong></td>
+<td><code>src/hal_entry.c</code></td>
+<td>FSP application hook; calls
+<code>rs_bb_uart_tx_demo_run()</code></td>
+<td>Adapt for your application’s entry-point flow</td>
+</tr>
+<tr>
+<td><strong>Reference App</strong></td>
+<td><code>src/hal_warmstart.c</code></td>
+<td>RASC-provided warm-start boilerplate</td>
+<td>Adapt for your application if needed</td>
+</tr>
+<tr>
+<td><strong>Reference App</strong></td>
+<td><code>src/fault_handler.c</code></td>
+<td>Fault exception handler for debug. <strong>Differs by core</strong>:
+FPB-RA2E3 (Cortex-M23, ARMv8-M Baseline) has a smaller register set
+(<code>SHCSR</code> only); FPB-RA4E2/FPB-RA6E2 (Cortex-M33, ARMv8-M
+Mainline) capture the full
+<code>CFSR</code>/<code>HFSR</code>/<code>MMFAR</code>/<code>BFAR</code>
+set — see the file’s own top-of-file comment for the
+CMSIS-header-verified rationale</td>
+<td>Optional; adapt or replace with your production fault handling</td>
+</tr>
+<tr>
+<td><strong>FSP Generated / Vendored</strong></td>
+<td><code>ra/</code>, <code>ra_gen/</code> directories</td>
+<td>FSP-generated configuration, drivers, middleware, CMSIS, board
+support. <code>ra/fsp/src/r_gpt/r_gpt.c</code> and
+<code>ra/fsp/src/r_ioport/</code> are genuinely vendored in every board
+project in this delivery — no additional Smart Configurator step is
+required to build</td>
+<td>Do not edit manually; regenerate via the FSP Smart Configurator, the
+CMake pre-configure RASC step (see <a href="BUILD.md">BUILD.md</a>), or
+the Meson build’s <code>rasc_generate</code> run target (see <a href="BUILD_MESON.md">BUILD_MESON.md</a>) if you change
+<code>configuration.xml</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key separation:</strong> the demo’s banner text, heartbeat
+cadence, and status-line formatting in <code>rs_bb_uart_tx_demo.c</code>
+are entirely reference-application code and are not part of the reusable
+module. The module core in <code>src/rs_bb_uart_tx/</code> has no
+knowledge of what an application writes to it — it only knows how to
+move bytes onto a GPIO pin at the configured baud rate.</p>
+<hr />
+<h2 id="naming-conventions-used-in-this-module">2. Naming Conventions
+Used in This Module</h2>
+<p>All identifiers follow a consistent scheme using the <code>rs_</code>
+/ <code>RS_</code> prefix, which identifies Renesas reference software
+and avoids conflicts with FSP middleware names (<code>rm_</code> /
+<code>RM_</code>). The short name for this module is
+<code>bb_uart_tx</code>.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Category</th>
+<th>Pattern</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Public functions</strong></td>
+<td><code>rs_bb_uart_tx_OperationName()</code> — lowercase prefix,
+UpperCamelCase operation</td>
+<td><code>rs_bb_uart_tx_Write()</code>,
+<code>rs_bb_uart_tx_WriteString()</code>,
+<code>rs_bb_uart_tx_StatusGet()</code></td>
+</tr>
+<tr>
+<td><strong>Internal (non-static) helper functions</strong></td>
+<td><code>rs_bb_uart_tx_*</code> — all lowercase</td>
+<td><code>rs_bb_uart_tx_open_internal()</code>,
+<code>rs_bb_uart_tx_hal_gpt_open()</code>,
+<code>rs_bb_uart_tx_engine_advance()</code>,
+<code>rs_bb_uart_tx_ring_buffer_enqueue()</code></td>
+</tr>
+<tr>
+<td><strong>File-local (<code>static</code>) helper
+functions</strong></td>
+<td><code>rs_bb_uart_tx_*</code> — all lowercase, scoped to one
+<code>.c</code> file</td>
+<td><code>rs_bb_uart_tx_start_internal()</code> (file-local to
+<code>rs_bb_uart_tx.c</code>)</td>
+</tr>
+<tr>
+<td><strong>Build-time macros and config symbols</strong></td>
+<td><code>RS_BB_UART_TX_CFG_*</code> — all uppercase</td>
+<td><code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code>,
+<code>RS_BB_UART_TX_CFG_GPT_IPL</code>,
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code></td>
+</tr>
+<tr>
+<td><strong>Version macros</strong></td>
+<td><code>RS_BB_UART_TX_VERSION*</code> — all uppercase</td>
+<td><code>RS_BB_UART_TX_VERSION_MAJOR</code>,
+<code>RS_BB_UART_TX_VERSION</code></td>
+</tr>
+<tr>
+<td><strong>Enumeration type names</strong></td>
+<td><code>rs_bb_uart_tx_*_t</code> — lowercase with <code>_t</code>
+suffix</td>
+<td><code>rs_bb_uart_tx_lifecycle_state_t</code>,
+<code>rs_bb_uart_tx_status_t</code>,
+<code>rs_bb_uart_tx_bit_state_t</code></td>
+</tr>
+<tr>
+<td><strong>Enumeration values</strong></td>
+<td><code>RS_BB_UART_TX_GROUP_VALUE</code> — all uppercase</td>
+<td><code>RS_BB_UART_TX_LIFECYCLE_READY</code>,
+<code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code>,
+<code>RS_BB_UART_TX_ENGINE_STATE_TX_IDLE</code></td>
+</tr>
+<tr>
+<td><strong>Struct type names</strong></td>
+<td><code>rs_bb_uart_tx_*_t</code> — lowercase with <code>_t</code>
+suffix</td>
+<td><code>rs_bb_uart_tx_cfg_t</code>, <code>rs_bb_uart_tx_ctrl_t</code>,
+<code>rs_bb_uart_tx_state_t</code></td>
+</tr>
+<tr>
+<td><strong>Source and header files</strong></td>
+<td><code>rs_bb_uart_tx_*.c / .h</code> — lowercase</td>
+<td><code>rs_bb_uart_tx.c</code>, <code>rs_bb_uart_tx_cfg.h</code>,
+<code>rs_bb_uart_tx_ring_buffer.h</code></td>
+</tr>
+<tr>
+<td><strong>Core source folder</strong></td>
+<td><code>src/rs_bb_uart_tx/</code></td>
+<td>All core module files live here</td>
+</tr>
+<tr>
+<td><strong>Board config files</strong></td>
+<td><code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code></td>
+<td><code>rs_bb_uart_tx_data_fpb_ra2e3.c/.h</code>,
+<code>rs_bb_uart_tx_data_fpb_ra4e2.c/.h</code>,
+<code>rs_bb_uart_tx_data_fpb_ra6e2.c/.h</code></td>
+</tr>
+<tr>
+<td><strong>Project name</strong></td>
+<td><code>BitBangedUART_TX_&lt;board&gt;</code> — descriptive folder
+name</td>
+<td><code>BitBangedUART_TX_FPB_RA2E3</code></td>
+</tr>
+</tbody>
+</table>
+<p>The key rule to remember: <strong>public functions use the lowercase
+<code>rs_bb_uart_tx_</code> prefix</strong> with an UpperCamelCase
+operation name (e.g. <code>rs_bb_uart_tx_WriteString</code>). Everything
+that is a macro, constant, or enumeration value uses the
+<strong>all-uppercase <code>RS_BB_UART_TX_</code></strong> form. Type
+names and internal helpers are always all-lowercase.</p>
+<hr />
+<h2 id="core-files-copy-and-keep-modify-with-care">3. Core Files — Copy
+and Keep; Modify with Care</h2>
+<p>These files contain reusable reference code. Copy them into your
+project. Modify only at the documented adaptation points. If you later
+adopt a newer release of this module, these files will require a merge
+review.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Safe to Modify?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx.c</code></td>
+<td>With care</td>
+<td>Core orchestration and lifecycle logic; the internal
+<code>Open()</code>/<code>Start()</code> helpers are not exposed
+publicly by design (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>)</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx.h</code></td>
+<td>No</td>
+<td>Public interface; adding or removing functions breaks
+compatibility</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_types.h</code></td>
+<td>No</td>
+<td>Public types; changing structures may break compatibility with any
+code that reads
+<code>rs_bb_uart_tx_cfg_t</code>/<code>rs_bb_uart_tx_state_t</code>
+fields</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ctrl.h</code></td>
+<td>No</td>
+<td>Internal control-block layout; the GPT ISR callback is wired to the
+one static instance via <code>p_context</code> at open time — do not
+declare additional instances</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_cfg.h</code></td>
+<td><strong>Yes</strong></td>
+<td>Override any <code>#ifndef</code>-guarded constant with your
+project-specific value</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer.c/.h</code></td>
+<td>With care</td>
+<td>Requires <code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code> to remain
+a power of two (enforced by <code>_Static_assert</code>) — the lock-free
+wraparound uses a bitmask, not <code>%</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine.c/.h</code></td>
+<td>With care</td>
+<td>Hardware-agnostic bit-level state machine; portable and
+host-unit-testable in isolation since it never includes FSP headers</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal.c/.h</code></td>
+<td>With care</td>
+<td>The one file that touches FSP GPT/GPIO types directly — modify only
+if switching timer peripheral or pin-control mechanism</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="preset-configuration-files-reference-only-do-not-edit">4. Preset
+Configuration Files — Reference Only; Do Not Edit</h2>
+<p>These files are pre-built for FPB-RA2E3, FPB-RA4E2, and FPB-RA6E2 and
+are marked “do not edit.” Each is a reference-quality, standalone GPT
+instance definition for that board — not an alias of the FSP Stack
+Configurator’s own <code>ra_gen/hal_data.c</code> instance, though both
+are wired in and either can be used (see <a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>,
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code>).</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config/rs_bb_uart_tx_data_fpb_ra2e3.c/.h</code></td>
+<td>Preset GPT ch0 instance for FPB-RA2E3: undivided PCLKD (48 MHz), TX
+pin P109, <code>cycle_end_ipl = 1</code> (hardcoded — Cortex-M23
+supports only priorities 0–3). Also defines
+<code>rs_bb_uart_tx_ConfigGen()</code>/<code>ConfigCheck()</code>; do
+not edit</td>
+</tr>
+<tr>
+<td><code>config/rs_bb_uart_tx_data_fpb_ra4e2.c/.h</code></td>
+<td>Preset GPT ch0 instance for FPB-RA4E2: PCLKD/4 divider, TX pin P411,
+<code>cycle_end_ipl = RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6). Also
+defines
+<code>rs_bb_uart_tx_ConfigGen()</code>/<code>ConfigCheck()</code>; do
+not edit</td>
+</tr>
+<tr>
+<td><code>config/rs_bb_uart_tx_data_fpb_ra6e2.c/.h</code></td>
+<td>Preset GPT ch0 instance for FPB-RA6E2: PCLKD/4 divider, TX pin P411,
+<code>cycle_end_ipl = RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6). Also
+defines
+<code>rs_bb_uart_tx_ConfigGen()</code>/<code>ConfigCheck()</code>; do
+not edit</td>
+</tr>
+</tbody>
+</table>
+<p>To customize the GPT configuration for a different board, switch to
+the FSP Stack Configurator path as described in <a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>
+(<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE = 0</code>), or add a new
+<code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code> pair following
+the existing pattern.</p>
+<hr />
+<h2 id="reference-application-adapt-freely">5. Reference Application —
+Adapt Freely</h2>
+<p>These files demonstrate the module but are not intended for direct
+reuse. They contain board-specific and demo-specific scaffolding. Use
+them as a starting point and replace what you don’t need.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Adaptation Guidance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_demo.c</code></td>
+<td>Starting point for your own application entry point. One copy per
+board project; differs only in the board name string in the banner, the
+included board config header, and the <code>tx_pin</code> argument
+passed to <code>rs_bb_uart_tx_ConfigGen()</code> — see <a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a></td>
+</tr>
+<tr>
+<td><code>hal_entry.c</code></td>
+<td>FSP application hook; adapt if your application needs a different
+entry sequence</td>
+</tr>
+<tr>
+<td><code>hal_warmstart.c</code></td>
+<td>Warm-start detection helper; adapt if your system uses a different
+reset-handling strategy</td>
+</tr>
+<tr>
+<td><code>fault_handler.c</code></td>
+<td>Debug fault handler; replace with your production fault handling.
+Remember this file’s content genuinely differs between the Cortex-M23
+board (FPB-RA2E3) and the two Cortex-M33 boards (FPB-RA4E2/FPB-RA6E2) —
+do not copy the wrong variant across cores</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="fsp-generated-vendored-files-do-not-edit-manually">6.
+FSP-Generated / Vendored Files — Do Not Edit Manually</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ra/</code></td>
+<td>FSP-generated drivers, middleware, CMSIS, and board support, plus
+the genuinely vendored <code>r_gpt</code> (GPT driver source) and
+<code>r_ioport</code> (pin-configuration support types). No additional
+Smart Configurator step is required to build any of the three board
+projects as delivered</td>
+</tr>
+<tr>
+<td><code>ra_gen/</code></td>
+<td>Auto-generated by the FSP Smart Configurator from
+<code>configuration.xml</code>; overwritten on every re-generation.
+Includes the vector table wiring for the GPT counter-overflow interrupt
+(<code>ra_gen/vector_data.h/.c</code>) that the preset GPT instance’s
+ISR depends on</td>
+</tr>
+<tr>
+<td><code>ra_cfg/</code></td>
+<td>Build-time FSP/BSP/driver configuration headers generated alongside
+<code>ra_gen/</code></td>
+</tr>
+</tbody>
+</table>
+<p>If you ever reopen the FSP Smart Configurator perspective for one of
+these projects (via the <code>FSP Smart Configurator</code> VS Code
+task, or by double-clicking <code>configuration.xml</code>), see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a>
+for the settings that must be preserved per board so you don’t
+accidentally revert them.</p>
+<hr />
+<h2 id="vs-code-cmake-project-files">7. VS Code / CMake Project
+Files</h2>
+<p>Files specific to the VS Code / CMake delivery mechanism (not
+present, or present in a different form, in an e2studio-based delivery
+of this module):</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+<th>Safe to Modify?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CMakeLists.txt</code></td>
+<td>Top-level CMake project definition; includes
+<code>Config.cmake</code> and the RASC-generated
+<code>cmake/GeneratedCfg.cmake</code> /
+<code>cmake/GeneratedSrc.cmake</code></td>
+<td>With care — see <a href="BUILD.md">BUILD.md</a></td>
+</tr>
+<tr>
+<td><code>CMakePresets.json</code></td>
+<td>Debug/Release configure and build presets (Ninja generator)</td>
+<td>Yes — add presets as needed</td>
+</tr>
+<tr>
+<td><code>CMakeProject.json</code></td>
+<td>Device/core/toolchain metadata consumed by the Renesas VS Code
+extensions (device name, entry symbol, include/source paths)</td>
+<td>No — regenerated by tooling; treat as generated</td>
+</tr>
+<tr>
+<td><code>Config.cmake</code></td>
+<td>User-editable hook for <code>RASC_EXE_PATH</code> resolution</td>
+<td>Yes — set <code>RASC_EXE_PATH</code> here or via
+environment/CLI</td>
+</tr>
+<tr>
+<td><code>cmake/GeneratedCfg.cmake</code>,
+<code>cmake/GeneratedSrc.cmake</code></td>
+<td>RASC-generated compiler flags and source-file globs
+(<code>ra_gen/</code>, <code>src/</code>, <code>ra/</code>)</td>
+<td>No — regenerated by RASC; edit <code>CMakeLists.txt</code> to
+override instead</td>
+</tr>
+<tr>
+<td><code>cmake/llvm.cmake</code></td>
+<td>ATfE (LLVM Embedded Toolchain for Arm) toolchain file; resolves
+<code>ARM_TOOLCHAIN_PATH</code></td>
+<td>No — regenerated by RASC</td>
+</tr>
+<tr>
+<td><code>cmake/prebuild.cmake</code></td>
+<td>Backing script for the “Regenerate Project Content” VS Code
+task</td>
+<td>No — regenerated by RASC</td>
+</tr>
+<tr>
+<td><code>.vscode/cmake-kits.json</code>,
+<code>.vscode/tasks.json</code>, <code>.vscode/launch.json</code>,
+<code>.vscode/c_cpp_properties.json</code>,
+<code>.vscode/settings.json</code></td>
+<td>VS Code CMake Tools kit definitions, build/RASC tasks, hardware
+debug launch configuration, IntelliSense paths</td>
+<td>Yes — adjust for your local toolchain paths and workflow; see <a href="BUILD.md">BUILD.md</a></td>
+</tr>
+<tr>
+<td><code>*.code-workspace</code></td>
+<td>VS Code multi-root workspace definition (single-folder here).
+<strong>This is how you open the project</strong> — double-click it, or
+use VS Code’s File → Open Workspace from File… There is no
+e2studio-style import step</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>*.jlink</code>, <code>JLinkLog.log</code></td>
+<td>SEGGER J-Link debugger configuration / log</td>
+<td><code>.jlink</code> yes if adapting debug probe settings;
+<code>JLinkLog.log</code> is a log artifact, not source</td>
+</tr>
+<tr>
+<td><code>.cproject</code>, <code>.project</code>,
+<code>.settings/</code>, <code>.api_xml</code>, <code>.sdm_json</code>,
+<code>.secure_*</code>, <code>.r365project</code></td>
+<td>e2studio/RASC/Renesas-365 project metadata carried alongside the
+CMake project for tooling compatibility</td>
+<td>No — tooling-managed</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+Manual</a>.</em></p>
+</body>
+</html>
