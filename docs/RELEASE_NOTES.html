@@ -182,20 +182,20 @@ vertical-align: middle;
 <h1 id="release-notes-and-adopting-a-newer-release">Release Notes and
 Adopting a Newer Release</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-current-version">Current Version</a></li>
-<li><a href="#2-delivery-scope">Delivery Scope</a></li>
-<li><a href="#3-per-board-notes">Per-Board Notes</a></li>
-<li><a href="#4-known-issues">Known Issues</a></li>
-<li><a href="#5-adopting-a-newer-release">Adopting a Newer
+<li><a href="#current-version">Current Version</a></li>
+<li><a href="#delivery-scope">Delivery Scope</a></li>
+<li><a href="#per-board-notes">Per-Board Notes</a></li>
+<li><a href="#known-issues">Known Issues</a></li>
+<li><a href="#adopting-a-newer-release">Adopting a Newer
 Release</a></li>
-<li><a href="#6-what-typically-changes-between-releases">What Typically
+<li><a href="#what-typically-changes-between-releases">What Typically
 Changes Between Releases</a></li>
-<li><a href="#7-recommended-merge-process">Recommended Merge
+<li><a href="#recommended-merge-process">Recommended Merge
 Process</a></li>
 </ol>
 <hr />
@@ -252,7 +252,7 @@ also exists for all three boards (see the repository root
 mechanisms — only the build tooling differs.</p>
 <p>All three reference boards (FPB-RA2E3, FPB-RA4E2, FPB-RA6E2) are part
 of this delivery’s original scope, not a later addition to a smaller
-initial release — see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a> for the
+initial release — see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a> for the
 per-board hardware differences already accounted for.</p>
 <hr />
 <h2 id="per-board-notes">3. Per-Board Notes</h2>
@@ -307,7 +307,7 @@ below:</p>
 </tr>
 </tbody>
 </table>
-<p>See <a href="CONFIGURATION_GUIDE.md#4-gpt-clock-divider--why-it-differs-per-board">CONFIGURATION_GUIDE.md</a>
+<p>See <a href="CONFIGURATION_GUIDE.html#gpt-clock-divider-why-it-differs-per-board">CONFIGURATION_GUIDE.html</a>
 for why the GPT divider and interrupt-priority differences are genuine,
 verified per-board engineering decisions rather than
 inconsistencies.</p>
@@ -320,7 +320,7 @@ baud on every board’s TX pin, but the on-board J-Link VCOM bridge’s own
 firmware does not reliably relay baud rates below 9600 end-to-end. This
 has been hands-on confirmed on FPB-RA2E3, FPB-RA4E2, and FPB-RA6E2 — all
 three share the same on-board J-Link OB VCOM firmware family and exhibit
-the same floor. See <a href="BEHAVIOR_AND_PERFORMANCE.md#7-on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.md</a>.</li>
+the same floor. See <a href="BEHAVIOR_AND_PERFORMANCE.html#on-board-vcom-baud-range-caveat">BEHAVIOR_AND_PERFORMANCE.html</a>.</li>
 </ul>
 <hr />
 <h2 id="adopting-a-newer-release">5. Adopting a Newer Release</h2>
@@ -363,8 +363,8 @@ application-specific modifications you made in
 sites in your application accordingly.</li>
 <li>If the FSP version changes between your baseline and the update,
 re-run the FSP Smart Configurator (or the CMake “Regenerate Project
-Content” task — see <a href="BUILD.md#-regenerating-fsp-project-content">BUILD.md</a> — or, for
-the Meson build, the <code>rasc_generate</code> run target — see <a href="BUILD_MESON.md">BUILD_MESON.md</a>) to regenerate
+Content” task — see <a href="BUILD.html#regenerating-fsp-project-content">BUILD.html</a> — or, for
+the Meson build, the <code>rasc_generate</code> run target — see <a href="BUILD_MESON.html">BUILD_MESON.html</a>) to regenerate
 <code>ra_gen</code>/<code>ra_cfg</code> content for the new FSP
 version.</li>
 <li>Rebuild and re-verify baud-rate accuracy on target hardware,
@@ -376,7 +376,7 @@ logic.</li>
 Confirm the supported FSP version in the release notes before
 upgrading.</p>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

@@ -182,23 +182,23 @@ vertical-align: middle;
 <h1 id="running-the-example-projects-and-expected-output">Running the
 Example Projects and Expected Output</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>. For command-line CMake/Ninja builds, tool
-installation, and troubleshooting, see <a href="BUILD.md">BUILD.md</a>.</p>
+installation, and troubleshooting, see <a href="BUILD.html">BUILD.html</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-prerequisites">Prerequisites</a></li>
-<li><a href="#2-opening-and-building-in-vs-code">Opening and Building in
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#opening-and-building-in-vs-code">Opening and Building in
 VS Code</a></li>
-<li><a href="#3-flashing-and-debugging">Flashing and Debugging</a></li>
-<li><a href="#4-expected-output--fpb-ra2e3">Expected Output —
+<li><a href="#flashing-and-debugging">Flashing and Debugging</a></li>
+<li><a href="#expected-output-fpb-ra2e3">Expected Output —
 FPB-RA2E3</a></li>
-<li><a href="#5-expected-output--fpb-ra4e2">Expected Output —
+<li><a href="#expected-output-fpb-ra4e2">Expected Output —
 FPB-RA4E2</a></li>
-<li><a href="#6-expected-output--fpb-ra6e2">Expected Output —
+<li><a href="#expected-output-fpb-ra6e2">Expected Output —
 FPB-RA6E2</a></li>
-<li><a href="#7-interaction-notes">Interaction Notes</a></li>
+<li><a href="#interaction-notes">Interaction Notes</a></li>
 </ol>
 <hr />
 <h2 id="prerequisites">1. Prerequisites</h2>
@@ -210,7 +210,7 @@ extensions (device family support, <code>renesas-hardware</code> debug
 type)</li>
 <li>The LLVM Embedded Toolchain for Arm (ATfE), with
 <code>ARM_LLVM_TOOLCHAIN_PATH</code> (or
-<code>ARM_TOOLCHAIN_PATH</code>) set — see <a href="BUILD.md">BUILD.md</a> for exact tool installation and environment
+<code>ARM_TOOLCHAIN_PATH</code>) set — see <a href="BUILD.html">BUILD.html</a> for exact tool installation and environment
 setup</li>
 <li>A serial terminal (Tera Term or equivalent) connected to the
 on-board J-Link virtual COM port at <strong>115200 baud, 8N1, no flow
@@ -252,7 +252,7 @@ Task → Build Project</strong>). This also runs <strong>Configure
 Project</strong> first, which invokes RASC as a pre-build step if
 <code>configuration.xml</code> has changed (or if
 <code>RASC_EXE_PATH</code> resolves to something other than the
-<code>Config.cmake</code> default of <code>echo</code>) — see <a href="BUILD.md">BUILD.md</a> for details.</li>
+<code>Config.cmake</code> default of <code>echo</code>) — see <a href="BUILD.html">BUILD.html</a> for details.</li>
 <li>The project is functional as delivered —
 <code>configuration.xml</code> and the checked-in
 <code>ra_gen</code>/<code>ra_cfg</code> content are pre-configured for
@@ -264,7 +264,7 @@ FSP Smart Configurator re-run is required for a first build.</li>
 <p>To edit the FSP configuration interactively instead, run the
 <strong>“FSP Smart Configurator”</strong> task (<strong>Terminal → Run
 Task → FSP Smart Configurator</strong>), which opens
-<code>configuration.xml</code> in the Smart Configurator GUI. See <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a>
+<code>configuration.xml</code> in the Smart Configurator GUI. See <a href="CONFIGURATION_GUIDE.html#required-non-default-fsp-settings">CONFIGURATION_GUIDE.html</a>
 for the settings that must be preserved per board.</p>
 </blockquote>
 <h2 id="flashing-and-debugging">3. Flashing and Debugging</h2>
@@ -370,7 +370,7 @@ replayed. Power-cycle or reset the board after connecting your terminal
 to see the banner.</li>
 </ul>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

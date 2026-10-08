@@ -181,20 +181,20 @@ vertical-align: middle;
 <body>
 <h1 id="design-flow-and-architecture">Design Flow and Architecture</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-lifecycle-state-machine">Lifecycle State
+<li><a href="#lifecycle-state-machine">Lifecycle State
 Machine</a></li>
-<li><a href="#2-public-function-state-gating">Public Function State
+<li><a href="#public-function-state-gating">Public Function State
 Gating</a></li>
-<li><a href="#3-tx-bit-engine-pipeline-and-data-flow">TX Bit-Engine
+<li><a href="#tx-bit-engine-pipeline-and-data-flow">TX Bit-Engine
 Pipeline and Data Flow</a></li>
-<li><a href="#4-module-file-responsibilities">Module File
+<li><a href="#module-file-responsibilities">Module File
 Responsibilities</a></li>
-<li><a href="#5-ring-buffer-concurrency-model">Ring Buffer Concurrency
+<li><a href="#ring-buffer-concurrency-model">Ring Buffer Concurrency
 Model</a></li>
 </ol>
 <hr />
@@ -203,7 +203,7 @@ Model</a></li>
 that expose
 <code>Open()</code>/<code>Start()</code>/<code>Stop()</code>/<code>Close()</code>
 as public functions, every transition here happens as a side effect of a
-public function documented in <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>
+public function documented in <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.html</a>
 — there is no public lifecycle API to call directly.</p>
 <pre><code>                 rs_bb_uart_tx_ConfigGen()      rs_bb_uart_tx_ConfigCheck()
 UNCONFIGURED ───────────────────────────→ CONFIGURED ───────────────────────→ READY
@@ -261,7 +261,7 @@ the ring buffer is confirmed empty.</td>
 <td>Deterministic error state, entered from any state on an
 unrecoverable GPT/GPIO HAL failure. Requires re-initialization (a fresh
 <code>ConfigGen()</code>/<code>ConfigCheck()</code> sequence is not
-idempotent while already past <code>CONFIGURED</code> — see <a href="#2-public-function-state-gating">Section 2</a>).</td>
+idempotent while already past <code>CONFIGURED</code> — see <a href="#public-function-state-gating">Section 2</a>).</td>
 </tr>
 </tbody>
 </table>
@@ -270,7 +270,7 @@ TRANSMITTING→READY (other than the automatic queue-drain transition
 above), or READY→UNCONFIGURED in Phase 1.</strong> The internal
 <code>rs_bb_uart_tx_open_internal()</code> helper (called from the board
 configuration file’s <code>ConfigCheck()</code> implementation) only
-accepts the UNCONFIGURED or CONFIGURED starting states — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#known-limitations-phase-1-by-design">Known
+accepts the UNCONFIGURED or CONFIGURED starting states — see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#known-limitations-phase-1-by-design">Known
 Limitations</a>.</p>
 <hr />
 <h2 id="public-function-state-gating">2. Public Function State
@@ -359,7 +359,7 @@ succeeded (state READY, TRANSMITTING, or ERROR) returns
 design in Phase 1 (Architecture &amp; Design: “Runtime remapping of GPIO
 or timer while transmission is active” is explicitly out of scope).</p>
 <p>Every public function documents its own complete return-value list in
-<a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a> and in
+<a href="FUNCTIONS_GUIDE.html">FUNCTIONS_GUIDE.html</a> and in
 <code>rs_bb_uart_tx.h</code>.</p>
 <hr />
 <h2 id="tx-bit-engine-pipeline-and-data-flow">3. TX Bit-Engine Pipeline
@@ -494,7 +494,7 @@ RAM-budget <code>_Static_assert</code> against
 <td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
 <td>Static, fixed-capacity SPSC ring buffer. All-or-nothing enqueue
 (producer, main-loop/task context); single-byte dequeue (consumer, GPT
-ISR context). Lock-free — see <a href="#5-ring-buffer-concurrency-model">Section 5</a></td>
+ISR context). Lock-free — see <a href="#ring-buffer-concurrency-model">Section 5</a></td>
 </tr>
 <tr>
 <td><code>rs_bb_uart_tx_engine.c</code></td>
@@ -514,7 +514,7 @@ on every tick. The only file that includes GPT-specific FSP headers</td>
 <td>Board preset GPT instance; also hosts
 <code>rs_bb_uart_tx_ConfigGen()</code>,
 <code>rs_bb_uart_tx_ConfigCheck()</code>,
-<code>rs_bb_uart_tx_ConfigGetSize()</code> — see <a href="FUNCTIONS_GUIDE.md#2-configuration-bridge">FUNCTIONS_GUIDE.md</a></td>
+<code>rs_bb_uart_tx_ConfigGetSize()</code> — see <a href="FUNCTIONS_GUIDE.html#configuration-bridge">FUNCTIONS_GUIDE.html</a></td>
 </tr>
 </tbody>
 </table>
@@ -555,12 +555,12 @@ head/tail-only circular buffer. Index wraparound uses a bitmask
 are the documented reference sizes; enforced by a
 <code>_Static_assert</code> in
 <code>rs_bb_uart_tx_ring_buffer.h</code>).</p>
-<p>See <a href="BEHAVIOR_AND_PERFORMANCE.md">BEHAVIOR_AND_PERFORMANCE.md</a> for
-RAM budget details and <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a> for why the
+<p>See <a href="BEHAVIOR_AND_PERFORMANCE.html">BEHAVIOR_AND_PERFORMANCE.html</a> for
+RAM budget details and <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a> for why the
 default buffer size was raised from the design doc’s nominal 256 bytes
 to 512 bytes.</p>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

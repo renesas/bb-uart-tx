@@ -182,24 +182,24 @@ vertical-align: middle;
 <h1 id="file-guide-naming-conventions-and-what-is-safe-to-modify">File
 Guide — Naming Conventions and What Is Safe to Modify</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-core-code-vs-reference-application-code">Core Code
+<li><a href="#core-code-vs.-reference-application-code">Core Code
 vs. Reference Application Code</a></li>
-<li><a href="#2-naming-conventions-used-in-this-module">Naming
+<li><a href="#naming-conventions-used-in-this-module">Naming
 Conventions Used in This Module</a></li>
-<li><a href="#3-core-files--copy-and-keep-modify-with-care">Core Files —
+<li><a href="#core-files-copy-and-keep-modify-with-care">Core Files —
 Copy and Keep; Modify with Care</a></li>
-<li><a href="#4-preset-configuration-files--reference-only-do-not-edit">Preset
+<li><a href="#preset-configuration-files-reference-only-do-not-edit">Preset
 Configuration Files — Reference Only; Do Not Edit</a></li>
-<li><a href="#5-reference-application--adapt-freely">Reference
+<li><a href="#reference-application-adapt-freely">Reference
 Application — Adapt Freely</a></li>
-<li><a href="#6-fsp-generated--vendored-files--do-not-edit-manually">FSP-Generated
+<li><a href="#fsp-generated-vendored-files-do-not-edit-manually">FSP-Generated
 / Vendored Files — Do Not Edit Manually</a></li>
-<li><a href="#7-vs-code--cmake-project-files">VS Code / CMake Project
+<li><a href="#vs-code-cmake-project-files">VS Code / CMake Project
 Files</a></li>
 </ol>
 <hr />
@@ -208,7 +208,7 @@ vs. Reference Application Code</h2>
 <p>The following table identifies which files are reusable core code and
 which belong only to the reference/demo application layer. The
 configuration path column refers to the two options explained fully in
-<a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>:
+<a href="CONFIGURATION_GUIDE.html#adapting-to-your-board">CONFIGURATION_GUIDE.html</a>:
 the <strong>Preset path</strong> (default, uses a standalone pre-built
 GPT instance) and the <strong>FSP Stack Configurator path</strong> (for
 custom boards or modified GPT settings).</p>
@@ -351,8 +351,8 @@ support. <code>ra/fsp/src/r_gpt/r_gpt.c</code> and
 project in this delivery — no additional Smart Configurator step is
 required to build</td>
 <td>Do not edit manually; regenerate via the FSP Smart Configurator, the
-CMake pre-configure RASC step (see <a href="BUILD.md">BUILD.md</a>), or
-the Meson build’s <code>rasc_generate</code> run target (see <a href="BUILD_MESON.md">BUILD_MESON.md</a>) if you change
+CMake pre-configure RASC step (see <a href="BUILD.html">BUILD.html</a>), or
+the Meson build’s <code>rasc_generate</code> run target (see <a href="BUILD_MESON.html">BUILD_MESON.html</a>) if you change
 <code>configuration.xml</code></td>
 </tr>
 </tbody>
@@ -502,7 +502,7 @@ review.</p>
 <td>With care</td>
 <td>Core orchestration and lifecycle logic; the internal
 <code>Open()</code>/<code>Start()</code> helpers are not exposed
-publicly by design (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>)</td>
+publicly by design (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.html</a>)</td>
 </tr>
 <tr>
 <td><code>rs_bb_uart_tx.h</code></td>
@@ -559,7 +559,7 @@ Configuration Files — Reference Only; Do Not Edit</h2>
 are marked “do not edit.” Each is a reference-quality, standalone GPT
 instance definition for that board — not an alias of the FSP Stack
 Configurator’s own <code>ra_gen/hal_data.c</code> instance, though both
-are wired in and either can be used (see <a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>,
+are wired in and either can be used (see <a href="CONFIGURATION_GUIDE.html#adapting-to-your-board">CONFIGURATION_GUIDE.html</a>,
 <code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code>).</p>
 <table>
 <colgroup>
@@ -600,7 +600,7 @@ not edit</td>
 </tbody>
 </table>
 <p>To customize the GPT configuration for a different board, switch to
-the FSP Stack Configurator path as described in <a href="CONFIGURATION_GUIDE.md#5-adapting-to-your-board">CONFIGURATION_GUIDE.md</a>
+the FSP Stack Configurator path as described in <a href="CONFIGURATION_GUIDE.html#adapting-to-your-board">CONFIGURATION_GUIDE.html</a>
 (<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE = 0</code>), or add a new
 <code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c/.h</code> pair following
 the existing pattern.</p>
@@ -627,7 +627,7 @@ them as a starting point and replace what you don’t need.</p>
 <td>Starting point for your own application entry point. One copy per
 board project; differs only in the board name string in the banner, the
 included board config header, and the <code>tx_pin</code> argument
-passed to <code>rs_bb_uart_tx_ConfigGen()</code> — see <a href="FUNCTIONS_GUIDE.md">FUNCTIONS_GUIDE.md</a></td>
+passed to <code>rs_bb_uart_tx_ConfigGen()</code> — see <a href="FUNCTIONS_GUIDE.html">FUNCTIONS_GUIDE.html</a></td>
 </tr>
 <tr>
 <td><code>hal_entry.c</code></td>
@@ -688,7 +688,7 @@ ISR depends on</td>
 </table>
 <p>If you ever reopen the FSP Smart Configurator perspective for one of
 these projects (via the <code>FSP Smart Configurator</code> VS Code
-task, or by double-clicking <code>configuration.xml</code>), see <a href="CONFIGURATION_GUIDE.md#3-required-non-default-fsp-settings">CONFIGURATION_GUIDE.md</a>
+task, or by double-clicking <code>configuration.xml</code>), see <a href="CONFIGURATION_GUIDE.html#required-non-default-fsp-settings">CONFIGURATION_GUIDE.html</a>
 for the settings that must be preserved per board so you don’t
 accidentally revert them.</p>
 <hr />
@@ -717,7 +717,7 @@ of this module):</p>
 <code>Config.cmake</code> and the RASC-generated
 <code>cmake/GeneratedCfg.cmake</code> /
 <code>cmake/GeneratedSrc.cmake</code></td>
-<td>With care — see <a href="BUILD.md">BUILD.md</a></td>
+<td>With care — see <a href="BUILD.html">BUILD.html</a></td>
 </tr>
 <tr>
 <td><code>CMakePresets.json</code></td>
@@ -763,7 +763,7 @@ task</td>
 <code>.vscode/settings.json</code></td>
 <td>VS Code CMake Tools kit definitions, build/RASC tasks, hardware
 debug launch configuration, IntelliSense paths</td>
-<td>Yes — adjust for your local toolchain paths and workflow; see <a href="BUILD.md">BUILD.md</a></td>
+<td>Yes — adjust for your local toolchain paths and workflow; see <a href="BUILD.html">BUILD.html</a></td>
 </tr>
 <tr>
 <td><code>*.code-workspace</code></td>
@@ -790,7 +790,7 @@ CMake project for tooling compatibility</td>
 </tbody>
 </table>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>

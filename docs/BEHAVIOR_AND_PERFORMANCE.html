@@ -247,23 +247,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <h1 id="demonstrated-behavior-and-performance">Demonstrated Behavior and
 Performance</h1>
 <blockquote>
-<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html#documentation-map"><code>rs_bb_uart_tx</code>
 documentation set</a>.</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol type="1">
-<li><a href="#1-functional-behavior-demonstrated">Functional Behavior
+<li><a href="#functional-behavior-demonstrated">Functional Behavior
 Demonstrated</a></li>
-<li><a href="#2-bit-period-timing-reference">Bit-Period Timing
+<li><a href="#bit-period-timing-reference">Bit-Period Timing
 Reference</a></li>
-<li><a href="#3-baud-rate-accuracy-and-jitter">Baud-Rate Accuracy and
+<li><a href="#baud-rate-accuracy-and-jitter">Baud-Rate Accuracy and
 Jitter</a></li>
-<li><a href="#4-isr-and-enqueue-performance">ISR and Enqueue
+<li><a href="#isr-and-enqueue-performance">ISR and Enqueue
 Performance</a></li>
-<li><a href="#5-ram-consumption">RAM Consumption</a></li>
-<li><a href="#6-no-dynamic-allocation-no-floating-point">No Dynamic
+<li><a href="#ram-consumption">RAM Consumption</a></li>
+<li><a href="#no-dynamic-allocation-no-floating-point">No Dynamic
 Allocation, No Floating Point</a></li>
-<li><a href="#7-on-board-vcom-baud-range-caveat">On-Board VCOM
+<li><a href="#on-board-vcom-baud-range-caveat">On-Board VCOM
 Baud-Range Caveat</a></li>
 </ol>
 <hr />
@@ -275,7 +275,7 @@ Demonstrated</h2>
 READY on all three boards</li>
 <li>A single <code>WriteString()</code> call transmitting a multi-line
 startup banner, sent as one call (not several back-to-back calls) so the
-entire banner is queued before the GPT timer starts — see <a href="#4-isr-and-enqueue-performance">Section 4</a></li>
+entire banner is queued before the GPT timer starts — see <a href="#isr-and-enqueue-performance">Section 4</a></li>
 <li>A bare-metal main-loop heartbeat, printing
 <code>[NNNNNN] Heartbeat OK</code> once per second via
 <code>R_BSP_SoftwareDelay()</code> + <code>WriteString()</code></li>
@@ -348,7 +348,7 @@ round-to-nearest arithmetic — never floating point:</p>
 GPT instance via <code>timer_api_t::infoGet()</code> — not assumed from
 a compile-time clock-tree constant — so this same code runs unmodified
 regardless of which prescaler/divider a given board’s GPT configuration
-uses. Only the <em>input</em> clock frequency changes per board; see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a> for each
+uses. Only the <em>input</em> clock frequency changes per board; see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a> for each
 board’s actual clock tree and divider choice. Rounding to nearest
 (rather than truncating) minimizes baud-rate error at every supported
 rate — truncation alone would bias the calculated period consistently
@@ -396,7 +396,7 @@ short.</p>
 </table>
 <p>FPB-RA2E3’s undivided clock gives it <em>better</em> timing
 resolution than the other two boards at the same baud rate (~417 counts
-vs. ~217) — see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a> for why each
+vs. ~217) — see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a> for why each
 board’s divider choice differs.</p>
 <hr />
 <h2 id="baud-rate-accuracy-and-jitter">3. Baud-Rate Accuracy and
@@ -415,21 +415,21 @@ own validation planning if jitter is critical to your application.</p>
 <p><strong>Primary jitter risk:</strong> interrupt latency. Mitigations
 already in the design: - The GPT ISR
 (<code>rs_bb_uart_tx_hal_gpt_callback()</code>) writes the GPIO pin as
-its <em>first</em> action, before any ring-buffer access — see <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>.
+its <em>first</em> action, before any ring-buffer access — see <a href="ARCHITECTURE.html#tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.html</a>.
 - <code>RS_BB_UART_TX_CFG_GPT_IPL</code> (default 6 on
-FPB-RA4E2/FPB-RA6E2; hardcoded to 1 on FPB-RA2E3 — see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a>) lets you raise
+FPB-RA4E2/FPB-RA6E2; hardcoded to 1 on FPB-RA2E3 — see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a>) lets you raise
 the bit-period interrupt’s preemption priority relative to other
 application interrupts if jitter under interrupt load is a concern.</p>
 <p><strong>Recommended measurement equipment:</strong> a logic analyzer
 or oscilloscope on the TX pin directly gives the most accurate picture
-of actual bit timing, independent of any USB/VCOM path — see <a href="#7-on-board-vcom-baud-range-caveat">Section 7</a> for why the VCOM
+of actual bit timing, independent of any USB/VCOM path — see <a href="#on-board-vcom-baud-range-caveat">Section 7</a> for why the VCOM
 bridge itself is not always representative at the low end of the baud
 range.</p>
 <hr />
 <h2 id="isr-and-enqueue-performance">4. ISR and Enqueue Performance</h2>
 <p><strong><code>rs_bb_uart_tx_Write()</code>/<code>WriteString()</code>
 enqueue cost:</strong> a bounded-time, all-or-nothing memory copy into
-the ring buffer (no division, no critical section — see <a href="ARCHITECTURE.md#5-ring-buffer-concurrency-model">ARCHITECTURE.md</a>),
+the ring buffer (no division, no critical section — see <a href="ARCHITECTURE.html#ring-buffer-concurrency-model">ARCHITECTURE.html</a>),
 followed by a GPT-start call only if the module was previously idle.
 Both calls are non-blocking and return once the data is queued, not once
 it has transmitted.</p>
@@ -443,7 +443,7 @@ tick’s output; dequeues from the ring buffer only when a new byte is
 needed. This step has a full bit period of slack (as little as ~8.68 µs
 at 115200 baud), not the sub-microsecond budget of step 2.</p>
 <p>No allocation, no blocking, and no application-level callback occurs
-anywhere in the ISR path. See <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>
+anywhere in the ISR path. See <a href="ARCHITECTURE.html#tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.html</a>
 for the full per-tick sequence and the rationale for splitting the pin
 write from the ring-buffer access.</p>
 <p><strong>Demo banner send pattern:</strong> the reference demo
@@ -520,7 +520,7 @@ confirmed that 256 bytes causes <code>StatusGet()</code>’s
 attempts) during every boot. 512 bytes comfortably accommodates the demo
 banner with headroom; if your application sends shorter bursts you may
 safely reduce <code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code> to 256,
-128, or 64 to save RAM — see <a href="CONFIGURATION_GUIDE.md">CONFIGURATION_GUIDE.md</a>.</p>
+128, or 64 to save RAM — see <a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a>.</p>
 <hr />
 <h2 id="no-dynamic-allocation-no-floating-point">6. No Dynamic
 Allocation, No Floating Point</h2>
@@ -532,7 +532,7 @@ in <code>rs_bb_uart_tx.c</code>,
 <code>rs_bb_uart_tx_hal.c</code>. All storage is static or
 stack-resident.</li>
 <li><strong>No floating-point arithmetic.</strong> The GPT period
-calculation uses integer round-to-nearest division only (see <a href="#2-bit-period-timing-reference">Section 2</a>).</li>
+calculation uses integer round-to-nearest division only (see <a href="#bit-period-timing-reference">Section 2</a>).</li>
 </ul>
 <hr />
 <h2 id="on-board-vcom-baud-range-caveat">7. On-Board VCOM Baud-Range
@@ -557,7 +557,7 @@ pin.</strong> This verifies the module’s actual bit timing independent
 of the VCOM bridge entirely — the only way to observe true 1200 baud
 signaling through the on-board probe.</li>
 <li><strong>Use an external TTL-to-USB adapter</strong> wired to a
-different GPIO, bypassing the on-board VCOM bridge entirely — see <a href="CONFIGURATION_GUIDE.md#6-using-an-external-ttl-to-usb-adapter">CONFIGURATION_GUIDE.md</a>
+different GPIO, bypassing the on-board VCOM bridge entirely — see <a href="CONFIGURATION_GUIDE.html#using-an-external-ttl-to-usb-adapter">CONFIGURATION_GUIDE.html</a>
 for wiring.</li>
 </ul>
 <blockquote>
@@ -566,7 +566,7 @@ on-board debug probe’s VCOM firmware, not a functional limitation of
 <code>rs_bb_uart_tx</code> itself.</p>
 </blockquote>
 <hr />
-<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.html">User
 Manual</a>.</em></p>
 </body>
 </html>
