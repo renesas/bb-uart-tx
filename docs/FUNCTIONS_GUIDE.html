@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>FUNCTIONS_GUIDE</title>
+  <style>
+
+html {
+color: #1a1a1a;
+color: light-dark(#1a1a1a, #fdfdfd);
+background-color: #fdfdfd;
+background-color: light-dark(#fdfdfd, #1a1a1a);
+color-scheme: light dark;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+color-scheme: light only;
+}
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a, a:visited {
+color: inherit;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid;
+border-color: #e6e6e6;
+border-color: light-dark(#e6e6e6, #4c4c4c);
+color: #606060;
+color: light-dark(#606060, #b6b6b6);
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid currentColor;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid currentColor;
+border-bottom: 1px solid currentColor;
+}
+th {
+border-top: 1px solid currentColor;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<h1 id="functions-guide-public-and-internal-functions">Functions Guide —
+Public and Internal Functions</h1>
+<blockquote>
+<p>Part of the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#documentation-map"><code>rs_bb_uart_tx</code>
+documentation set</a>. For call sequences and how these functions fit
+together in an application, see <a href="INTEGRATION_GUIDE.md">INTEGRATION_GUIDE.md</a>.</p>
+</blockquote>
+<p>This guide documents every function in <code>rs_bb_uart_tx</code> —
+both the <strong>public</strong> functions an application calls
+directly, and the <strong>internal/private</strong> functions used only
+inside the module. Each function is explicitly tagged:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🟢 <strong>PUBLIC</strong></td>
+<td>Declared in <code>rs_bb_uart_tx.h</code>. Part of the supported
+application-facing interface. Naming:
+<code>rs_bb_uart_tx_OperationName()</code>.</td>
+</tr>
+<tr>
+<td>🔒 <strong>INTERNAL</strong></td>
+<td>Non-<code>static</code> linkage but declared in an internal header
+(<code>rs_bb_uart_tx_ctrl.h</code>, <code>rs_bb_uart_tx_hal.h</code>,
+<code>rs_bb_uart_tx_engine.h</code>,
+<code>rs_bb_uart_tx_ring_buffer.h</code>) explicitly marked “not part of
+the public API.” Callable from other files inside the module, but not
+intended for application use.</td>
+</tr>
+<tr>
+<td>⚫ <strong>PRIVATE</strong></td>
+<td><code>static</code> — file-scoped, callable only from within the
+<code>.c</code> file that defines it.</td>
+</tr>
+<tr>
+<td>🟢🔒 <strong>PUBLIC BRIDGE</strong></td>
+<td>Declared in <code>rs_bb_uart_tx.h</code> (so it is
+application-facing) but <strong>defined</strong> in the board-specific
+configuration file, alongside the board’s preset GPT instance data.</td>
+</tr>
+</tbody>
+</table>
+<p>Only 🟢 <strong>PUBLIC</strong> and 🟢🔒 <strong>PUBLIC
+BRIDGE</strong> functions are safe to call from application code. 🔒
+<strong>INTERNAL</strong> and ⚫ <strong>PRIVATE</strong> functions are
+documented here for engineers reading, debugging, or extending the
+module’s source — calling them directly from application code voids the
+state-gating and calling-context guarantees described for the public
+functions.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-start-here-the-minimal-call-sequence">Start Here: The
+Minimal Call Sequence</a></li>
+<li><a href="#2-configuration-bridge">Configuration Bridge</a></li>
+<li><a href="#3-operational-functions">Operational Functions</a></li>
+<li><a href="#4-query-functions">Query Functions</a></li>
+<li><a href="#5-complete-public-function-reference-table">Complete
+Public Function Reference Table</a></li>
+<li><a href="#6-internal-functions--rs_bb_uart_txc">Internal Functions —
+<code>rs_bb_uart_tx.c</code></a></li>
+<li><a href="#7-internal-functions--rs_bb_uart_tx_ring_bufferc--h">Internal
+Functions — <code>rs_bb_uart_tx_ring_buffer.c</code> /
+<code>.h</code></a></li>
+<li><a href="#8-internal-functions--rs_bb_uart_tx_enginec--h">Internal
+Functions — <code>rs_bb_uart_tx_engine.c</code> /
+<code>.h</code></a></li>
+<li><a href="#9-internal-functions--rs_bb_uart_tx_halc--h">Internal
+Functions — <code>rs_bb_uart_tx_hal.c</code> / <code>.h</code></a></li>
+<li><a href="#10-complete-internal-function-reference-table">Complete
+Internal Function Reference Table</a></li>
+</ol>
+<hr />
+<h1 id="public-functions">Public Functions</h1>
+<h2 id="start-here-the-minimal-call-sequence">1. Start Here: The Minimal
+Call Sequence</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;rs_bb_uart_tx/rs_bb_uart_tx.h&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra4e2.h&gt;</span><span class="pp">   </span><span class="co">// pick your board</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_cfg_t    g_cfg<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t status<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> rs_bb_uart_tx_ConfigGen<span class="op">(&amp;</span>g_cfg<span class="op">,</span> <span class="op">&amp;</span>g_timer0_preset<span class="op">,</span> BSP_IO_PORT_04_PIN_11<span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> rs_bb_uart_tx_ConfigCheck<span class="op">(&amp;</span>g_cfg<span class="op">);</span>   <span class="co">// validates AND opens on success</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>RS_BB_UART_TX_STATUS_SUCCESS <span class="op">==</span> status<span class="op">)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span> rs_bb_uart_tx_WriteString<span class="op">(</span><span class="st">&quot;Bit-Banged UART Ready</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>There is no separate <code>Open()</code>/<code>Start()</code> call —
+see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>
+for why <code>ConfigCheck()</code> performs double duty.</p>
+<hr />
+<h2 id="configuration-bridge">2. Configuration Bridge</h2>
+<p><code>rs_bb_uart_tx_ConfigGen()</code> and
+<code>rs_bb_uart_tx_ConfigCheck()</code> are declared in
+<code>rs_bb_uart_tx.h</code> but <strong>defined</strong> in the
+board-specific pre-set configuration source file, alongside the
+<code>*_preset</code> GPT instance data they are most commonly paired
+with:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra2e3.h&gt;</span><span class="pp">   </span><span class="co">// FPB-RA2E3</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra4e2.h&gt;</span><span class="pp">   </span><span class="co">// FPB-RA4E2</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;rs_bb_uart_tx/config/rs_bb_uart_tx_data_fpb_ra6e2.h&gt;</span><span class="pp">   </span><span class="co">// FPB-RA6E2</span></span></code></pre></div>
+<p>They are defined <strong>unconditionally</strong>, regardless of
+<code>RS_BB_UART_TX_CFG_PRESET_CONFIG_USE</code>, so the same functions
+remain available whether the caller binds the board’s
+<code>*_preset</code> instance or an FSP Stack Configurator-generated
+instance (e.g. <code>g_timer0</code>).</p>
+<h3 id="rs_bb_uart_tx_configgen-public-bridge">🟢🔒
+<code>rs_bb_uart_tx_ConfigGen()</code> — PUBLIC BRIDGE</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGen<span class="op">(</span>rs_bb_uart_tx_cfg_t     <span class="op">*</span> p_cfg<span class="op">,</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                                timer_instance_t <span class="dt">const</span> <span class="op">*</span> p_gpt_instance<span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                                bsp_io_port_pin_t         tx_pin<span class="op">);</span></span></code></pre></div>
+<p>Assigns the GPT HAL instance and TX pin to a configuration structure,
+and fills in Phase 1 defaults for every other field:
+<code>RS_BB_UART_TX_CFG_DEFAULT_BAUD_RATE</code> (115200),
+<code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code> (512), 8N1, and
+<code>RS_BB_UART_TX_CFG_GPT_IPL</code>. Override any of these on
+<code>*p_cfg</code> after this call returns, before calling
+<code>ConfigCheck()</code>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>Configuration populated</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_cfg</code> or <code>p_gpt_instance</code> is
+<code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Callable from any context before <code>ConfigCheck()</code>. Not
+ISR-safe.</em></p>
+<h3 id="rs_bb_uart_tx_configcheck-public-bridge">🟢🔒
+<code>rs_bb_uart_tx_ConfigCheck()</code> — PUBLIC BRIDGE</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigCheck<span class="op">(</span>rs_bb_uart_tx_cfg_t <span class="dt">const</span> <span class="op">*</span> p_cfg<span class="op">);</span></span></code></pre></div>
+<p>Validates that the baud rate is within the supported range, the GPT
+instance pointer is present, and the buffer-size field matches the
+compiled buffer size. On success, <strong>also</strong> commits the
+configuration and opens the GPT and GPIO HAL resources (see <a href="BIT_BANGED_UART_TX-USER_MANUAL.md#21-design-pattern-single-call-simple-use">BIT_BANGED_UART_TX-USER_MANUAL.md</a>).</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>Configuration valid; module is now READY</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_cfg</code> or <code>p_cfg-&gt;p_gpt_instance</code> is
+<code>NULL</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_UNSUPPORTED_BAUD_RATE</code></td>
+<td><code>baud_rate</code> outside
+<code>RS_BB_UART_TX_CFG_MIN/MAX_BAUD_RATE</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_BUFFER_SIZE</code></td>
+<td><code>p_cfg-&gt;buffer_size</code> does not match the compiled
+<code>RS_BB_UART_TX_CFG_BUFFER_SIZE_BYTES</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_STATE</code></td>
+<td>Module is already READY/TRANSMITTING/ERROR (not idempotent)</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_TIMER_ERROR</code></td>
+<td>GPT HAL open/period-set failed</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_GPIO_ERROR</code></td>
+<td>GPIO pin configuration failed</td>
+</tr>
+</tbody>
+</table>
+<p><em>Valid once, before the first
+<code>Write()</code>/<code>WriteString()</code> call. Not
+ISR-safe.</em></p>
+<h3 id="rs_bb_uart_tx_configgetsize-public">🟢
+<code>rs_bb_uart_tx_ConfigGetSize()</code> — PUBLIC</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_ConfigGetSize<span class="op">(</span><span class="dt">size_t</span> <span class="op">*</span> p_size<span class="op">);</span></span></code></pre></div>
+<p>Returns the size, in bytes, of the internal control block. Useful for
+confirming control-block sizing (e.g. against
+<code>RS_BB_UART_TX_CFG_CTRL_RAM_LIMIT_BYTES</code>) without requiring
+<code>ConfigCheck()</code> to have run first. Since the module is a
+singleton, no control-block pointer argument is needed.</p>
+<table>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>Size returned in <code>*p_size</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_size</code> is <code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Valid in any lifecycle state, including before
+<code>ConfigGen()</code>. Not ISR-safe.</em></p>
+<hr />
+<h2 id="operational-functions">3. Operational Functions</h2>
+<h3 id="rs_bb_uart_tx_write-public">🟢
+<code>rs_bb_uart_tx_Write()</code> — PUBLIC</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_Write<span class="op">(</span><span class="dt">uint8_t</span> <span class="dt">const</span> <span class="op">*</span> p_data<span class="op">,</span> <span class="dt">uint32_t</span> length<span class="op">);</span></span></code></pre></div>
+<p>Enqueues raw bytes for transmission. Non-blocking; returns
+immediately. Copies bytes into the ring buffer using an all-or-nothing
+policy — if the full request does not fit, nothing is written and
+<code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code> is returned. Starts (or
+continues) asynchronous transmission via the GPT timer if data is
+queued. <code>length == 0</code> is a no-op success regardless of
+<code>p_data</code>.</p>
+<p><strong>Success means the data was accepted into the transmit queue —
+not that it has finished transmitting on the TX pin.</strong></p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>All bytes accepted into the queue (or <code>length</code> was
+0)</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_data</code> is <code>NULL</code> and
+<code>length &gt; 0</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_STATE</code></td>
+<td>Module is not READY/TRANSMITTING</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code></td>
+<td>Insufficient free space for the whole request</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_TIMER_ERROR</code></td>
+<td>Propagated if the GPT timer failed to start</td>
+</tr>
+</tbody>
+</table>
+<p><em>Valid from startup context (after <code>ConfigCheck()</code>
+succeeds) and bare-metal main-loop/task context. <strong>NOT</strong>
+valid from ISR context in Phase 1.</em></p>
+<h3 id="rs_bb_uart_tx_writestring-public">🟢
+<code>rs_bb_uart_tx_WriteString()</code> — PUBLIC</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_WriteString<span class="op">(</span><span class="dt">char</span> <span class="dt">const</span> <span class="op">*</span> p_str<span class="op">);</span></span></code></pre></div>
+<p>Enqueues a <code>NUL</code>-terminated ASCII string. Calculates the
+length via <code>strlen()</code>, then delegates to
+<code>rs_bb_uart_tx_Write()</code> — same all-or-nothing policy, same
+calling-context restriction. The terminating <code>NUL</code> is never
+transmitted.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>All characters accepted into the queue</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_str</code> is <code>NULL</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_STATE</code></td>
+<td>Propagated from <code>Write()</code></td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_TX_BUFFER_FULL</code></td>
+<td>Propagated from <code>Write()</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Same calling-context restriction as
+<code>rs_bb_uart_tx_Write()</code>.</em></p>
+<hr />
+<h2 id="query-functions">4. Query Functions</h2>
+<h3 id="rs_bb_uart_tx_statusget-public">🟢
+<code>rs_bb_uart_tx_StatusGet()</code> — PUBLIC</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_StatusGet<span class="op">(</span>rs_bb_uart_tx_state_t <span class="op">*</span> p_state<span class="op">);</span></span></code></pre></div>
+<p>Populates a caller-allocated snapshot of runtime status: lifecycle
+state, configured baud rate, ring-buffer occupancy
+(<code>queued_bytes</code>/<code>free_bytes</code>), and four cumulative
+diagnostic counters (<code>total_bytes_accepted</code>,
+<code>total_bytes_transmitted</code>, <code>buffer_full_count</code>,
+<code>invalid_call_count</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>Status populated</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_POINTER</code></td>
+<td><code>p_state</code> is <code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Valid in any lifecycle state, including before
+<code>ConfigCheck()</code> (fields read as zero/UNCONFIGURED). Callable
+from main-loop/task context; not guaranteed ISR-safe for control-flow
+decisions — it reads multiple fields without a critical section, which
+is acceptable for a diagnostics snapshot but not for a decision that
+must be atomic with respect to the GPT ISR.</em></p>
+<hr />
+<h2 id="complete-public-function-reference-table">5. Complete Public
+Function Reference Table</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Category</th>
+<th>Blocking?</th>
+<th>Possible Return Values</th>
+<th>Primary User</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_ConfigGen()</code></td>
+<td>Configuration</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code></td>
+<td>Application/example setup code</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ConfigCheck()</code></td>
+<td>Configuration</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code>,
+<code>UNSUPPORTED_BAUD_RATE</code>, <code>INVALID_BUFFER_SIZE</code>,
+<code>INVALID_STATE</code>, <code>TIMER_ERROR</code>,
+<code>GPIO_ERROR</code></td>
+<td>Application/example setup code</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ConfigGetSize()</code></td>
+<td>Configuration</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code></td>
+<td>Tooling, diagnostics</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_Write()</code></td>
+<td>Operation</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code>,
+<code>INVALID_STATE</code>, <code>TX_BUFFER_FULL</code>,
+<code>TIMER_ERROR</code></td>
+<td>Application</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_WriteString()</code></td>
+<td>Operation</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code>,
+<code>INVALID_STATE</code>, <code>TX_BUFFER_FULL</code></td>
+<td>Application</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_StatusGet()</code></td>
+<td>Query</td>
+<td>No</td>
+<td><code>SUCCESS</code>, <code>INVALID_POINTER</code></td>
+<td>Application, diagnostics</td>
+</tr>
+</tbody>
+</table>
+<p>The names above omit the common <code>RS_BB_UART_TX_STATUS_</code>
+prefix for readability.</p>
+<hr />
+<h1 id="internal-functions">Internal Functions</h1>
+<h2 id="internal-functions-rs_bb_uart_tx.c">6. Internal Functions —
+<code>rs_bb_uart_tx.c</code></h2>
+<h3 id="rs_bb_uart_tx_open_internal-internal">🔒
+<code>rs_bb_uart_tx_open_internal()</code> — INTERNAL</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rs_bb_uart_tx_status_t rs_bb_uart_tx_open_internal<span class="op">(</span>rs_bb_uart_tx_cfg_t <span class="dt">const</span> <span class="op">*</span> p_cfg<span class="op">);</span></span></code></pre></div>
+<p>Declared in <code>rs_bb_uart_tx_ctrl.h</code>, defined in
+<code>rs_bb_uart_tx.c</code>. Binds <code>p_cfg</code> into the
+singleton control block, resets the ring buffer and TX bit-engine, opens
+the GPIO TX pin and GPT timer HAL resources, and transitions the
+lifecycle state UNCONFIGURED/CONFIGURED → READY. Called exclusively from
+the board configuration file’s <code>rs_bb_uart_tx_ConfigCheck()</code>
+implementation on successful validation.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Return Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_SUCCESS</code></td>
+<td>Opened; state → READY</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_INVALID_STATE</code></td>
+<td>Already READY/TRANSMITTING/ERROR</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_GPIO_ERROR</code></td>
+<td>GPIO pin configuration failed; state → ERROR</td>
+</tr>
+<tr>
+<td><code>RS_BB_UART_TX_STATUS_TIMER_ERROR</code></td>
+<td>GPT HAL open/period-set failed; state → ERROR</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rs_bb_uart_tx_start_internal-private">⚫
+<code>rs_bb_uart_tx_start_internal()</code> — PRIVATE</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> rs_bb_uart_tx_status_t rs_bb_uart_tx_start_internal<span class="op">(</span>rs_bb_uart_tx_ctrl_t <span class="op">*</span> p_ctrl<span class="op">);</span></span></code></pre></div>
+<p>Starts (or continues) asynchronous transmission. Called from
+<code>Write()</code>/<code>WriteString()</code> after a successful
+enqueue. A no-op returning <code>SUCCESS</code> if already TRANSMITTING
+(the GPT ISR will naturally pick up newly-queued bytes); otherwise
+starts the GPT timer and transitions to TRANSMITTING.</p>
+<hr />
+<h2 id="internal-functions-rs_bb_uart_tx_ring_buffer.c-.h">7. Internal
+Functions — <code>rs_bb_uart_tx_ring_buffer.c</code> /
+<code>.h</code></h2>
+<p><code>rs_bb_uart_tx_ring_buffer.h</code> is explicitly marked
+<em>“Internal header — not part of the public API. Not included by
+<code>rs_bb_uart_tx.h</code>.”</em> All five functions are 🔒
+<strong>INTERNAL</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Calling Context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_reset(p_rb)</code></td>
+<td>Resets a ring buffer to the empty state. Called once from
+<code>rs_bb_uart_tx_open_internal()</code></td>
+<td>Before the GPT ISR is enabled only — not ISR-safe by itself</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_enqueue(p_rb, p_data, length)</code></td>
+<td>All-or-nothing enqueue; lock-free (no critical section — see <a href="ARCHITECTURE.md#5-ring-buffer-concurrency-model">ARCHITECTURE.md</a>)</td>
+<td>Main-loop/task context only — matches <code>Write()</code>’s
+restriction</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_dequeue(p_rb, p_byte)</code></td>
+<td>Dequeue a single byte; lock-free, O(1), no division</td>
+<td>GPT ISR context only, via the TX engine</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_count_get(p_rb)</code></td>
+<td>Bytes currently queued (single volatile read)</td>
+<td>Any context (diagnostics snapshot)</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_free_get(p_rb)</code></td>
+<td>Bytes of free space remaining</td>
+<td>Any context (diagnostics snapshot)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="internal-functions-rs_bb_uart_tx_engine.c-.h">8. Internal
+Functions — <code>rs_bb_uart_tx_engine.c</code> / <code>.h</code></h2>
+<p><code>rs_bb_uart_tx_engine.h</code> is explicitly marked
+<em>“Internal header — not part of the public API.”</em> All three
+functions are 🔒 <strong>INTERNAL</strong>. This file never includes FSP
+headers — it calls back into the HAL shim to actually drive the GPIO
+pin, so it is unit-testable on the host.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Calling Context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_engine_reset(p_engine)</code></td>
+<td>Resets the TX bit-engine to <code>TX_IDLE</code>, idle-high output
+pending. Called once from
+<code>rs_bb_uart_tx_open_internal()</code></td>
+<td>Before the GPT ISR is enabled</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine_output_get(p_engine)</code></td>
+<td>Returns the pin level for the tick about to run. O(1), no
+ring-buffer access — call FIRST in the ISR</td>
+<td>GPT ISR context only, while TRANSMITTING</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine_advance(p_engine, p_rb)</code></td>
+<td>Prepares the <em>next</em> tick’s output and advances the FSM;
+dequeues from the ring buffer when a new byte is needed. Call AFTER the
+GPIO write</td>
+<td>GPT ISR context only, while TRANSMITTING</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>
+for the full pipeline design and the bit-level state machine these two
+functions implement.</p>
+<hr />
+<h2 id="internal-functions-rs_bb_uart_tx_hal.c-.h">9. Internal Functions
+— <code>rs_bb_uart_tx_hal.c</code> / <code>.h</code></h2>
+<p><code>rs_bb_uart_tx_hal.h</code> is explicitly marked <em>“Internal
+header — not part of the public API.”</em> This is the
+<strong>only</strong> file that includes GPT-specific FSP headers and
+drives the TX pin via direct register/BSP pin control. Seven 🔒
+<strong>INTERNAL</strong> functions plus the ISR-context callback.</p>
+<h3 id="gpt-timer-adapter-internal">🔒 GPT timer adapter — INTERNAL</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_open(p_ctrl)</code></td>
+<td>Opens the GPT instance, queries its actual applied clock frequency
+via <code>infoGet()</code>, computes and applies the bit-period count
+for the configured baud rate via <code>periodSet()</code>
+(round-to-nearest — see <a href="BEHAVIOR_AND_PERFORMANCE.md">BEHAVIOR_AND_PERFORMANCE.md</a>).
+Does <strong>not</strong> start the timer.</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_start(p_ctrl)</code></td>
+<td>Resets the counter to 0, then starts the timer — every frame’s first
+bit period is a full, consistent duration regardless of when
+<code>Start()</code> is called relative to any prior count state.</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_stop(p_ctrl)</code></td>
+<td>Stops the timer. Called from GPT ISR context once the TX engine
+returns to <code>TX_IDLE</code>. ISR-safe — a simple register write, not
+blocking.</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_close(p_ctrl)</code></td>
+<td>Closes the GPT instance. Not currently called by any Phase 1 code
+path (no public <code>Close()</code>-equivalent exists); provided for
+completeness.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gpio-adapter-internal">🔒 GPIO adapter — INTERNAL</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_open(p_ctrl)</code></td>
+<td>Configures the TX pin as a push-pull output, idling high, via
+<code>R_BSP_PinAccessEnable()</code>/<code>R_BSP_PinCfg()</code>/<code>R_BSP_PinAccessDisable()</code>
+— not a full <code>ioport_instance_t</code>, since a single
+statically-configured pin doesn’t need that generality.</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_write(p_ctrl, level_high)</code></td>
+<td>Drives the TX pin. Called once per GPT ISR tick. <strong>Every call
+is bracketed by
+<code>R_BSP_PinAccessEnable()</code>/<code>PinAccessDisable()</code></strong>
+— on this FSP/MCU combination, <code>R_BSP_PinWrite()</code> writes to
+the same write-protected PmnPFS register <code>R_BSP_PinCfg()</code>
+uses, so the write would be silently dropped otherwise. These
+enable/disable calls are a lightweight, reference-counted pair
+explicitly documented as ISR-safe.</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_close(p_ctrl)</code></td>
+<td>Returns the TX pin to a safe idle-high state (best-effort; does not
+revert pin muxing — that is an application-level decision). Not
+currently called by any Phase 1 code path; provided for
+completeness.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gpt-isr-context-callback-internal">🔒 GPT ISR-context callback —
+INTERNAL</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_callback(p_args)</code></td>
+<td>Registered as the GPT instance’s <code>p_callback</code>.
+<code>p_args-&gt;p_context</code> is the owning
+<code>rs_bb_uart_tx_ctrl_t *</code>. Implements the two-half tick
+sequence described in <a href="ARCHITECTURE.md#3-tx-bit-engine-pipeline-and-data-flow">ARCHITECTURE.md</a>.
+Defensively returns immediately without touching engine/ring-buffer
+state if the lifecycle state is not TRANSMITTING (guards against a
+spurious/late interrupt).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="complete-internal-function-reference-table">10. Complete
+Internal Function Reference Table</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Function</th>
+<th>Tag</th>
+<th>File</th>
+<th>Calling Context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rs_bb_uart_tx_open_internal()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx.c</code></td>
+<td>Board config file’s <code>ConfigCheck()</code> only</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_start_internal()</code></td>
+<td>⚫ PRIVATE</td>
+<td><code>rs_bb_uart_tx.c</code></td>
+<td><code>Write()</code>/<code>WriteString()</code> only</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_reset()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
+<td>Before GPT ISR enabled</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_enqueue()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
+<td>Main-loop/task context</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_dequeue()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
+<td>GPT ISR context</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_count_get()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
+<td>Any</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ring_buffer_free_get()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_ring_buffer.c</code></td>
+<td>Any</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine_reset()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_engine.c</code></td>
+<td>Before GPT ISR enabled</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine_output_get()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_engine.c</code></td>
+<td>GPT ISR context, TRANSMITTING only</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_engine_advance()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_engine.c</code></td>
+<td>GPT ISR context, TRANSMITTING only</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_open()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>Called by <code>rs_bb_uart_tx_open_internal()</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_start()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>Called by <code>rs_bb_uart_tx_start_internal()</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_stop()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>GPT ISR context</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_close()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>Not called in Phase 1</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_open()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>Called by <code>rs_bb_uart_tx_open_internal()</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_write()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>GPT ISR context</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpio_close()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>Not called in Phase 1</td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_hal_gpt_callback()</code></td>
+<td>🔒 INTERNAL</td>
+<td><code>rs_bb_uart_tx_hal.c</code></td>
+<td>GPT ISR — registered as <code>p_callback</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ConfigGen()</code></td>
+<td>🟢🔒 PUBLIC BRIDGE</td>
+<td><code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c</code></td>
+<td>Any, before <code>ConfigCheck()</code></td>
+</tr>
+<tr>
+<td><code>rs_bb_uart_tx_ConfigCheck()</code></td>
+<td>🟢🔒 PUBLIC BRIDGE</td>
+<td><code>rs_bb_uart_tx_data_fpb_&lt;board&gt;.c</code></td>
+<td>Any, once</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Return to the <a href="BIT_BANGED_UART_TX-USER_MANUAL.md">User
+Manual</a>.</em></p>
+</body>
+</html>
