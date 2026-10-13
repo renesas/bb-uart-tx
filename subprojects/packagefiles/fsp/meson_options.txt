@@ -1,3 +1,0 @@
-option('fsp_mcu', type: 'string', value: 'ra2e3')
-option('fsp_board', type: 'string', value: 'ra2e3_fpb')
-option('fsp_cfg_include', type: 'string', value: '', description: 'Path to ra_cfg/fsp_cfg')

@@ -63,10 +63,6 @@ equivalent command-line `cmake --preset`/`cmake --build` invocation).
 physical debug path as the e2 studio project above, through VS Code's
 debug UI instead of e2 studio's.
 
-Full VS Code / CMake build, tooling, and troubleshooting details — including
-per-board device names and every VS Code task — are documented separately in
-that delivery's own documentation set: see `doc/BUILD.md` and
-`doc/EXAMPLES_GUIDE.md` under `examples/VSCode/`.
 
 ## GPT Interrupt Setup
 
@@ -228,9 +224,6 @@ target GPIO directly to an RS-232 DB9 interface.
 ```text
 .
 ├── README.md                          ← This file: high-level overview, quick start, documentation map
-├── meson.build                        ← Root Meson project; ties together src/, tests/, firmware/
-├── meson_options.txt                  ← Meson build options (gen_board, board, mcu, ra_core, device, unity_tx_pin, ...)
-├── metadata.r365.xml                  ← Software Building Block (SBB) release metadata (name, version, supported devices)
 ├── .gitignore
 │
 ├── docs/
@@ -244,8 +237,6 @@ target GPIO directly to an RS-232 DB9 interface.
 │   ├── EXAMPLES_GUIDE.md                 ← Importing/building the e2studio/VS Code examples, expected VCOM output
 │   ├── REUSABILITY_GUIDE.md              ← Adapting the core logic to other event sources and workflows
 │   ├── RELEASE_NOTES.md                  ← Version history, adopting a newer release
-│   ├── BUILD.md                          ← CMake + Ninja + LLVM (ATfE) build of the e2studio / VS Code example projects
-│   └── BUILD_MESON.md                    ← Meson build/test instructions: host unit tests, firmware, on-target Unity tests
 │
 ├── examples/
 │   ├── e2studio/
@@ -258,84 +249,21 @@ target GPIO directly to an RS-232 DB9 interface.
 │       ├── BitBangedUART_TX_FPB_RA4E2/    ← VS Code / CMake project for FPB-RA4E2
 │       └── BitBangedUART_TX_FPB_RA6E2/    ← VS Code / CMake project for FPB-RA6E2
 │
-├── firmware/                          ← Meson cross build: application + on-target Unity test ELF, per board
-│   ├── meson.build                    ← Per-board .elf/.srec targets; rfp-cli flash/erase/blank-check run_targets
-│   ├── generated/
-│   │   └── meson.build                ← Runs RASC headless on configuration.xml; copies ra_gen/ra_cfg + linker scripts
-│   ├── ra2e3-fpb/
-│   │   ├── configuration.xml          ← FSP Smart Configurator project (r_gpt + r_ioport) for FPB-RA2E3
-│   │   └── README.md
-│   ├── ra4e2-fpb/
-│   │   ├── configuration.xml          ← ...for FPB-RA4E2
-│   │   └── README.md
-│   └── ra6e2-fpb/
-│       ├── configuration.xml          ← ...for FPB-RA6E2
-│       └── README.md
 │
 ├── src/
-│   ├── crt0_stub.c                    ← Weak _start stub (satisfies picolibc's crt0.o reference; Reset_Handler is the real entry point)
-│   └── rs_bb_uart_tx/                 ← core source and per-board preset configuration
-│       ├── rs_bb_uart_tx.c / .h
-│       ├── rs_bb_uart_tx_cfg.h
-│       ├── rs_bb_uart_tx_ctrl.h
-│       ├── rs_bb_uart_tx_engine.c / .h
-│       ├── rs_bb_uart_tx_hal.c / .h
-│       ├── rs_bb_uart_tx_ring_buffer.c / .h
-│       ├── rs_bb_uart_tx_types.h
-│       └── config/
-│           └── rs_bb_uart_tx_data_fpb_<board>.c / .h
-│
-├── tests/                              ← Unity tests: 94 host + on-target (mock HAL), 44 host-only (real HAL / waveform)
-│   ├── meson.build                     ← Two host executables (unittest_on_pc, unittest_hal_on_pc); skipped on cross builds
-│   ├── run_ut.robot                    ← Robot Framework: flash the on-target Unity image, capture output over VCOM
-│   ├── rs_bb_uart_tx_test_helpers.h    ← Shared helpers: singleton reset, UART waveform decoder, engine driver
-│   ├── Bit_Banged_UART_TX_Jitter_Specification.txt          ← Analogue bit-timing/jitter requirements (needs a logic analyzer, not covered by these tests)
-│   ├── Bit-Banged UART TX Timing and Jitter Verification.pdf ← Measured jitter report against the spec above
-│   │
-│   ├── test_main.c                         ← Host Unity entry point → unittest_on_pc (mock HAL; same groups also run on target)
-│   ├── test_rs_bb_uart_tx_ring_buffer.c    ← BbUartRingBuffer
-│   ├── test_rs_bb_uart_tx_engine.c         ← BbUartEngine + BbUartEngineFrame
-│   ├── test_rs_bb_uart_tx_core.c           ← BbUartConfig + BbUartLifecycle + BbUartWrite (mock HAL is defined in this file)
-│   │
-│   ├── test_main_hal.c                     ← Host-only Unity entry point → unittest_hal_on_pc (real hal.c + fake FSP)
-│   ├── test_rs_bb_uart_tx_hal.c            ← BbUartHal + BbUartIsr
-│   ├── test_rs_bb_uart_tx_waveform.c       ← BbUartWaveform (end-to-end: public API → decoded pin waveform)
-│   │
-│   ├── test_main_firmware.c                ← On-target Unity entry point (replaces ra_gen/main.c in the UT firmware image)
-│   │
-│   ├── stubs/                          ← Host-build FSP type stubs + fake FSP timer/GPIO layer (host only)
-│   │   ├── rs_bb_uart_tx_test_types.h  ← Stand-ins for bsp_api.h / r_timer_api.h (RS_BB_UART_TX_TEST_HOST_BUILD)
-│   │   ├── r_ioport.h                  ← Stand-in for FSP r_ioport.h (IOPORT_CFG_* flags)
-│   │   ├── rs_bb_uart_tx_fake_fsp.h    ← Fake GPT timer + R_BSP_Pin* API, with an ordered event/level log
-│   │   └── rs_bb_uart_tx_fake_fsp.c
-│   │
-│   └── target/                         ← On-target Unity output transport (polled software UART, 9600 8N1, SysTick-timed)
-│       ├── unity_config.h              ← Routes UNITY_OUTPUT_CHAR() to unity_putc()
-│       ├── unity_port_polled_gpio.c    ← Bit-bangs Unity's own output on the VCOM TXD pin (free while the mock HAL is linked)
-│       └── syscalls_min.c              ← Minimal _write()/... so printf() also reaches unity_putc()
-│
-├── meson/                              ← Meson machine files
-│   ├── llvm-clangcl-msvc.ini            ← Windows host native file (unit tests, clang-cl)
-│   ├── llvm-clangcl-ubuntu2404-ci.ini   ← Linux host native file (unit tests / CI, clang)
-│   ├── llvm-cortex-m23.ini              ← Cortex-M23 cross file (FPB-RA2E3; ATfE, with --sysroot)
-│   └── llvm-cortex-m33.ini              ← Cortex-M33 cross file (FPB-RA4E2 / FPB-RA6E2; ATfE, with --sysroot)
-│
-├── subprojects/                        ← Meson subprojects (fetched by `meson subprojects download`)
-│   ├── unity.wrap                      ← Unity test framework (v2.6.0)
-│   ├── fsp.wrap                        ← Renesas FSP v6.5.0 (BSP, r_ioport, r_gpt) — pinned, not vendored in-tree
-│   ├── cmsis.wrap                      ← Arm CMSIS_6 v6.1.0 (CMSIS-Core headers) — pinned, not vendored in-tree
-│   └── packagefiles/
-│       ├── fsp/meson.build             ← Adds a meson.build to the fetched FSP tree
-│       └── cmsis/meson.build           ← Adds a meson.build to the fetched CMSIS_6 tree
-│
-├── srec/
-│   └── example project executables in S-RECORD format
-│
-└── scripts/
-    ├── env.ps1                     ← Windows PATH setup (edit before use)
-    ├── run_rasc.py                 ← Headless RASC code generation + output copy
-    ├── run_rasc_bundle.py          ← Smart bundle generation for TrustZone MCUs
-    └── UartLibrary.py              ← Optional VCOM helper (Robot Framework)
+     ├── crt0_stub.c                    ← Weak _start stub (satisfies picolibc's crt0.o reference; Reset_Handler is the real entry point)
+     └── rs_bb_uart_tx/                 ← core source and per-board preset configuration
+        ├── rs_bb_uart_tx.c / .h
+        ├── rs_bb_uart_tx_cfg.h
+        ├── rs_bb_uart_tx_ctrl.h
+        ├── rs_bb_uart_tx_engine.c / .h
+        ├── rs_bb_uart_tx_hal.c / .h
+        ├── rs_bb_uart_tx_ring_buffer.c / .h
+        ├── rs_bb_uart_tx_types.h
+     └── config/
+          └── rs_bb_uart_tx_data_fpb_<board>.c / .h
+
+
 ```
 
 See `doc/FILE_GUIDE.md` under `examples/VSCode/` for the full file-by-file
@@ -397,8 +325,6 @@ If you are:
 
 - Evaluating the Bit-Banged UART TX → Start with [`docs/BIT_BANGED_UART_TX-USER_MANUAL.md`](docs/BIT_BANGED_UART_TX-USER_MANUAL.md).
 - Running the example → Read [`docs/EXAMPLES_GUIDE.md`](docs/EXAMPLES_GUIDE.md).
-- Building the example projects from the command line (CMake + Ninja + LLVM) → Read [`docs/BUILD.md`](docs/BUILD.md).
-- Running host/on-target unit tests or the Meson firmware build → Read [`docs/BUILD_MESON.md`](docs/BUILD_MESON.md).
 - Integrating the Bit-Banged UART TX → Read [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
 - Writing code against the Bit-Banged UART TX module → Read [`docs/FUNCTIONS_GUIDE.md`](docs/FUNCTIONS_GUIDE.md).
 - Porting to your board → Read [`docs/CONFIGURATION_GUIDE.md`](docs/CONFIGURATION_GUIDE.md).

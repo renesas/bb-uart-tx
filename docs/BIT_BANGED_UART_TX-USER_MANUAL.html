@@ -251,9 +251,8 @@ Manual</h1>
 <strong>Version:</strong> 0.1.0 <strong>FSP Baseline:</strong> FSP
 v6.5.0, LLVM Embedded Toolchain for Arm (ATfE) <strong>Reference
 Targets:</strong> FPB-RA2E3, FPB-RA4E2, FPB-RA6E2 <strong>Build
-Environment:</strong> Visual Studio Code + CMake (Ninja) <strong>Also
-Buildable With:</strong> Meson — host unit tests, cross-built firmware,
-and on-target Unity tests for all three boards; see <a href="BUILD_MESON.html">BUILD_MESON.html</a> <strong>License:</strong>
+Environment:</strong> Visual Studio Code + CMake (Ninja) <strong>
+<strong>License:</strong>
 BSD-3-Clause</p>
 <hr />
 <h2 id="about-this-manual">About This Manual</h2>
@@ -282,15 +281,6 @@ difference (CMake + Ninja + VS Code vs. e2studio’s Eclipse-based project
 model), not a functional one.</p>
 </blockquote>
 <blockquote>
-<p><strong>Building headlessly, or running the unit tests?</strong> A
-third, independent delivery exists alongside the two example-project
-sets above: a <strong>Meson</strong> build rooted at the repository’s
-top-level <code>meson.build</code>. It covers host-based unit tests (no
-hardware required), a cross-built firmware image for all three boards,
-and an on-target Unity test image — useful for CI or command-line-only
-workflows. It shares the same <code>src/rs_bb_uart_tx/</code> core
-described in this manual; only the build tooling and project files
-differ. See <a href="BUILD_MESON.html">BUILD_MESON.html</a>.</p>
 </blockquote>
 <h2 id="documentation-map">Documentation Map</h2>
 <table>
@@ -318,18 +308,6 @@ file)</em></td>
 <td>Opening/building the example projects in VS Code, expected Tera Term
 output per board</td>
 <td>Running the reference demo for the first time</td>
-</tr>
-<tr>
-<td><a href="BUILD.html">BUILD.html</a></td>
-<td>Command-line CMake/Ninja build, VS Code tool setup,
-flashing/debugging, troubleshooting</td>
-<td>Building, testing, or flashing from the command line</td>
-</tr>
-<tr>
-<td><a href="BUILD_MESON.html">BUILD_MESON.html</a></td>
-<td>Meson build: host unit tests (no hardware), cross-built firmware,
-on-target Unity tests, for all three boards</td>
-<td>Running the unit tests, or building/testing headlessly or in CI</td>
 </tr>
 <tr>
 <td><a href="CONFIGURATION_GUIDE.html">CONFIGURATION_GUIDE.html</a></td>
@@ -597,9 +575,7 @@ new preset file or use the FSP Stack Configurator path (see <a href="CONFIGURATI
 <td>GPT (<code>r_gpt</code>) and IOPORT (<code>r_ioport</code>) driver
 source is genuinely vendored in this delivery — no additional FSP Smart
 Configurator step is required to build. Do not edit manually; regenerate
-via the FSP Smart Configurator, the CMake pre-configure RASC step (see
-<a href="BUILD.html">BUILD.html</a>), or the Meson build’s
-<code>rasc_generate</code> run target (see <a href="BUILD_MESON.html">BUILD_MESON.html</a>) if you change
+via the FSP Smart Configurator, if you change
 <code>configuration.xml</code></td>
 </tr>
 </tbody>
@@ -632,9 +608,6 @@ stop-bit counts in Phase 1.</li>
 <h2 id="where-to-go-next">4. Where to Go Next</h2>
 <ul>
 <li><strong>Running the demo for the first time?</strong> → <a href="EXAMPLES_GUIDE.html">EXAMPLES_GUIDE.html</a></li>
-<li><strong>Building from the command line?</strong> → <a href="BUILD.html">BUILD.html</a></li>
-<li><strong>Building headlessly, or running the unit tests?</strong> →
-<a href="BUILD_MESON.html">BUILD_MESON.html</a></li>
 <li><strong>Wiring the Bit-Banged UART into your application?</strong> →
 <a href="INTEGRATION_GUIDE.html">INTEGRATION_GUIDE.html</a></li>
 <li><strong>Reusing this for a different output or use case?</strong> →
