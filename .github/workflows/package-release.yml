@@ -1,0 +1,160 @@
+name: Package Release Artifacts
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  package_release:
+    name: Package and publish release ZIP files
+    runs-on: ubuntu-latest
+
+    steps:
+      # Do not specify ref: release here.
+      # For a tag-triggered workflow, this checks out the tagged commit.
+      - name: Checkout tagged release
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify release structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -d examples/vscode
+          test -d src
+          test -d docs
+
+      - name: Create distribution directory
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf dist
+          mkdir -p dist
+
+      # Creates one ZIP per directory under examples/vscode.
+      # The project directory itself is not included in the ZIP.
+      - name: Package VS Code example projects
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          project_count=0
+
+          for project in examples/vscode/*; do
+            [ -d "$project" ] || continue
+
+            project_name="$(basename "$project")"
+
+            echo "Packaging ${project_name}.zip..."
+
+            (
+              cd "$project"
+              zip -r "../../../dist/${project_name}.zip" .
+            )
+
+            project_count=$((project_count + 1))
+          done
+
+          if [ "$project_count" -eq 0 ]; then
+            echo "No project directories found under examples/vscode."
+            exit 1
+          fi
+
+      # Creates rs_bb_uart_tx.zip containing the contents of src/.
+      # The src directory itself is not included at the ZIP root.
+      - name: Package rs_bb_uart_tx source files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Packaging rs_bb_uart_tx.zip..."
+
+          (
+            cd src
+            zip -r "../dist/rs_bb_uart_tx.zip" .
+          )
+
+      # Creates docs.zip containing the contents of docs/.
+      # The docs directory itself is not included at the ZIP root.
+      - name: Package documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Packaging docs.zip..."
+
+          (
+            cd docs
+            zip -r "../dist/docs.zip" .
+          )
+
+      - name: Verify generated ZIP files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Generated packages:"
+          ls -lh dist
+
+          echo
+          echo "Verifying ZIP archives..."
+
+          archive_count=0
+
+          for archive in dist/*.zip; do
+            [ -f "$archive" ] || continue
+
+            echo "Verifying ${archive}..."
+            unzip -t "$archive"
+
+            archive_count=$((archive_count + 1))
+          done
+
+          if [ "$archive_count" -eq 0 ]; then
+            echo "No ZIP archives were generated."
+            exit 1
+          fi
+
+      # Keep a copy with the GitHub Actions workflow run.
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-packages-${{ github.ref_name }}
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+      # Create the GitHub Release if it does not already exist.
+      # Otherwise, replace its existing ZIP assets.
+      - name: Publish GitHub Release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "GitHub Release ${RELEASE_TAG} already exists."
+            echo "Replacing its ZIP assets..."
+
+            gh release upload "$RELEASE_TAG" \
+              dist/*.zip \
+              --clobber
+          else
+            echo "Creating GitHub Release ${RELEASE_TAG}..."
+
+            gh release create "$RELEASE_TAG" \
+              dist/*.zip \
+              --verify-tag \
+              --title "$RELEASE_TAG" \
+              --generate-notes
+          fi
