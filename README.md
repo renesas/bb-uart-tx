@@ -302,12 +302,3 @@ Two configuration paths are available, selected by
 If you are:
 
 - Evaluating the Bit-Banged UART TX → Start with [`docs/BIT_BANGED_UART_TX-USER_MANUAL.md`](docs/BIT_BANGED_UART_TX-USER_MANUAL.md).
-- Running the example → Read [`docs/EXAMPLES_GUIDE.md`](docs/EXAMPLES_GUIDE.md).
-- Integrating the Bit-Banged UART TX → Read [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
-- Writing code against the Bit-Banged UART TX module → Read [`docs/FUNCTIONS_GUIDE.md`](docs/FUNCTIONS_GUIDE.md).
-- Porting to your board → Read [`docs/CONFIGURATION_GUIDE.md`](docs/CONFIGURATION_GUIDE.md).
-- Reviewing what's safe to modify → Read [`docs/FILE_GUIDE.md`](docs/FILE_GUIDE.md).
-- Reusing this for a different use case → Read [`docs/REUSABILITY_GUIDE.md`](docs/REUSABILITY_GUIDE.md).
-- Understanding the internal design and lifecycle state machine → Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-- Checking timing, jitter, and RAM budget → Read [`docs/BEHAVIOR_AND_PERFORMANCE.md`](docs/BEHAVIOR_AND_PERFORMANCE.md).
-- Adopting a newer release → Read [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
