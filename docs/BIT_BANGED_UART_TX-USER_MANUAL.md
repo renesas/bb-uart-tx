@@ -6,8 +6,7 @@
 **FSP Baseline:** FSP v6.5.0, LLVM Embedded Toolchain for Arm (ATfE)
 **Reference Targets:** FPB-RA2E3, FPB-RA4E2, FPB-RA6E2
 **Build Environment:** Visual Studio Code + CMake (Ninja)
-**Also Buildable With:** Meson — host unit tests, cross-built firmware, and on-target Unity tests for all three boards
-**License:** BSD-3-Clause
+
 
 ---
 
@@ -480,7 +479,7 @@ To bypass the on-board VCOM bridge entirely (see [Behavior and Performance](#7-o
 | Component | Version | Notes |
 |---|---|---|
 | Renesas FSP | v6.5.0 | Provides `r_gpt`, `r_ioport` types, BSP, startup |
-| LLVM Embedded Toolchain for Arm (ATfE) | Bundled with e2studio's FSP v6.5.0 toolchain bundle | `clang`/`clang++` targeting `arm-none-eabi`, referenced by `cmake/llvm.cmake` |
+| LLVM Embedded Toolchain for Arm (ATfE) | `clang`/`clang++` targeting `arm-none-eabi`, referenced by `cmake/llvm.cmake` |
 | RASC (standalone) | v6.5.0-compatible | Required for headless project-content regeneration — from the CMake configure step or the Meson build's `rasc_generate` target |
 | SEGGER J-Link (on-board) | — | Debug/flash on all three FPB boards |
 
@@ -1016,7 +1015,7 @@ If you ever reopen the FSP Smart Configurator perspective for one of these proje
 
 ### 7. VS Code / CMake Project Files
 
-Files specific to the VS Code / CMake delivery mechanism (not present, or present in a different form, in an e2studio-based delivery of this module):
+Files specific to the VS Code / CMake delivery mechanism :
 
 | File | Purpose | Safe to Modify? |
 |---|---|---|
@@ -1413,7 +1412,7 @@ There is no version-query public function in Phase 1 (unlike some other referenc
 
 ### 2. Delivery Scope
 
-This is the **Phase 1** delivery: TX-only, 8N1, LSB-first, 1200–115200 baud, non-blocking. This documentation set specifically covers the **VS Code / CMake** example projects. A parallel e2studio-based delivery of the same module core also exists for all three boards (see the repository root `README.md`); the module core itself (`src/rs_bb_uart_tx/`) is identical between the two delivery mechanisms — only the build tooling differs.
+This is the **Phase 1** delivery: TX-only, 8N1, LSB-first, 1200–115200 baud, non-blocking. This documentation set specifically covers the **VS Code / CMake** example projects.
 
 All three reference boards (FPB-RA2E3, FPB-RA4E2, FPB-RA6E2) are part of this delivery's original scope, not a later addition to a smaller initial release — see [Configuration Guide](#configuration-guide) for the per-board hardware differences already accounted for.
 

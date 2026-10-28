@@ -243,10 +243,7 @@ Manual</h1>
 <strong>Version:</strong> 1.0.0 <strong>FSP Baseline:</strong> FSP
 v6.5.0, LLVM Embedded Toolchain for Arm (ATfE) <strong>Reference
 Targets:</strong> FPB-RA2E3, FPB-RA4E2, FPB-RA6E2 <strong>Build
-Environment:</strong> Visual Studio Code + CMake (Ninja) <strong>Also
-Buildable With:</strong> Meson — host unit tests, cross-built firmware,
-and on-target Unity tests for all three boards <strong>License:</strong>
-BSD-3-Clause</p>
+Environment:</strong> Visual Studio Code + CMake (Ninja)</p>
 <hr />
 <h2 id="about-this-manual">About This Manual</h2>
 <p>This manual covers the core use case, capabilities, and reusability
@@ -1479,10 +1476,10 @@ startup</td>
 </tr>
 <tr>
 <td>LLVM Embedded Toolchain for Arm (ATfE)</td>
-<td>Bundled with e2studio’s FSP v6.5.0 toolchain bundle</td>
 <td><code>clang</code>/<code>clang++</code> targeting
 <code>arm-none-eabi</code>, referenced by
 <code>cmake/llvm.cmake</code></td>
+<td></td>
 </tr>
 <tr>
 <td>RASC (standalone)</td>
@@ -3025,9 +3022,7 @@ revert them.</p>
 <hr />
 <h3 id="7-vs-code--cmake-project-files">7. VS Code / CMake Project
 Files</h3>
-<p>Files specific to the VS Code / CMake delivery mechanism (not
-present, or present in a different form, in an e2studio-based delivery
-of this module):</p>
+<p>Files specific to the VS Code / CMake delivery mechanism :</p>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -3998,11 +3993,7 @@ the version is available at compile time via the
 <p>This is the <strong>Phase 1</strong> delivery: TX-only, 8N1,
 LSB-first, 1200–115200 baud, non-blocking. This documentation set
 specifically covers the <strong>VS Code / CMake</strong> example
-projects. A parallel e2studio-based delivery of the same module core
-also exists for all three boards (see the repository root
-<code>README.md</code>); the module core itself
-(<code>src/rs_bb_uart_tx/</code>) is identical between the two delivery
-mechanisms — only the build tooling differs.</p>
+projects.</p>
 <p>All three reference boards (FPB-RA2E3, FPB-RA4E2, FPB-RA6E2) are part
 of this delivery’s original scope, not a later addition to a smaller
 initial release — see <a href="#configuration-guide">Configuration
